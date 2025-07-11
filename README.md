@@ -81,7 +81,7 @@ ngrok http 3000
 - **[Vercel](https://vercel.com)** - Run `vercel` command
 - **[GitHub Pages](https://pages.github.com)** - Enable in repository settings
 
-**For detailed deployment options, see [DEPLOYMENT.md](DEPLOYMENT.md)**
+**For detailed deployment options, see [DEPLOYMENT.md](docs/DEPLOYMENT.md)**
 
 ### One-Command Deployment
 **Use our deployment script for instant deployment:**

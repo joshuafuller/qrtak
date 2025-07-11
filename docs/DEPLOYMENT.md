@@ -257,4 +257,4 @@ This guide provides multiple ways to deploy qrtak, from zero-config options to f
 
 ---
 
-**Need help?** Create an issue on GitHub or check the [main README](README.md) for more information. 
+**Need help?** Create an issue on GitHub or check the [main README](../README.md) for more information. 
