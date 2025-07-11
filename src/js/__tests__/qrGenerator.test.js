@@ -58,4 +58,4 @@ describe('QR Code Generation', () => {
       expect(generateItakQuickConnect({ description: '', host: 'a', port: 'b', protocol: 'c' })).toBe('');
     });
   });
-}); 
+});

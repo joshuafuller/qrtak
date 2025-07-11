@@ -10,6 +10,7 @@ lerna-debug.log*
 dist/
 build/
 *.local
+assets/
 
 # Vite specific
 .vite/

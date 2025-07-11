@@ -1,0 +1,131 @@
+name: Compliance & Quality
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  schedule:
+    # Run weekly on Mondays at 3 AM UTC
+    - cron: '0 3 * * 1'
+
+jobs:
+  # License compliance
+  license-compliance:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Check license compliance
+      run: |
+        npx license-checker --summary --onlyAllow "MIT;ISC;Apache-2.0;BSD-2-Clause;BSD-3-Clause;CC0-1.0"
+        
+    - name: Generate license report
+      run: npx license-checker --json --out licenses.json
+      
+    - name: Upload license report
+      uses: actions/upload-artifact@v4
+      with:
+        name: license-report
+        path: licenses.json
+        retention-days: 90
+
+  # Code quality
+  code-quality:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Run ESLint
+      run: npx eslint . --ext .js,.jsx,.ts,.tsx --format json --output-file eslint-report.json
+      
+    - name: Upload ESLint report
+      uses: actions/upload-artifact@v4
+      with:
+        name: eslint-report
+        path: eslint-report.json
+        retention-days: 30
+
+  # Dependency analysis
+  dependency-analysis:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Generate dependency graph
+      run: npx npm-why --json > dependency-graph.json
+      
+    - name: Upload dependency graph
+      uses: actions/upload-artifact@v4
+      with:
+        name: dependency-graph
+        path: dependency-graph.json
+        retention-days: 90
+
+  # Policy compliance
+  policy-compliance:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      
+    - name: Check for sensitive files
+      run: |
+        # Check for common sensitive file patterns
+        if find . -name "*.env*" -o -name "*.key" -o -name "*.pem" -o -name "*.p12" | grep -q .; then
+          echo "❌ Sensitive files detected!"
+          find . -name "*.env*" -o -name "*.key" -o -name "*.pem" -o -name "*.p12"
+          exit 1
+        else
+          echo "✅ No sensitive files found"
+        fi
+        
+    - name: Check file permissions
+      run: |
+        # Check for files with overly permissive permissions
+        if find . -type f -perm /0111 | grep -v node_modules | grep -v .git | grep -q .; then
+          echo "⚠️  Files with execute permissions found:"
+          find . -type f -perm /0111 | grep -v node_modules | grep -v .git
+        else
+          echo "✅ File permissions look good"
+        fi
+        
+    - name: Check for large files
+      run: |
+        # Check for files larger than 10MB
+        if find . -type f -size +10M | grep -v node_modules | grep -v .git | grep -q .; then
+          echo "⚠️  Large files detected (>10MB):"
+          find . -type f -size +10M | grep -v node_modules | grep -v .git
+        else
+          echo "✅ No large files found"
+        fi 

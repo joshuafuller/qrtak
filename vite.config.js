@@ -1,8 +1,12 @@
-import { defineConfig } from 'vite'
-import { VitePWA } from 'vite-plugin-pwa'
+import { defineConfig } from 'vite';
+import { VitePWA } from 'vite-plugin-pwa';
+
+// Auto-detect: Use '/qrtak/' for GitHub Pages, '/' for Docker/local
+const isGithubActions = process.env.GITHUB_ACTIONS === 'true';
+const base = isGithubActions ? '/qrtak/' : '/';
 
 export default defineConfig({
-  base: '/qrtak/', // Fix for GitHub Pages subdirectory
+  base,
   plugins: [
     VitePWA({
       registerType: 'autoUpdate',
@@ -35,4 +39,4 @@ export default defineConfig({
     port: 3000,
     open: true
   }
-}) 
+});
