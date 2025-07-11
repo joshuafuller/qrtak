@@ -92,7 +92,7 @@ jobs:
     - name: Run TruffleHog
       uses: trufflesecurity/trufflehog@main
       with:
-        args: --only-verified --format sarif --output-file trufflehog-results.sarif
+        extra_args: --only-verified --format sarif --output-file trufflehog-results.sarif
         
     - name: Upload TruffleHog results to GitHub Security tab
       uses: github/codeql-action/upload-sarif@v3
