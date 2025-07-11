@@ -9,6 +9,10 @@ on:
     # Run weekly on Sundays at 2 AM UTC
     - cron: '0 2 * * 0'
 
+permissions:
+  actions: read
+  security-events: write
+
 jobs:
   # SAST - Static Application Security Testing
   sast:
@@ -66,29 +70,24 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
       
-    - name: Install Trivy
-      uses: aquasecurity/trivy-action@master
-      with:
-        version: latest
-      
     - name: Build Docker image
       run: |
-        set -e
         docker build -t qrtak:latest .
-        echo "Docker image built successfully: qrtak:latest"
       
-    - name: Run Trivy vulnerability scanner
-      run: |
-        set -e
-        echo "Scanning Docker image: qrtak:latest"
-        trivy image --format sarif --output trivy-results.sarif qrtak:latest
-        echo "Trivy scan completed successfully"
+    - name: Run Trivy vulnerability scan
+      uses: aquasecurity/trivy-action@0.30.0
+      with:
+        image-ref: 'qrtak:latest'
+        format: 'sarif'
+        exit-code: 0
+        severity: 'CRITICAL,HIGH'
+        output: 'trivy-results.sarif'
         
     - name: Upload Trivy scan results to GitHub Security tab
       uses: github/codeql-action/upload-sarif@v3
       if: always()
       with:
-        sarif_file: trivy-results.sarif
+        sarif_file: 'trivy-results.sarif'
 
   # Secret detection
   secret-scan:
