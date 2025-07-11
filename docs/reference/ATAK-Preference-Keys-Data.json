@@ -1,0 +1,807 @@
+{
+  "metadata": {
+    "version": "0.1",
+    "atakVersion": "5.1+",
+    "lastUpdated": "2025-07-10",
+    "source": "ATAK-Preferences-Key.csv",
+    "totalKeys": 711,
+    "categories": [
+      "identity",
+      "display", 
+      "network",
+      "gps",
+      "communication",
+      "tools",
+      "navigation",
+      "notifications",
+      "system"
+    ]
+  },
+  "preferenceKeys": {
+    "locationCallsign": {
+      "name": "My Callsign",
+      "type": "string",
+      "category": "identity",
+      "description": "User's callsign identifier",
+      "defaultValue": "",
+      "allowedValues": ["alphanumeric"],
+      "validation": {
+        "pattern": "^[a-zA-Z0-9\\-_]+$",
+        "minLength": 1,
+        "maxLength": 50
+      },
+      "examples": ["ALPHA-01", "BRAVO-02", "CHARLIE-03"],
+      "deprecated": false,
+      "since": "5.0"
+    },
+    "locationTeam": {
+      "name": "My Team",
+      "type": "string", 
+      "category": "identity",
+      "description": "Team color affiliation",
+      "defaultValue": "White",
+      "allowedValues": [
+        "White", "Yellow", "Orange", "Magenta",
+        "Red", "Maroon", "Purple", "Dark Blue",
+        "Blue", "Cyan", "Teal", "Green", "Dark Green", "Brown"
+      ],
+      "examples": ["Dark Blue", "Red", "Green"],
+      "deprecated": false,
+      "since": "5.0"
+    },
+    "atakRoleType": {
+      "name": "My Role",
+      "type": "string",
+      "category": "identity", 
+      "description": "User's operational role",
+      "defaultValue": "Team Member",
+      "allowedValues": [
+        "Team Member", "Team Lead", "HQ",
+        "Sniper", "Medic", "Forward Observer",
+        "RTO", "K9"
+      ],
+      "examples": ["Team Member", "Team Lead", "Medic"],
+      "deprecated": false,
+      "since": "5.0"
+    },
+    "locationUnitType": {
+      "name": "My Display Type",
+      "type": "string",
+      "category": "identity",
+      "description": "Unit display type on map",
+      "defaultValue": "Ground Troop",
+      "allowedValues": [
+        "Ground Troop", "Armored Vehicle", "Civilian Vehicle",
+        "Generic Air Unit", "Generic Ground Unit", "Generic Sea Surface Unit"
+      ],
+      "examples": ["Ground Troop", "Armored Vehicle"],
+      "deprecated": false,
+      "since": "5.0"
+    },
+    "mockingOption": {
+      "name": "GPS Option",
+      "type": "string",
+      "category": "gps",
+      "description": "GPS source configuration",
+      "defaultValue": "LocalGPS",
+      "allowedValues": [
+        "IgnoreInternalGPS",
+        "LocalGPS", 
+        "WRGPS"
+      ],
+      "examples": ["LocalGPS", "WRGPS"],
+      "deprecated": false,
+      "since": "5.0"
+    },
+    "listenPort": {
+      "name": "Network GPS Port",
+      "type": "string",
+      "category": "gps",
+      "description": "Network GPS port number",
+      "defaultValue": "4349",
+      "validation": {
+        "minValue": 0,
+        "maxValue": 65535
+      },
+      "examples": ["4349", "8089"],
+      "deprecated": false,
+      "since": "5.0"
+    },
+    "useGPSTime": {
+      "name": "Use GPS Time",
+      "type": "boolean",
+      "category": "gps",
+      "description": "Use GPS time instead of device time",
+      "defaultValue": false,
+      "allowedValues": [true, false],
+      "examples": [true, false],
+      "deprecated": false,
+      "since": "5.0"
+    },
+    "useTerrainElevationSelfMarker": {
+      "name": "Use Elevation Data instead of GPS Elevation",
+      "type": "boolean",
+      "category": "gps",
+      "description": "Use terrain elevation data instead of GPS elevation",
+      "defaultValue": false,
+      "allowedValues": [true, false],
+      "examples": [true, false],
+      "deprecated": false,
+      "since": "5.0"
+    },
+    "nonBluetoothLaserRangeFinder": {
+      "name": "Non-Bluetooth Laser Range Finders Support",
+      "type": "boolean",
+      "category": "tools",
+      "description": "Enable support for non-Bluetooth laser range finders",
+      "defaultValue": false,
+      "allowedValues": [true, false],
+      "examples": [true, false],
+      "deprecated": false,
+      "since": "5.0"
+    },
+    "locationUseWRCallsign": {
+      "name": "Use Wave Relay Callsign",
+      "type": "boolean",
+      "category": "identity",
+      "description": "Use Wave Relay callsign",
+      "defaultValue": false,
+      "allowedValues": [true, false],
+      "examples": [true, false],
+      "deprecated": false,
+      "since": "5.0"
+    },
+    "atakControlBluetooth": {
+      "name": "Bluetooth Support",
+      "type": "boolean",
+      "category": "tools",
+      "description": "Enable Bluetooth support",
+      "defaultValue": true,
+      "allowedValues": [true, false],
+      "examples": [true, false],
+      "deprecated": false,
+      "since": "5.0"
+    },
+    "atakBluetoothReconnectSeconds": {
+      "name": "Bluetooth Reconnect Time",
+      "type": "string",
+      "category": "tools",
+      "description": "Bluetooth reconnection timeout in seconds",
+      "defaultValue": "30",
+      "validation": {
+        "pattern": "^[0-9]+$",
+        "minValue": 0,
+        "maxValue": 3600
+      },
+      "examples": ["30", "60", "120"],
+      "deprecated": false,
+      "since": "5.0"
+    },
+    "saHasPhoneNumber": {
+      "name": "Publish Phone Number",
+      "type": "boolean",
+      "category": "communication",
+      "description": "Publish phone number to other users",
+      "defaultValue": false,
+      "allowedValues": [true, false],
+      "examples": [true, false],
+      "deprecated": false,
+      "since": "5.0"
+    },
+    "saSipAddressAssignment": {
+      "name": "Publish VoIP Number",
+      "type": "string",
+      "category": "communication",
+      "description": "VoIP address assignment method",
+      "defaultValue": "",
+      "allowedValues": ["alphanumeric"],
+      "validation": {
+        "pattern": "^[a-zA-Z0-9\\-_]+$",
+        "minLength": 0,
+        "maxLength": 100
+      },
+      "examples": ["manual", "auto"],
+      "deprecated": false,
+      "since": "5.0"
+    },
+    "saSipAddress": {
+      "name": "VoIP Number",
+      "type": "string",
+      "category": "communication",
+      "description": "VoIP number configuration",
+      "defaultValue": "No VOIP",
+      "allowedValues": [
+        "No VOIP",
+        "Manual Entry",
+        "Use IP Address",
+        "Use Callsign and IP Address"
+      ],
+      "examples": ["No VOIP", "Manual Entry"],
+      "deprecated": false,
+      "since": "5.0"
+    },
+    "saXmppUsername": {
+      "name": "Publish XMPP Username",
+      "type": "string",
+      "category": "communication",
+      "description": "XMPP username for chat",
+      "defaultValue": "",
+      "allowedValues": ["alphanumeric"],
+      "validation": {
+        "pattern": "^[a-zA-Z0-9\\-_]+$",
+        "minLength": 0,
+        "maxLength": 50
+      },
+      "examples": ["user123", "alpha01"],
+      "deprecated": false,
+      "since": "5.0"
+    },
+    "saEmailAddress": {
+      "name": "Publish Preferred Email",
+      "type": "string",
+      "category": "communication",
+      "description": "Preferred email address",
+      "defaultValue": "",
+      "allowedValues": ["email"],
+      "validation": {
+        "pattern": "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
+        "minLength": 0,
+        "maxLength": 100
+      },
+      "examples": ["user@domain.com"],
+      "deprecated": false,
+      "since": "5.0"
+    },
+    "saURN": {
+      "name": "Unit Reference Number",
+      "type": "string",
+      "category": "identity",
+      "description": "Unit reference number",
+      "defaultValue": "",
+      "validation": {
+        "pattern": "^[0-9]+$",
+        "minValue": 0,
+        "maxValue": 16777215
+      },
+      "examples": ["12345", "67890"],
+      "deprecated": false,
+      "since": "5.0"
+    },
+    "dispatchLocationCotExternal": {
+      "name": "Send Location Over Network",
+      "type": "boolean",
+      "category": "network",
+      "description": "Enable location broadcasting over network",
+      "defaultValue": true,
+      "allowedValues": [true, false],
+      "examples": [true, false],
+      "deprecated": false,
+      "since": "5.0"
+    },
+    "dispatchLocationHidden": {
+      "name": "Hide my current position",
+      "type": "boolean",
+      "category": "network",
+      "description": "Hide current position from other users",
+      "defaultValue": false,
+      "allowedValues": [true, false],
+      "examples": [true, false],
+      "deprecated": false,
+      "since": "5.0"
+    },
+    "locationReportingStrategy": {
+      "name": "Reporting Strategy",
+      "type": "string",
+      "category": "network",
+      "description": "Location update frequency strategy",
+      "defaultValue": "Dynamic",
+      "allowedValues": ["Dynamic", "Constant"],
+      "examples": ["Dynamic", "Constant"],
+      "deprecated": false,
+      "since": "5.0"
+    },
+    "dynamicReportingRateStationaryUnreliable": {
+      "name": "Dynamic Reporting Rate Stationary (Unreliable)",
+      "type": "string",
+      "category": "network",
+      "description": "Dynamic reporting rate when stationary with unreliable connection",
+      "defaultValue": "30",
+      "validation": {
+        "pattern": "^[0-9]+$",
+        "minValue": 1,
+        "maxValue": 3600
+      },
+      "examples": ["30", "60", "120"],
+      "deprecated": false,
+      "since": "5.0"
+    },
+    "dynamicReportingRateMinUnreliable": {
+      "name": "Dynamic Reporting Rate Minimum (Unreliable)",
+      "type": "string",
+      "category": "network",
+      "description": "Minimum dynamic reporting rate with unreliable connection",
+      "defaultValue": "5",
+      "validation": {
+        "pattern": "^[0-9]+$",
+        "minValue": 1,
+        "maxValue": 3600
+      },
+      "examples": ["5", "10", "15"],
+      "deprecated": false,
+      "since": "5.0"
+    },
+    "dynamicReportingRateMaxUnreliable": {
+      "name": "Dynamic Reporting Rate Maximum (Unreliable)",
+      "type": "string",
+      "category": "network",
+      "description": "Maximum dynamic reporting rate with unreliable connection",
+      "defaultValue": "300",
+      "validation": {
+        "pattern": "^[0-9]+$",
+        "minValue": 1,
+        "maxValue": 3600
+      },
+      "examples": ["300", "600", "900"],
+      "deprecated": false,
+      "since": "5.0"
+    },
+    "dynamicReportingRateStationaryReliable": {
+      "name": "Dynamic Reporting Rate Stationary (Reliable)",
+      "type": "string",
+      "category": "network",
+      "description": "Dynamic reporting rate when stationary with reliable connection",
+      "defaultValue": "30",
+      "validation": {
+        "pattern": "^[0-9]+$",
+        "minValue": 1,
+        "maxValue": 3600
+      },
+      "examples": ["30", "60", "120"],
+      "deprecated": false,
+      "since": "5.0"
+    },
+    "dynamicReportingRateMinReliable": {
+      "name": "Dynamic Reporting Rate Minimum (Reliable)",
+      "type": "string",
+      "category": "network",
+      "description": "Minimum dynamic reporting rate with reliable connection",
+      "defaultValue": "5",
+      "validation": {
+        "pattern": "^[0-9]+$",
+        "minValue": 1,
+        "maxValue": 3600
+      },
+      "examples": ["5", "10", "15"],
+      "deprecated": false,
+      "since": "5.0"
+    },
+    "dynamicReportingRateMaxReliable": {
+      "name": "Dynamic Reporting Rate Maximum (Reliable)",
+      "type": "string",
+      "category": "network",
+      "description": "Maximum dynamic reporting rate with reliable connection",
+      "defaultValue": "300",
+      "validation": {
+        "pattern": "^[0-9]+$",
+        "minValue": 1,
+        "maxValue": 3600
+      },
+      "examples": ["300", "600", "900"],
+      "deprecated": false,
+      "since": "5.0"
+    },
+    "constantReportingRateUnreliable": {
+      "name": "Constant Reporting Rate (Unreliable)",
+      "type": "string",
+      "category": "network",
+      "description": "Constant reporting rate with unreliable connection",
+      "defaultValue": "30",
+      "validation": {
+        "pattern": "^[0-9]+$",
+        "minValue": 1,
+        "maxValue": 3600
+      },
+      "examples": ["30", "60", "120"],
+      "deprecated": false,
+      "since": "5.0"
+    },
+    "constantReportingRateReliable": {
+      "name": "Constant Reporting Rate (Reliable)",
+      "type": "string",
+      "category": "network",
+      "description": "Constant reporting rate with reliable connection",
+      "defaultValue": "30",
+      "validation": {
+        "pattern": "^[0-9]+$",
+        "minValue": 1,
+        "maxValue": 3600
+      },
+      "examples": ["30", "60", "120"],
+      "deprecated": false,
+      "since": "5.0"
+    },
+    "dispatchLocationCotExternalAtStart": {
+      "name": "Report Location before obtaining location fix",
+      "type": "boolean",
+      "category": "network",
+      "description": "Report location before GPS fix is obtained",
+      "defaultValue": false,
+      "allowedValues": [true, false],
+      "examples": [true, false],
+      "deprecated": false,
+      "since": "5.0"
+    },
+    "encryptionPassphrase": {
+      "name": "Change Encryption Passphrase",
+      "type": "string",
+      "category": "system",
+      "description": "Encryption passphrase for secure communications",
+      "defaultValue": "",
+      "allowedValues": ["alphanumeric"],
+      "validation": {
+        "pattern": "^[a-zA-Z0-9\\-_!@#$%^&*()]+$",
+        "minLength": 0,
+        "maxLength": 100
+      },
+      "examples": ["securepass123"],
+      "deprecated": false,
+      "since": "5.0"
+    },
+    "displayServerConnectionWidget": {
+      "name": "Display Connection Widget",
+      "type": "boolean",
+      "category": "network",
+      "description": "Show server connection status widget",
+      "defaultValue": true,
+      "allowedValues": [true, false],
+      "examples": [true, false],
+      "deprecated": false,
+      "since": "5.0"
+    },
+    "monitorServerConnections": {
+      "name": "Monitor Server Connections",
+      "type": "boolean",
+      "category": "network",
+      "description": "Monitor server connection status",
+      "defaultValue": true,
+      "allowedValues": [true, false],
+      "examples": [true, false],
+      "deprecated": false,
+      "since": "5.0"
+    },
+    "enableNonStreamingConnections": {
+      "name": "Enable Mesh Network Mode",
+      "type": "boolean",
+      "category": "network",
+      "description": "Enable mesh network mode",
+      "defaultValue": false,
+      "allowedValues": [true, false],
+      "examples": [true, false],
+      "deprecated": false,
+      "since": "5.0"
+    },
+    "coord_display_pref": {
+      "name": "Coordinate Display",
+      "type": "string",
+      "category": "display",
+      "description": "Coordinate display format",
+      "defaultValue": "MGRS",
+      "allowedValues": ["MGRS", "DD", "DM", "DMS", "UTM"],
+      "examples": ["MGRS", "UTM", "DD"],
+      "deprecated": false,
+      "since": "5.0"
+    },
+    "alt_display_pref": {
+      "name": "Altitude Display",
+      "type": "string",
+      "category": "display",
+      "description": "Altitude reference system",
+      "defaultValue": "HAE",
+      "allowedValues": ["HAE", "MSL"],
+      "examples": ["HAE", "MSL"],
+      "deprecated": false,
+      "since": "5.0"
+    },
+    "alt_unit_pref": {
+      "name": "Altitude Units",
+      "type": "string",
+      "category": "display",
+      "description": "Altitude units",
+      "defaultValue": "0",
+      "allowedValues": ["0", "1"],
+      "examples": ["0", "1"],
+      "deprecated": false,
+      "since": "5.0"
+    },
+    "alt_display_agl": {
+      "name": "Display AGL",
+      "type": "boolean",
+      "category": "display",
+      "description": "Display above ground level altitude",
+      "defaultValue": false,
+      "allowedValues": [true, false],
+      "examples": [true, false],
+      "deprecated": false,
+      "since": "5.0"
+    },
+    "speed_unit_pref": {
+      "name": "Speed Units",
+      "type": "string",
+      "category": "display",
+      "description": "Speed units preference",
+      "defaultValue": "0",
+      "allowedValues": ["0", "1", "2", "3"],
+      "examples": ["0", "1", "2", "3"],
+      "deprecated": false,
+      "since": "5.0"
+    },
+    "map_zoom_visible": {
+      "name": "Enable Zoom Controls",
+      "type": "boolean",
+      "category": "display",
+      "description": "Show zoom controls on map",
+      "defaultValue": true,
+      "allowedValues": [true, false],
+      "examples": [true, false],
+      "deprecated": false,
+      "since": "5.0"
+    },
+    "map_scale_visible": {
+      "name": "Enable Map Scale Display",
+      "type": "boolean",
+      "category": "display",
+      "description": "Show map scale",
+      "defaultValue": true,
+      "allowedValues": [true, false],
+      "examples": [true, false],
+      "deprecated": false,
+      "since": "5.0"
+    },
+    "largeTextMode": {
+      "name": "Enable Large Text Mode",
+      "type": "boolean",
+      "category": "display",
+      "description": "Enable large text mode for accessibility",
+      "defaultValue": false,
+      "allowedValues": [true, false],
+      "examples": [true, false],
+      "deprecated": false,
+      "since": "5.0"
+    },
+    "largeActionBar": {
+      "name": "Enable Large Tool Bar",
+      "type": "boolean",
+      "category": "display",
+      "description": "Enable large toolbar for accessibility",
+      "defaultValue": false,
+      "allowedValues": [true, false],
+      "examples": [true, false],
+      "deprecated": false,
+      "since": "5.0"
+    },
+    "enableToast": {
+      "name": "Display Notification",
+      "type": "boolean",
+      "category": "notifications",
+      "description": "Show toast notifications",
+      "defaultValue": true,
+      "allowedValues": [true, false],
+      "examples": [true, false],
+      "deprecated": false,
+      "since": "5.0"
+    },
+    "vibratePhone": {
+      "name": "Vibrate phone",
+      "type": "boolean",
+      "category": "notifications",
+      "description": "Vibrate phone for notifications",
+      "defaultValue": true,
+      "allowedValues": [true, false],
+      "examples": [true, false],
+      "deprecated": false,
+      "since": "5.0"
+    },
+    "audibleNotify": {
+      "name": "Audible Chat notifications",
+      "type": "boolean",
+      "category": "notifications",
+      "description": "Play audible notifications for chat",
+      "defaultValue": true,
+      "allowedValues": [true, false],
+      "examples": [true, false],
+      "deprecated": false,
+      "since": "5.0"
+    },
+    "waypointPrefix": {
+      "name": "Checkpoint Name Prefix",
+      "type": "string",
+      "category": "navigation",
+      "description": "Prefix for checkpoint names",
+      "defaultValue": "CP",
+      "allowedValues": ["alphanumeric"],
+      "validation": {
+        "pattern": "^[a-zA-Z0-9\\-_]+$",
+        "minLength": 1,
+        "maxLength": 10
+      },
+      "examples": ["CP", "WP", "CHK"],
+      "deprecated": false,
+      "since": "5.0"
+    },
+    "route_track_up_locked_on": {
+      "name": "Traditional Navigation Mode",
+      "type": "boolean",
+      "category": "navigation",
+      "description": "Enable traditional navigation mode",
+      "defaultValue": false,
+      "allowedValues": [true, false],
+      "examples": [true, false],
+      "deprecated": false,
+      "since": "5.0"
+    },
+    "useRouteVoiceCues": {
+      "name": "Navigational Voice Cues",
+      "type": "boolean",
+      "category": "navigation",
+      "description": "Enable voice navigation cues",
+      "defaultValue": false,
+      "allowedValues": [true, false],
+      "examples": [true, false],
+      "deprecated": false,
+      "since": "5.0"
+    },
+    "route_vibrate_at_checkpoint": {
+      "name": "Vibrate When Arriving at Checkpoint",
+      "type": "boolean",
+      "category": "navigation",
+      "description": "Vibrate when arriving at route checkpoints",
+      "defaultValue": false,
+      "allowedValues": [true, false],
+      "examples": [true, false],
+      "deprecated": false,
+      "since": "5.0"
+    },
+    "autostart_nineline": {
+      "name": "Auto Start on Placement",
+      "type": "boolean",
+      "category": "tools",
+      "description": "Auto-start 9-line tool on placement",
+      "defaultValue": false,
+      "allowedValues": [true, false],
+      "examples": [true, false],
+      "deprecated": false,
+      "since": "5.0"
+    },
+    "keyhole_cas": {
+      "name": "Use Keyhole CAS",
+      "type": "boolean",
+      "category": "tools",
+      "description": "Use Keyhole CAS for close air support",
+      "defaultValue": false,
+      "allowedValues": [true, false],
+      "examples": [true, false],
+      "deprecated": false,
+      "since": "5.0"
+    },
+    "enableGeocoder": {
+      "name": "Enable Address Lookup (Geocoder)",
+      "type": "boolean",
+      "category": "tools",
+      "description": "Enable address lookup functionality",
+      "defaultValue": false,
+      "allowedValues": [true, false],
+      "examples": [true, false],
+      "deprecated": false,
+      "since": "5.0"
+    }
+  },
+  "categories": {
+    "identity": {
+      "name": "Identity and Team Settings",
+      "description": "Configure user identity and team affiliation",
+      "keys": [
+        "locationCallsign",
+        "locationTeam", 
+        "atakRoleType",
+        "locationUnitType",
+        "locationUseWRCallsign",
+        "saURN"
+      ]
+    },
+    "display": {
+      "name": "Display and UI Settings",
+      "description": "Customize visual appearance and user interface",
+      "keys": [
+        "coord_display_pref",
+        "alt_display_pref",
+        "alt_unit_pref",
+        "alt_display_agl",
+        "speed_unit_pref",
+        "map_zoom_visible",
+        "map_scale_visible",
+        "largeTextMode",
+        "largeActionBar"
+      ]
+    },
+    "network": {
+      "name": "Network and Connectivity",
+      "description": "Control network behavior and server connections",
+      "keys": [
+        "dispatchLocationCotExternal",
+        "dispatchLocationHidden",
+        "locationReportingStrategy",
+        "dynamicReportingRateStationaryUnreliable",
+        "dynamicReportingRateMinUnreliable",
+        "dynamicReportingRateMaxUnreliable",
+        "dynamicReportingRateStationaryReliable",
+        "dynamicReportingRateMinReliable",
+        "dynamicReportingRateMaxReliable",
+        "constantReportingRateUnreliable",
+        "constantReportingRateReliable",
+        "dispatchLocationCotExternalAtStart",
+        "displayServerConnectionWidget",
+        "monitorServerConnections",
+        "enableNonStreamingConnections"
+      ]
+    },
+    "gps": {
+      "name": "GPS and Location",
+      "description": "Configure GPS behavior and location reporting",
+      "keys": [
+        "mockingOption",
+        "listenPort",
+        "useGPSTime",
+        "useTerrainElevationSelfMarker"
+      ]
+    },
+    "communication": {
+      "name": "Communication",
+      "description": "Set up contact information and communication preferences",
+      "keys": [
+        "saHasPhoneNumber",
+        "saSipAddressAssignment",
+        "saSipAddress",
+        "saXmppUsername",
+        "saEmailAddress"
+      ]
+    },
+    "tools": {
+      "name": "Tools and Features",
+      "description": "Enable/disable specific ATAK tools and features",
+      "keys": [
+        "nonBluetoothLaserRangeFinder",
+        "atakControlBluetooth",
+        "atakBluetoothReconnectSeconds",
+        "autostart_nineline",
+        "keyhole_cas",
+        "enableGeocoder"
+      ]
+    },
+    "navigation": {
+      "name": "Route and Navigation",
+      "description": "Configure route and navigation preferences",
+      "keys": [
+        "waypointPrefix",
+        "route_track_up_locked_on",
+        "useRouteVoiceCues",
+        "route_vibrate_at_checkpoint"
+      ]
+    },
+    "notifications": {
+      "name": "Chat and Notifications",
+      "description": "Configure notification and chat preferences",
+      "keys": [
+        "enableToast",
+        "vibratePhone",
+        "audibleNotify"
+      ]
+    },
+    "system": {
+      "name": "System Settings",
+      "description": "System-level configuration preferences",
+      "keys": [
+        "encryptionPassphrase"
+      ]
+    }
+  }
+} 

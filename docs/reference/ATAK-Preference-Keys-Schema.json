@@ -1,0 +1,149 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ATAK Preference Keys Schema",
+  "description": "Schema for ATAK preference keys used in QR codes and configuration",
+  "version": "0.1",
+  "type": "object",
+  "properties": {
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "type": "string",
+          "description": "Schema version",
+          "enum": ["0.1"]
+        },
+        "atakVersion": {
+          "type": "string",
+          "description": "Minimum ATAK version required",
+          "pattern": "^5\\.1\\+$"
+        },
+        "lastUpdated": {
+          "type": "string",
+          "format": "date",
+          "description": "Last update date"
+        }
+      },
+      "required": ["version", "atakVersion", "lastUpdated"]
+    },
+    "preferenceKeys": {
+      "type": "object",
+      "description": "All available ATAK preference keys",
+      "patternProperties": {
+        "^[a-zA-Z_][a-zA-Z0-9_]*$": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "description": "Human-readable name"
+            },
+            "type": {
+              "type": "string",
+              "enum": ["string", "boolean", "int", "long"],
+              "description": "Data type"
+            },
+            "category": {
+              "type": "string",
+              "enum": [
+                "identity",
+                "display",
+                "network",
+                "gps",
+                "communication",
+                "tools",
+                "navigation",
+                "notifications",
+                "system"
+              ],
+              "description": "Preference category"
+            },
+            "description": {
+              "type": "string",
+              "description": "Detailed description"
+            },
+            "defaultValue": {
+              "description": "Default value"
+            },
+            "allowedValues": {
+              "type": "array",
+              "description": "Allowed values for enumerated types"
+            },
+            "validation": {
+              "type": "object",
+              "properties": {
+                "pattern": {
+                  "type": "string",
+                  "description": "Regex pattern for validation"
+                },
+                "minValue": {
+                  "type": "number",
+                  "description": "Minimum numeric value"
+                },
+                "maxValue": {
+                  "type": "number",
+                  "description": "Maximum numeric value"
+                },
+                "minLength": {
+                  "type": "integer",
+                  "description": "Minimum string length"
+                },
+                "maxLength": {
+                  "type": "integer",
+                  "description": "Maximum string length"
+                }
+              }
+            },
+            "examples": {
+              "type": "array",
+              "description": "Example values"
+            },
+            "deprecated": {
+              "type": "boolean",
+              "description": "Whether this preference is deprecated"
+            },
+            "since": {
+              "type": "string",
+              "description": "ATAK version when this preference was introduced"
+            }
+          },
+          "required": ["name", "type", "category", "description"]
+        }
+      }
+    }
+  },
+  "required": ["metadata", "preferenceKeys"],
+  "definitions": {
+    "qrCodeFormat": {
+      "type": "object",
+      "properties": {
+        "protocol": {
+          "type": "string",
+          "enum": ["tak://com.atakmap.app/preference"],
+          "description": "QR code protocol"
+        },
+        "parameters": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "key": {
+                "type": "string",
+                "description": "Preference key name"
+              },
+              "type": {
+                "type": "string",
+                "enum": ["string", "boolean", "int", "long"],
+                "description": "Data type"
+              },
+              "value": {
+                "description": "Preference value"
+              }
+            },
+            "required": ["key", "type", "value"]
+          }
+        }
+      },
+      "required": ["protocol", "parameters"]
+    }
+  }
+} 

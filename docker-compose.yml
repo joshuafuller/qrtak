@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  qrtak:
+    build: .
+    ports:
+      - "80:80"
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.qrtak.rule=Host(`qrtak.local`)"
+      - "traefik.http.services.qrtak.loadbalancer.server.port=80"
+
+  # Optional: Development version with hot reload
+  qrtak-dev:
+    build: 
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+    profiles:
+      - dev 
