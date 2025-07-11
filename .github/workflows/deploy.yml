@@ -32,4 +32,5 @@ jobs:
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: ./dist
+        publish_branch: main
         # cname: qrtak.app  # Uncomment if you get a custom domain 
