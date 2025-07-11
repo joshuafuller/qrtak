@@ -35,17 +35,12 @@
 [![Contributions Welcome](https://img.shields.io/badge/contributions-welcome-brightgreen)](https://github.com/joshuafuller/qrtak/blob/main/CONTRIBUTING.md)
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-brightgreen)](https://github.com/joshuafuller/qrtak/graphs/commit-activity)
 [![Open Source](https://img.shields.io/badge/Open%20Source-Yes-brightgreen)](https://github.com/joshuafuller/qrtak)
-[![Made with Love](https://img.shields.io/badge/Made%20with-Love-red)](https://github.com/joshuafuller/qrtak)
 
 [![Code Size](https://img.shields.io/github/languages/code-size/joshuafuller/qrtak)](https://github.com/joshuafuller/qrtak)
 [![Repo Size](https://img.shields.io/github/repo-size/joshuafuller/qrtak)](https://github.com/joshuafuller/qrtak)
 [![Language Count](https://img.shields.io/github/languages/count/joshuafuller/qrtak)](https://github.com/joshuafuller/qrtak)
 [![Top Language](https://img.shields.io/github/languages/top/joshuafuller/qrtak)](https://github.com/joshuafuller/qrtak)
 
-[![Chrome Web Store](https://img.shields.io/badge/Chrome-Web%20Store-blue)](https://chrome.google.com/webstore)
-[![Firefox Add-ons](https://img.shields.io/badge/Firefox-Add--ons-orange)](https://addons.mozilla.org/)
-[![Safari Extensions](https://img.shields.io/badge/Safari-Extensions-blue)](https://developer.apple.com/safari/extensions/)
-[![Edge Add-ons](https://img.shields.io/badge/Edge-Add--ons-blue)](https://microsoftedge.microsoft.com/addons/)
 
 [![Netlify Status](https://img.shields.io/badge/Netlify-Ready-brightgreen)](https://netlify.com)
 [![Vercel Status](https://img.shields.io/badge/Vercel-Ready-brightgreen)](https://vercel.com)
@@ -53,14 +48,7 @@
 [![Cloudflare Pages](https://img.shields.io/badge/Cloudflare-Pages-orange)](https://pages.cloudflare.com)
 
 [![Discord](https://img.shields.io/badge/Discord-Join-7289DA)](https://discord.gg)
-[![Slack](https://img.shields.io/badge/Slack-Join-4A154B)](https://slack.com)
-[![Telegram](https://img.shields.io/badge/Telegram-Join-0088CC)](https://telegram.org)
-[![Matrix](https://img.shields.io/badge/Matrix-Join-000000)](https://matrix.org)
 
-[![Buy Me a Coffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-Support-yellow)](https://buymeacoffee.com)
-[![Ko-fi](https://img.shields.io/badge/Ko--fi-Support-FF5E5B)](https://ko-fi.com)
-[![Patreon](https://img.shields.io/badge/Patreon-Support-FF424D)](https://patreon.com)
-[![Open Collective](https://img.shields.io/badge/Open%20Collective-Support-7FADF7)](https://opencollective.com)
 
 A Progressive Web App (PWA) for rapid TAK (Tactical Assault Kit) client deployment through QR code generation. Perfect for tactical environments where speed and simplicity matter.
 
