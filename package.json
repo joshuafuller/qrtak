@@ -39,7 +39,7 @@
     "jest-environment-jsdom": "^30.0.4",
     "license-checker": "^25.0.1",
     "npm-why": "^1.0.0",
-    "puppeteer": "^21.11.0",
+    "puppeteer": "^24.12.1",
     "vite": "^7.0.4",
     "vite-plugin-pwa": "^1.0.1"
   },
