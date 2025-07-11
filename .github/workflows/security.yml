@@ -46,6 +46,8 @@ jobs:
         
     - name: Install dependencies
       run: npm ci
+      env:
+        PUPPETEER_SKIP_DOWNLOAD: true
       
     - name: Run npm audit
       run: npm audit --audit-level=moderate
@@ -134,6 +136,8 @@ jobs:
         
     - name: Install dependencies
       run: npm ci
+      env:
+        PUPPETEER_SKIP_DOWNLOAD: true
       
     - name: Check licenses
       run: |
