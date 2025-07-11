@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TAK Onboarding Platform</title>
+    <meta name="description" content="Generate TAK client configuration QR codes for rapid deployment">
+    <link rel="icon" type="image/x-icon" href="/qrtak/favicon.ico">
+<link rel="manifest" href="/qrtak/assets/manifest-VUuppTAN.webmanifest"><script id="vite-plugin-pwa:register-sw" src="/registerSW.js"></script>  <script type="module" crossorigin src="/qrtak/assets/index-CYjjZhTN.js"></script>
+  <link rel="stylesheet" crossorigin href="/qrtak/assets/index-B1KmtafN.css">
+<link rel="manifest" href="/qrtak/manifest.webmanifest"><script id="vite-plugin-pwa:register-sw" src="/qrtak/registerSW.js"></script></head>
+<body>
+    <div class="app">
+        <!-- Header -->
+        <header class="header">
+            <div class="container">
+                <div class="header-content">
+                    <div class="header-main">
+                        <h1 class="title">
+                            <span class="title-icon">📱</span>
+                            TAK Onboarding Platform
+                        </h1>
+                        <p class="subtitle">Generate configuration QR codes for rapid TAK client deployment</p>
+                    </div>
+                    <div class="header-actions">
+                        <button id="help-button" class="help-btn" title="Help (F1)">
+                            <span class="help-icon">❓</span>
+                            <span class="help-text">Help</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main">
+            <div class="container">
+                <!-- Tab Navigation -->
+                <div class="tabs">
+                    <button class="tab-btn active" data-tab="atak">ATAK Enroll</button>
+                    <button class="tab-btn" data-tab="itak">iTAK Config</button>
+                    <button class="tab-btn" data-tab="import">URL Import</button>
+                    <button class="tab-btn" data-tab="preferences">Preferences</button>
+                    <button class="tab-btn" data-tab="matrix">Version Matrix</button>
+                    <button class="tab-btn" data-tab="profiles">Profiles</button>
+                    <button class="tab-btn" data-tab="help">Help</button>
+                </div>
+
+                <!-- Tab Content -->
+                <div class="tab-content">
+                    <!-- ATAK Enroll Tab -->
+                    <div class="tab-pane active" id="atak-tab">
+                        <div class="form-section">
+                            <h2>ATAK Enrollment Configuration</h2>
+                            <p class="form-description">Configure ATAK client enrollment for Android devices</p>
+                            <div id="atak-data-status" class="data-status" style="display: none;">
+                                <span class="status-icon">ℹ️</span>
+                                <span class="status-text">Server details shared with iTAK tab</span>
+                            </div>
+                            <form id="atak-form" class="config-form">
+                                <div class="form-group">
+                                    <label for="atak-host">Server Hostname/IP:</label>
+                                    <input type="text" id="atak-host" name="host" placeholder="tak.example.com or 192.168.1.100" required>
+                                    <div class="help-text">Enter your TAK server's hostname or IP address</div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="atak-username">Username:</label>
+                                    <input type="text" id="atak-username" name="username" placeholder="user123" required>
+                                    <div class="help-text">Your TAK server username</div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="atak-token">Token/Password:</label>
+                                    <input type="password" id="atak-token" name="token" placeholder="your-token" required>
+                                    <div class="warning">
+                                        ⚠️ Warning: Including passwords in QR codes may pose security risks
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="qr-section">
+                            <h3>Generated QR Code</h3>
+                            <p class="qr-description">Scan this QR code with ATAK to automatically configure the connection</p>
+                            <div id="atak-qr" class="qr-container">
+                                <div class="qr-placeholder">Enter configuration details above</div>
+                            </div>
+                            <div class="qr-actions">
+                                <button id="atak-download" class="btn btn-primary" disabled>Download PNG</button>
+                                <button id="atak-copy" class="btn btn-secondary" disabled>Copy URI</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- iTAK Config Tab -->
+                    <div class="tab-pane" id="itak-tab">
+                        <div class="form-section">
+                            <h2>iTAK Configuration</h2>
+                            <p class="form-description">Configure iTAK client enrollment for iOS devices. Credentials are entered after scanning the QR code.</p>
+                            <div id="itak-data-status" class="data-status" style="display: none;">
+                                <span class="status-icon">ℹ️</span>
+                                <span class="status-text">Server details shared with ATAK tab</span>
+                            </div>
+                            <form id="itak-form" class="config-form">
+                                <div class="form-group">
+                                    <label for="itak-description">Server Description:</label>
+                                    <input type="text" id="itak-description" name="description" placeholder="My TAK Server" required>
+                                    <div class="help-text">A friendly name for this server configuration</div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="itak-url">Server URL:</label>
+                                    <input type="url" id="itak-url" name="url" placeholder="https://tak.example.com or tak.example.com" required>
+                                    <div class="help-text">Your TAK server's URL (with or without https://)</div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="itak-port">Port:</label>
+                                    <input type="number" id="itak-port" name="port" placeholder="8089" value="8089" required>
+                                    <div class="help-text">TAK server port (default: 8089)</div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="itak-protocol">Protocol:</label>
+                                    <select id="itak-protocol" name="protocol" required>
+                                        <option value="https">HTTPS (Recommended)</option>
+                                        <option value="http">HTTP</option>
+                                    </select>
+                                    <div class="help-text">Use HTTPS for secure connections</div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="qr-section">
+                            <h3>Generated QR Code</h3>
+                            <p class="qr-description">Scan this QR code with iTAK to automatically configure the connection</p>
+                            <div id="itak-qr" class="qr-container">
+                                <div class="qr-placeholder">Enter configuration details above</div>
+                            </div>
+                            <div class="qr-actions">
+                                <button id="itak-download" class="btn btn-primary" disabled>Download PNG</button>
+                                <button id="itak-copy" class="btn btn-secondary" disabled>Copy URI</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- URL Import Tab -->
+                    <div class="tab-pane" id="import-tab">
+                        <div class="form-section">
+                            <h2>URL Import Configuration</h2>
+                            <p class="form-description">Import data packages or configuration files via URL</p>
+                            <form id="import-form" class="config-form">
+                                <div class="form-group">
+                                    <label for="import-url">Import URL:</label>
+                                    <input type="url" id="import-url" name="url" placeholder="https://example.com/data.zip" required>
+                                    <div class="help-text">Enter the URL of a data package (.zip) or configuration file to import</div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="qr-section">
+                            <h3>Generated QR Code</h3>
+                            <p class="qr-description">Scan this QR code to import the specified data package</p>
+                            <div id="import-qr" class="qr-container">
+                                <div class="qr-placeholder">Enter URL above</div>
+                            </div>
+                            <div class="qr-actions">
+                                <button id="import-download" class="btn btn-primary" disabled>Download PNG</button>
+                                <button id="import-copy" class="btn btn-secondary" disabled>Copy URI</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Preferences Tab -->
+                    <div class="tab-pane" id="preferences-tab">
+                        <div class="form-section">
+                            <h2>ATAK Preferences Configuration</h2>
+                            <p class="form-description">Configure advanced ATAK settings and preferences. Browse by category or search for specific settings.</p>
+                            
+                            <!-- Category and Search Controls -->
+                            <div class="preferences-controls">
+                                <div class="control-group">
+                                    <label for="preference-category">Category:</label>
+                                    <select id="preference-category" class="form-select">
+                                        <option value="">All Categories</option>
+                                        <option value="identity">Identity & Team</option>
+                                        <option value="display">Display & UI</option>
+                                        <option value="network">Network & Connectivity</option>
+                                        <option value="gps">GPS & Location</option>
+                                        <option value="communication">Communication</option>
+                                        <option value="tools">Tools & Features</option>
+                                        <option value="navigation">Route & Navigation</option>
+                                        <option value="notifications">Chat & Notifications</option>
+                                        <option value="system">System</option>
+                                    </select>
+                                </div>
+                                <div class="control-group">
+                                    <label for="preference-search">Search:</label>
+                                    <input type="text" id="preference-search" placeholder="Search preferences..." class="form-input">
+                                </div>
+                                <div class="control-group">
+                                    <label for="atak-version">ATAK Version:</label>
+                                    <select id="atak-version" class="form-select">
+                                        <option value="">All Versions</option>
+                                    </select>
+                                </div>
+                                <div class="control-group">
+                                    <button id="clear-preferences" class="btn btn-secondary">Clear All</button>
+                                </div>
+                            </div>
+
+                            <!-- Hide/Disable Controls -->
+                            <div class="hide-disable-section">
+                                <div class="control-group">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" id="hide-disable-toggle">
+                                        <span class="checkmark"></span>
+                                        Enable Hide/Disable Mode
+                                    </label>
+                                </div>
+                                <div id="hide-disable-container" style="display: none;">
+                                    <!-- Hide/Disable controls will be populated here -->
+                                </div>
+                            </div>
+
+                            <!-- Template Selection -->
+                            <div class="template-section">
+                                <h3>Quick Templates</h3>
+                                <div class="template-buttons">
+                                    <button class="template-btn" data-template="fire">Fire Department</button>
+                                    <button class="template-btn" data-template="police">Police</button>
+                                    <button class="template-btn" data-template="ems">EMS</button>
+                                    <button class="template-btn" data-template="military">Military</button>
+                                    <button class="template-btn" data-template="sar">Search & Rescue</button>
+                                </div>
+                            </div>
+
+                            <!-- Preferences List -->
+                            <div class="preferences-container">
+                                <div class="preferences-list" id="preferences-list">
+                                    <!-- Preferences will be populated here -->
+                                </div>
+                            </div>
+
+                            <!-- Selected Preferences Summary -->
+                            <div class="selected-preferences" id="selected-preferences" style="display: none;">
+                                <h3>Selected Preferences (<span id="preference-count">0</span>)</h3>
+                                <div class="selected-list" id="selected-list">
+                                    <!-- Selected preferences will be shown here -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="qr-section">
+                            <h3>Generated QR Code</h3>
+                            <p class="qr-description">Scan this QR code to apply the selected preferences to ATAK</p>
+                            <div id="preferences-qr" class="qr-container">
+                                <div class="qr-placeholder">Select preferences above to generate QR code</div>
+                            </div>
+                            <div class="qr-actions">
+                                <button id="preferences-download" class="btn btn-primary" disabled>Download PNG</button>
+                                <button id="preferences-copy" class="btn btn-secondary" disabled>Copy URI</button>
+                                <button id="preferences-package" class="btn btn-secondary" disabled>Generate Data Package</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Version Matrix Tab -->
+                    <div class="tab-pane" id="matrix-tab">
+                        <div class="matrix-section">
+                            <h2>ATAK Preference Version Matrix</h2>
+                            <p class="matrix-description">
+                                Comprehensive view of preference availability and control options across ATAK versions. 
+                                This matrix shows which preferences can be hidden or disabled in each version.
+                            </p>
+                            
+                            <div class="matrix-actions">
+                                <a href="/docs/matrix/version-matrix-viewer.html" target="_blank" class="btn btn-primary">
+                                    Open Full Matrix Viewer
+                                </a>
+                                <button id="download-matrix" class="btn btn-secondary">Download Matrix Data</button>
+                            </div>
+
+                            <div class="matrix-summary">
+                                <h3>Matrix Summary</h3>
+                                <div id="matrix-stats" class="matrix-stats">
+                                    <div class="loading">Loading matrix data...</div>
+                                </div>
+                            </div>
+
+                            <div class="matrix-legend">
+                                <h3>Legend</h3>
+                                <div class="legend-items">
+                                    <div class="legend-item">
+                                        <span class="legend-color hide"></span>
+                                        <span>Can Hide</span>
+                                    </div>
+                                    <div class="legend-item">
+                                        <span class="legend-color disable"></span>
+                                        <span>Can Disable</span>
+                                    </div>
+                                    <div class="legend-item">
+                                        <span class="legend-color both"></span>
+                                        <span>Can Hide & Disable</span>
+                                    </div>
+                                    <div class="legend-item">
+                                        <span class="legend-color none"></span>
+                                        <span>Not Available</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Profiles Tab -->
+                    <div class="tab-pane" id="profiles-tab">
+                        <div class="profiles-section">
+                            <h2>Configuration Profiles</h2>
+                            <p>Save and manage configuration profiles for quick deployment</p>
+                            
+                            <div class="profile-actions">
+                                <button id="save-profile" class="btn btn-primary">Save Current Profile</button>
+                                <button id="load-profile" class="btn btn-secondary">Load Profile</button>
+                            </div>
+
+                            <div class="profiles-list">
+                                <h3>Saved Profiles</h3>
+                                <div id="profiles-container" class="profiles-grid">
+                                    <!-- Profiles will be populated here -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Help Tab -->
+                    <div class="tab-pane" id="help-tab">
+                        <div class="help-section">
+                            <h2>TAK Onboarding Platform Help</h2>
+                            <p class="help-intro">Welcome to the TAK Onboarding Platform! This tool helps you quickly configure TAK clients for rapid deployment.</p>
+                            
+                            <!-- Quick Start -->
+                            <div class="help-section-content">
+                                <h3>🚀 Quick Start Guide</h3>
+                                <div class="help-steps">
+                                    <div class="help-step">
+                                        <div class="step-number">1</div>
+                                        <div class="step-content">
+                                            <h4>Choose Configuration Type</h4>
+                                            <p>Select the appropriate tab for your needs: ATAK Enroll, iTAK Config, URL Import, or Preferences.</p>
+                                        </div>
+                                    </div>
+                                    <div class="help-step">
+                                        <div class="step-number">2</div>
+                                        <div class="step-content">
+                                            <h4>Enter Configuration Details</h4>
+                                            <p>Fill in the required fields with your TAK server information and preferences.</p>
+                                        </div>
+                                    </div>
+                                    <div class="help-step">
+                                        <div class="step-number">3</div>
+                                        <div class="step-content">
+                                            <h4>Generate QR Code</h4>
+                                            <p>Scan the generated QR code with your TAK client to automatically configure it.</p>
+                                        </div>
+                                    </div>
+                                    <div class="help-step">
+                                        <div class="step-number">4</div>
+                                        <div class="step-content">
+                                            <h4>Save Profile (Optional)</h4>
+                                            <p>Save your configuration as a profile for future use and team deployment.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Tab Descriptions -->
+                            <div class="help-section-content">
+                                <h3>📱 Tab Descriptions</h3>
+                                <div class="help-tabs">
+                                    <div class="help-tab-item">
+                                        <h4>ATAK Enroll</h4>
+                                        <p>Configure Android ATAK client enrollment with server hostname, username, and token. Generates enrollment QR codes for rapid setup.</p>
+                                        <div class="help-features">
+                                            <span class="feature-tag">Android</span>
+                                            <span class="feature-tag">Enrollment</span>
+                                            <span class="feature-tag">QR Code</span>
+                                        </div>
+                                    </div>
+                                    <div class="help-tab-item">
+                                        <h4>iTAK Config</h4>
+                                        <p>Configure iOS iTAK client with server URL, port, and protocol. Credentials are entered after scanning the QR code.</p>
+                                        <div class="help-features">
+                                            <span class="feature-tag">iOS</span>
+                                            <span class="feature-tag">Configuration</span>
+                                            <span class="feature-tag">QR Code</span>
+                                        </div>
+                                    </div>
+                                    <div class="help-tab-item">
+                                        <h4>URL Import</h4>
+                                        <p>Import data packages or configuration files via URL. Useful for deploying pre-configured settings and resources.</p>
+                                        <div class="help-features">
+                                            <span class="feature-tag">Data Packages</span>
+                                            <span class="feature-tag">Import</span>
+                                            <span class="feature-tag">URL</span>
+                                        </div>
+                                    </div>
+                                    <div class="help-tab-item">
+                                        <h4>Preferences</h4>
+                                        <p>Configure advanced ATAK settings and preferences. Browse 711+ settings by category or use pre-built templates.</p>
+                                        <div class="help-features">
+                                            <span class="feature-tag">Advanced Settings</span>
+                                            <span class="feature-tag">Templates</span>
+                                            <span class="feature-tag">Data Package</span>
+                                        </div>
+                                    </div>
+                                    <div class="help-tab-item">
+                                        <h4>Profiles</h4>
+                                        <p>Save and manage configuration profiles for quick deployment. Perfect for team standardization and mass onboarding.</p>
+                                        <div class="help-features">
+                                            <span class="feature-tag">Profiles</span>
+                                            <span class="feature-tag">Team Management</span>
+                                            <span class="feature-tag">Bulk Deployment</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Preferences Guide -->
+                            <div class="help-section-content">
+                                <h3>⚙️ Preferences Configuration Guide</h3>
+                                <div class="help-preferences">
+                                    <div class="help-preference-category">
+                                        <h4>Identity & Team Settings</h4>
+                                        <p>Configure user identity, team affiliation, and role information.</p>
+                                        <ul>
+                                            <li><strong>My Callsign:</strong> User's unique identifier</li>
+                                            <li><strong>My Team:</strong> Team color (Red, Blue, Green, etc.)</li>
+                                            <li><strong>My Role:</strong> Operational role (Team Member, Team Lead, Medic, etc.)</li>
+                                        </ul>
+                                    </div>
+                                    <div class="help-preference-category">
+                                        <h4>Display & UI Settings</h4>
+                                        <p>Customize how information is displayed and the user interface appearance.</p>
+                                        <ul>
+                                            <li><strong>Coordinate Format:</strong> MGRS, UTM, DD, DM, DMS</li>
+                                            <li><strong>Altitude Units:</strong> Feet or Meters</li>
+                                            <li><strong>Large Text Mode:</strong> Accessibility feature for better visibility</li>
+                                        </ul>
+                                    </div>
+                                    <div class="help-preference-category">
+                                        <h4>Network & Connectivity</h4>
+                                        <p>Control network behavior and server connection settings.</p>
+                                        <ul>
+                                            <li><strong>Location Broadcasting:</strong> Enable/disable position sharing</li>
+                                            <li><strong>Server Connection Widget:</strong> Show connection status</li>
+                                            <li><strong>Mesh Network Mode:</strong> Enable peer-to-peer connections</li>
+                                        </ul>
+                                    </div>
+                                    <div class="help-preference-category">
+                                        <h4>GPS & Location</h4>
+                                        <p>Configure GPS source and location reporting behavior.</p>
+                                        <ul>
+                                            <li><strong>GPS Source:</strong> Internal, External, or Network GPS</li>
+                                            <li><strong>GPS Time:</strong> Use GPS time instead of device time</li>
+                                            <li><strong>Location Strategy:</strong> Dynamic or constant reporting</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Templates Guide -->
+                            <div class="help-section-content">
+                                <h3>🎯 Quick Templates</h3>
+                                <div class="help-templates">
+                                    <div class="help-template">
+                                        <h4>Fire Department</h4>
+                                        <p>Red team color, Team Lead role, UTM coordinates, large text mode for field visibility.</p>
+                                    </div>
+                                    <div class="help-template">
+                                        <h4>Police</h4>
+                                        <p>Blue team color, Team Member role, external GPS support, dynamic location reporting.</p>
+                                    </div>
+                                    <div class="help-template">
+                                        <h4>EMS</h4>
+                                        <p>Green team color, Medic role, communication preferences, notification settings for medical operations.</p>
+                                    </div>
+                                    <div class="help-template">
+                                        <h4>Military</h4>
+                                        <p>Dark Green team color, Team Lead role, MGRS coordinates, GPS time synchronization.</p>
+                                    </div>
+                                    <div class="help-template">
+                                        <h4>Search & Rescue</h4>
+                                        <p>Orange team color, Team Member role, UTM coordinates, mesh network mode for field operations.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Best Practices -->
+                            <div class="help-section-content">
+                                <h3>💡 Best Practices</h3>
+                                <div class="help-best-practices">
+                                    <div class="practice-item">
+                                        <h4>Security Considerations</h4>
+                                        <ul>
+                                            <li>⚠️ <strong>Password Security:</strong> Avoid including passwords in QR codes when possible</li>
+                                            <li>🔒 <strong>Data Packages:</strong> Use data packages for sensitive configurations</li>
+                                            <li>👥 <strong>Access Control:</strong> Limit access to configuration tools</li>
+                                        </ul>
+                                    </div>
+                                    <div class="practice-item">
+                                        <h4>Mass Deployment</h4>
+                                        <ul>
+                                            <li>📋 <strong>Profiles:</strong> Create standardized profiles for each team/role</li>
+                                            <li>🖨️ <strong>Print Handouts:</strong> Generate printed QR codes for field deployment</li>
+                                            <li>📱 <strong>Kiosk Mode:</strong> Use large displays for group onboarding</li>
+                                        </ul>
+                                    </div>
+                                    <div class="practice-item">
+                                        <h4>Configuration Management</h4>
+                                        <ul>
+                                            <li>🔄 <strong>Version Control:</strong> Keep track of configuration changes</li>
+                                            <li>🧪 <strong>Testing:</strong> Test configurations in safe environments first</li>
+                                            <li>📝 <strong>Documentation:</strong> Document custom configurations and templates</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Troubleshooting -->
+                            <div class="help-section-content">
+                                <h3>🔧 Troubleshooting</h3>
+                                <div class="help-troubleshooting">
+                                    <div class="trouble-item">
+                                        <h4>QR Code Issues</h4>
+                                        <ul>
+                                            <li><strong>QR Code Too Large:</strong> Reduce the number of preferences or use data packages</li>
+                                            <li><strong>Scanning Fails:</strong> Ensure good lighting and clean QR code display</li>
+                                            <li><strong>Invalid Configuration:</strong> Check preference values and validation messages</li>
+                                        </ul>
+                                    </div>
+                                    <div class="trouble-item">
+                                        <h4>Connection Problems</h4>
+                                        <ul>
+                                            <li><strong>Server Unreachable:</strong> Verify hostname/IP and network connectivity</li>
+                                            <li><strong>Authentication Failed:</strong> Check username and token/password</li>
+                                            <li><strong>Port Issues:</strong> Ensure correct port number and firewall settings</li>
+                                        </ul>
+                                    </div>
+                                    <div class="trouble-item">
+                                        <h4>Preference Issues</h4>
+                                        <ul>
+                                            <li><strong>Invalid Values:</strong> Check spelling and case sensitivity</li>
+                                            <li><strong>Type Mismatches:</strong> Ensure boolean values are true/false, not "true"/"false"</li>
+                                            <li><strong>Version Compatibility:</strong> Verify preferences work with your ATAK version</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Resources -->
+                            <div class="help-section-content">
+                                <h3>📚 Additional Resources</h3>
+                                <div class="help-resources">
+                                    <div class="resource-item">
+                                        <h4>Technical Documentation</h4>
+                                        <ul>
+                                            <li><a href="https://tak.gov/products" target="_blank">TAK Product Center</a></li>
+                                            <li><a href="https://github.com/deptofdefense/AndroidTacticalAssaultKit-CIV" target="_blank">ATAK-CIV Source Code</a></li>
+                                            <li><a href="https://wiki.tak.gov/" target="_blank">Official TAK Wiki</a></li>
+                                            <li><a href="https://github.com/joshuafuller/ATAK-Maps" target="_blank">ATAK-Maps Repository</a></li>
+                                        </ul>
+                                    </div>
+                                    <div class="resource-item">
+                                        <h4>Community Support</h4>
+                                        <ul>
+                                            <li><a href="https://discord.gg/xTdEcpc" target="_blank">TAK Discord Server</a></li>
+                                            <li><a href="https://reddit.com/r/ATAK" target="_blank">ATAK Subreddit</a></li>
+                                            <li><a href="https://wiki.tak.gov/display/DEV/ATAK+Change+Log+18+July+2024+Version+5.2" target="_blank">ATAK 5.2 Change Log</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Contact -->
+                            <div class="help-section-content">
+                                <h3>📞 Support & Contact</h3>
+                                <div class="help-contact">
+                                    <p>For technical support or feature requests:</p>
+                                    <ul>
+                                        <li>📧 <strong>Email:</strong> support@tak-onboarding.com</li>
+                                        <li>🐛 <strong>Bug Reports:</strong> <a href="https://github.com/your-repo/issues" target="_blank">GitHub Issues</a></li>
+                                        <li>💬 <strong>Discussions:</strong> <a href="https://github.com/your-repo/discussions" target="_blank">GitHub Discussions</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <!-- Back to Top -->
+                            <div class="help-section-content">
+                                <div class="help-back-to-top">
+                                    <button id="back-to-top" class="btn btn-primary">
+                                        <span>⬆️</span> Back to Top
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="container">
+                <p>&copy; 2025 TAK Onboarding Platform. Offline-first PWA for rapid TAK deployment.</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Modal for Profile Management -->
+    <div id="profile-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title">Save Profile</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="profile-name">Profile Name:</label>
+                    <input type="text" id="profile-name" placeholder="e.g., Fire Department Config">
+                </div>
+                <div class="form-group">
+                    <label for="profile-description">Description (optional):</label>
+                    <textarea id="profile-description" placeholder="Brief description of this configuration"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="modal-cancel" class="btn btn-secondary">Cancel</button>
+                <button id="modal-save" class="btn btn-primary">Save</button>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html> 
