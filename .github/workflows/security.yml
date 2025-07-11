@@ -93,19 +93,21 @@ jobs:
   secret-scan:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout
+    - name: Checkout code
       uses: actions/checkout@v4
-      
-    - name: Run TruffleHog
-      run: |
-        docker run --rm -v "${{ github.workspace }}:/scan" trufflesecurity/trufflehog:latest \
-          --only-verified --format sarif --output-file /scan/trufflehog-results.sarif /scan
-        
-    - name: Upload TruffleHog results to GitHub Security tab
-      uses: github/codeql-action/upload-sarif@v3
-      if: always()
       with:
-        sarif_file: trufflehog-results.sarif
+        fetch-depth: 0  # Ensures full history for scanning
+      
+    - name: Secret Scanning
+      id: trufflehog
+      uses: trufflesecurity/trufflehog@main
+      continue-on-error: true
+      with:
+        extra_args: --results=verified,unknown
+        
+    - name: Scan Results Status
+      if: steps.trufflehog.outcome == 'failure'
+      run: exit 1
 
   # License compliance
   license-check:
