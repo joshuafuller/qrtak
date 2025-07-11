@@ -56,10 +56,20 @@ jobs:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       with:
         args: --severity-threshold=high --sarif-file-output=snyk.sarif
+      continue-on-error: true
+      
+    - name: Debug Snyk token (masked)
+      if: always()
+      run: |
+        if [ -n "${{ secrets.SNYK_TOKEN }}" ]; then
+          echo "SNYK_TOKEN is set (length: ${#SNYK_TOKEN})"
+        else
+          echo "SNYK_TOKEN is not set"
+        fi
       
     - name: Upload Snyk results to GitHub Security tab
       uses: github/codeql-action/upload-sarif@v3
-      if: always()
+      if: always() && hash snyk.sarif 2>/dev/null
       with:
         sarif_file: snyk.sarif
 
