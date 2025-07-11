@@ -1,7 +1,7 @@
 import '../main.js';
 
 describe('updateATAKQR', () => {
-  let atakHost, atakUsername, atakToken, atakQR, atakDownload, atakCopy;
+  let atakHost, atakDownload, atakCopy;
 
   beforeEach(() => {
     // Set up DOM elements
@@ -14,9 +14,6 @@ describe('updateATAKQR', () => {
       <button id="atak-copy" disabled>Copy</button>
     `;
     atakHost = document.getElementById('atak-host');
-    atakUsername = document.getElementById('atak-username');
-    atakToken = document.getElementById('atak-token');
-    atakQR = document.getElementById('atak-qr');
     atakDownload = document.getElementById('atak-download');
     atakCopy = document.getElementById('atak-copy');
   });
@@ -31,8 +28,6 @@ describe('updateATAKQR', () => {
     // Check that the correct URI is set on the download button (data attribute or similar)
     // (You may need to adjust this if your implementation differs)
     // For now, just check the expected URI
-    const expectedURI = 'tak://com.atakmap.app/enroll?host=takserver.com&username=john.doe&token=SuperSecret123';
-    // If you store the URI somewhere, check it here
     // Example: expect(atakDownload.getAttribute('data-uri')).toBe(expectedURI);
   });
 
@@ -203,4 +198,81 @@ describe('transferDataFromiTAKToATAK', () => {
     await window.transferDataFromiTAKToATAK();
     expect(document.getElementById('atak-host').value).toBe('existing.com');
   });
-}); 
+});
+
+// Matrix utilities tests
+
+describe('loadMatrixStats', () => {
+  beforeEach(() => {
+    document.body.innerHTML = `
+      <div id="matrix-stats"></div>
+    `;
+    // Reset fetch mock
+    global.fetch.mockClear();
+  });
+
+  it('updates DOM with matrix statistics when fetch succeeds', async () => {
+    const mockMatrixData = {
+      preferences: [
+        { key: 'pref1', versions: { '5.4.0': { hide: true }, '5.2.0': { disable: true } } },
+        { key: 'pref2', versions: { '5.4.0': { hide: true, disable: true } } }
+      ],
+      versions: ['5.4.0', '5.2.0']
+    };
+
+    global.fetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => mockMatrixData
+    });
+
+    await window.loadMatrixStats();
+
+    const statsContainer = document.getElementById('matrix-stats');
+    expect(statsContainer.innerHTML).toContain('2'); // Total Preferences
+    expect(statsContainer.innerHTML).toContain('2'); // ATAK Versions
+    expect(statsContainer.innerHTML).toContain('2'); // Can Hide
+    expect(statsContainer.innerHTML).toContain('2'); // Can Disable
+  });
+
+  it('handles fetch errors gracefully', async () => {
+    global.fetch.mockRejectedValueOnce(new Error('Network error'));
+
+    await window.loadMatrixStats();
+
+    const statsContainer = document.getElementById('matrix-stats');
+    expect(statsContainer.innerHTML).toContain('Error loading matrix data');
+  });
+});
+
+describe('downloadMatrixData', () => {
+  beforeEach(() => {
+    // Reset fetch mock
+    global.fetch.mockClear();
+    // Reset URL.createObjectURL mock
+    global.URL.createObjectURL.mockClear();
+    global.URL.revokeObjectURL.mockClear();
+  });
+
+  it('downloads matrix data successfully', async () => {
+    const mockData = { test: 'data' };
+    global.fetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => mockData
+    });
+
+    await window.downloadMatrixData();
+
+    expect(global.fetch).toHaveBeenCalledWith('/docs/matrix/version-matrix.json');
+    expect(global.URL.createObjectURL).toHaveBeenCalled();
+    expect(global.URL.revokeObjectURL).toHaveBeenCalled();
+  });
+
+  it('handles fetch errors gracefully', async () => {
+    global.fetch.mockRejectedValueOnce(new Error('Download failed'));
+
+    await window.downloadMatrixData();
+
+    expect(global.fetch).toHaveBeenCalledWith('/docs/matrix/version-matrix.json');
+    expect(global.URL.createObjectURL).not.toHaveBeenCalled();
+  });
+});

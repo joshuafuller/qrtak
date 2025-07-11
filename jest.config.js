@@ -1,7 +1,7 @@
 module.exports = {
   testEnvironment: 'jsdom',
   transform: {
-    '^.+\\.js$': 'babel-jest',
+    '^.+\\.js$': 'babel-jest'
   },
   moduleFileExtensions: ['js'],
   testMatch: ['**/__tests__/**/*.test.js'],
@@ -16,4 +16,4 @@ module.exports = {
   moduleNameMapper: {
     '^qrcode$': '<rootDir>/src/js/__tests__/__mocks__/qrcode.js'
   }
-}; 
+};

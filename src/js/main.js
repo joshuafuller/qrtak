@@ -696,6 +696,8 @@ window.populateiTAKFromATAK = populateiTAKFromATAK;
 window.populateATAKFromiTAK = populateATAKFromiTAK;
 window.transferDataFromATAKToiTAK = transferDataFromATAKToiTAK;
 window.transferDataFromiTAKToATAK = transferDataFromiTAKToATAK;
+window.loadMatrixStats = loadMatrixStats;
+window.downloadMatrixData = downloadMatrixData;
 
 // Help System
 function initializeHelp () {

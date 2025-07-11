@@ -376,7 +376,7 @@ function applyHideDisableToSelected () {
 }
 
 // Filter preferences based on category, search, and version
-function filterPreferences(preferenceData, versionData, category, searchTerm, selectedVersion) {
+function filterPreferences (preferenceData, versionData, category, searchTerm, selectedVersion) {
   searchTerm = (searchTerm || '').toLowerCase();
   return Object.entries(preferenceData.preferenceKeys)
     .filter(([key, pref]) => {
@@ -784,7 +784,7 @@ function generateDataPackage () {
   if (selectedPreferences.size === 0) return;
 
   // Create config.pref content
-  const configPref = generateConfigPref();
+  const configPref = generateConfigPref(selectedPreferences, preferenceData);
 
   // Create download
   const blob = new Blob([configPref], { type: 'application/xml' });
@@ -797,7 +797,7 @@ function generateDataPackage () {
 }
 
 // Generate config.pref XML
-function generateConfigPref () {
+function generateConfigPref (selectedPreferences, preferenceData) {
   const preferences = [];
 
   selectedPreferences.forEach((value, key) => {
@@ -833,4 +833,4 @@ function showNotification (message, type = 'info') {
   // TODO: Integrate with main notification system
 }
 
-export { parseVersionPreferences, filterPreferences };
+export { parseVersionPreferences, filterPreferences, getJavaType, generateConfigPref };
