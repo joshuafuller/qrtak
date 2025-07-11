@@ -47,16 +47,11 @@ jobs:
       run: npm audit --audit-level=moderate
       
     - name: Run Snyk to check for vulnerabilities
-      if: secrets.SNYK_TOKEN != ''
       uses: snyk/actions/node@master
       env:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       with:
         args: --severity-threshold=high
-        
-    - name: Skip Snyk scan (no token)
-      if: secrets.SNYK_TOKEN == ''
-      run: echo "Skipping Snyk scan - no SNYK_TOKEN provided"
 
   # Container security scanning
   container-scan:
