@@ -94,7 +94,7 @@ function transferDataFromiTAKToATAK () {
       const urlToParse = itakUrl.trim().startsWith('http') ? itakUrl.trim() : `https://${itakUrl.trim()}`;
       const urlObj = new URL(urlToParse);
       host = urlObj.hostname;
-    } catch (e) {
+    } catch {
       const urlParts = itakUrl.trim().replace(/^https?:\/\//, '').split('/');
       const [hostPart] = urlParts;
       const [hostName] = hostPart.split(':');
@@ -142,7 +142,7 @@ function populateiTAKFromATAK () {
         hostname = atakHost.trim();
         protocol = 'https';
       }
-    } catch (e) {
+    } catch {
       // If parsing fails, use as-is
       hostname = atakHost.trim();
     }
@@ -178,7 +178,7 @@ function populateATAKFromiTAK () {
       const urlObj = new URL(urlToParse);
       const { hostname: urlHostname } = urlObj;
       hostname = urlHostname;
-    } catch (e) {
+    } catch {
       const urlParts = itakUrl.trim().replace(/^https?:\/\//, '').split('/');
       const [hostPart] = urlParts;
       const [hostName] = hostPart.split(':');
@@ -292,7 +292,7 @@ function updateiTAKQR () {
       const urlObj = new URL(urlToParse);
       host = urlObj.hostname;
     }
-  } catch (e) {
+  } catch {
     // If URL parsing fails, try to extract hostname manually
     const urlParts = url.trim().replace(/^https?:\/\//, '').split('/');
     const [hostPart] = urlParts;
@@ -387,7 +387,7 @@ async function copyURI (type) {
         const urlObj = new URL(urlToParse);
         itakHost = urlObj.hostname;
       }
-    } catch (e) {
+    } catch {
       const urlParts = itakUrl.trim().replace(/^https?:\/\//, '').split('/');
       const [hostPart] = urlParts;
       const [hostName] = hostPart.split(':');
@@ -675,13 +675,13 @@ function registerServiceWorker () {
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('/sw.js')
-        .then(registration => {
+        .then(() => {
 
-          // console.log('SW registered: ', registration);
+          // console.log('SW registered');
         })
-        .catch(registrationError => {
+        .catch(() => {
 
-          // console.log('SW registration failed: ', registrationError);
+          // console.log('SW registration failed');
         });
     });
   }

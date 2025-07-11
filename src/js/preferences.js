@@ -68,8 +68,8 @@ async function loadPreferenceData () {
     preferenceData = await response.json();
     // console.log('Loaded preference data:', preferenceData.metadata);
     // console.log(`Total preference keys: ${Object.keys(preferenceData.preferenceKeys).length}`);
-  } catch (error) {
-    // console.error('Failed to load preference data:', error);
+  } catch {
+    // console.error('Failed to load preference data');
     // Fallback to basic preferences if JSON fails to load
     preferenceData = {
       metadata: { totalKeys: 0 },
@@ -125,8 +125,8 @@ async function loadVersionData () {
         //   disableCount: versionData[version].disable.size,
         //   sampleKeys: Array.from(versionData[version].hide.keys()).slice(0, 5)
         // });
-      } catch (error) {
-        // console.warn(`Failed to load version ${version} data:`, error);
+      } catch {
+        // console.warn(`Failed to load version ${version} data`);
       }
     }
 
@@ -156,8 +156,8 @@ async function loadVersionData () {
         // console.log(`  ${prefKey}: hide=${hasHideKey}, disable=${hasDisableKey}`);
       }
     }
-  } catch (error) {
-    // console.error('Failed to load version data:', error);
+  } catch {
+    // console.error('Failed to load version data');
     versionData = {};
   }
 }
@@ -754,8 +754,8 @@ async function updatePreferencesQR () {
     preferencesCopy.disabled = false;
     preferencesPackage.disabled = false;
     preferencesQR.dataset.url = preferenceURL;
-  } catch (error) {
-    // console.error('Failed to generate QR code:', error);
+  } catch {
+    // console.error('Failed to generate QR code');
     preferencesQR.innerHTML = '<div class="qr-placeholder">Error generating QR code</div>';
   }
 }
@@ -846,8 +846,7 @@ function getJavaType (type) {
 }
 
 // Show notification (placeholder - should be implemented in main.js)
-function showNotification (message, type = 'info') {
-  // console.log(`${type.toUpperCase()}: ${message}`);
+function showNotification () {
   // TODO: Integrate with main notification system
 }
 
