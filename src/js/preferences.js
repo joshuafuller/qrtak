@@ -376,40 +376,28 @@ function applyHideDisableToSelected () {
 }
 
 // Filter preferences based on category, search, and version
-function filterPreferences () {
-  const category = categorySelect.value;
-  const searchTerm = searchInput.value.toLowerCase();
-  const selectedVersion = versionSelect ? versionSelect.value : '';
-
-  filteredPreferences = Object.entries(preferenceData.preferenceKeys)
+function filterPreferences(preferenceData, versionData, category, searchTerm, selectedVersion) {
+  searchTerm = (searchTerm || '').toLowerCase();
+  return Object.entries(preferenceData.preferenceKeys)
     .filter(([key, pref]) => {
       const matchesCategory = !category || pref.category === category;
       const matchesSearch = !searchTerm ||
                 key.toLowerCase().includes(searchTerm) ||
                 pref.name.toLowerCase().includes(searchTerm) ||
-                pref.description.toLowerCase().includes(searchTerm);
+                (pref.description && pref.description.toLowerCase().includes(searchTerm));
 
       // Version filtering
       let matchesVersion = true;
       if (selectedVersion && versionData[selectedVersion]) {
         const versionPrefs = versionData[selectedVersion];
-        // eslint-disable-next-line no-unused-vars
         const hasHideKey = versionPrefs.hide.has(key);
-        // eslint-disable-next-line no-unused-vars
         const hasDisableKey = versionPrefs.disable.has(key);
         matchesVersion = hasHideKey || hasDisableKey;
-
-        // Debug logging for version filtering
-        if (selectedVersion) {
-          // console.log(`Version ${selectedVersion} - ${key}: hide=${hasHideKey}, disable=${hasDisableKey}, matches=${matchesVersion}`);
-        }
       }
 
       return matchesCategory && matchesSearch && matchesVersion;
     })
     .sort(([, a], [, b]) => a.name.localeCompare(b.name));
-
-  renderPreferences();
 }
 
 // Render preferences list with version awareness
@@ -844,3 +832,5 @@ function showNotification (message, type = 'info') {
   // console.log(`${type.toUpperCase()}: ${message}`);
   // TODO: Integrate with main notification system
 }
+
+export { parseVersionPreferences, filterPreferences };

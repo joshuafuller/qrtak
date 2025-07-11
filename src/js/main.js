@@ -195,7 +195,7 @@ function populateATAKFromiTAK () {
   }
 
   if (itakToken.trim()) {
-    document.getElementById('itak-token').value = itakToken.trim();
+    document.getElementById('atak-token').value = itakToken.trim();
   }
 
   // Update ATAK QR code if we have enough data
@@ -689,6 +689,13 @@ function registerServiceWorker () {
 window.loadProfile = loadProfile;
 window.deleteProfile = deleteProfile;
 window.showNotification = showNotification;
+window.updateATAKQR = updateATAKQR;
+window.updateiTAKQR = updateiTAKQR;
+window.updateImportQR = updateImportQR;
+window.populateiTAKFromATAK = populateiTAKFromATAK;
+window.populateATAKFromiTAK = populateATAKFromiTAK;
+window.transferDataFromATAKToiTAK = transferDataFromATAKToiTAK;
+window.transferDataFromiTAKToATAK = transferDataFromiTAKToATAK;
 
 // Help System
 function initializeHelp () {
