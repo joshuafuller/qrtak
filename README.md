@@ -2,57 +2,21 @@
 
 > Generate TAK client configuration QR codes instantly
 
-[![Security Scan](https://github.com/joshuafuller/qrtak/workflows/Security%20Scan/badge.svg)](https://github.com/joshuafuller/qrtak/actions/workflows/security.yml)
-[![Snyk Security](https://img.shields.io/badge/Snyk-Security%20Scan-blue)](https://app.snyk.io/org/joshuafuller/project/qrtak)
-[![Trivy Security](https://img.shields.io/badge/Trivy-Container%20Scan-blue)](https://github.com/joshuafuller/qrtak/actions/workflows/security.yml)
-[![TruffleHog](https://img.shields.io/badge/TruffleHog-Secret%20Scan-blue)](https://github.com/joshuafuller/qrtak/actions/workflows/security.yml)
-[![Semgrep](https://img.shields.io/badge/Semgrep-Code%20Analysis-blue)](https://github.com/joshuafuller/qrtak/actions/workflows/security.yml)
+[![License](https://img.shields.io/badge/license-MIT-brightgreen)](LICENSE) [![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](https://github.com/joshuafuller/qrtak/actions) [![Deploy Status](https://img.shields.io/badge/deploy-success-brightgreen)](https://joshuafuller.github.io/qrtak/) [![Security Scan](https://github.com/joshuafuller/qrtak/workflows/Security%20Scan/badge.svg)](https://github.com/joshuafuller/qrtak/actions/workflows/security.yml)
 
-[![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](https://github.com/joshuafuller/qrtak/actions)
-[![Deploy Status](https://img.shields.io/badge/deploy-success-brightgreen)](https://joshuafuller.github.io/qrtak/)
-[![PWA Ready](https://img.shields.io/badge/PWA-Ready-brightgreen)](https://joshuafuller.github.io/qrtak/)
-[![License](https://img.shields.io/badge/license-MIT-brightgreen)](LICENSE)
-[![Node.js](https://img.shields.io/badge/Node.js-20.x-brightgreen)](https://nodejs.org/)
-[![Vite](https://img.shields.io/badge/Vite-5.x-brightgreen)](https://vitejs.dev/)
-[![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-yellow)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
-[![HTML5](https://img.shields.io/badge/HTML5-5.0-orange)](https://developer.mozilla.org/en-US/docs/Web/HTML)
-[![CSS3](https://img.shields.io/badge/CSS3-3.0-blue)](https://developer.mozilla.org/en-US/docs/Web/CSS)
-[![ATAK Compatible](https://img.shields.io/badge/ATAK-Compatible-brightgreen)](https://tak.gov/)
-[![iTAK Compatible](https://img.shields.io/badge/iTAK-Compatible-brightgreen)](https://tak.gov/)
-[![Military Grade](https://img.shields.io/badge/Military-Grade-orange)](https://github.com/joshuafuller/qrtak)
-[![Tactical Ready](https://img.shields.io/badge/Tactical-Ready-red)](https://github.com/joshuafuller/qrtak)
+[![Military Grade](https://img.shields.io/badge/Military-Grade-orange)](https://github.com/joshuafuller/qrtak) [![Tactical Ready](https://img.shields.io/badge/Tactical-Ready-red)](https://github.com/joshuafuller/qrtak) [![ATAK Compatible](https://img.shields.io/badge/ATAK-Compatible-brightgreen)](https://tak.gov/) [![iTAK Compatible](https://img.shields.io/badge/iTAK-Compatible-brightgreen)](https://tak.gov/)
 
-[![GitHub Stars](https://img.shields.io/github/stars/joshuafuller/qrtak)](https://github.com/joshuafuller/qrtak/stargazers)
-[![GitHub Forks](https://img.shields.io/github/forks/joshuafuller/qrtak)](https://github.com/joshuafuller/qrtak/network/members)
-[![GitHub Issues](https://img.shields.io/github/issues/joshuafuller/qrtak)](https://github.com/joshuafuller/qrtak/issues)
-[![GitHub Pull Requests](https://img.shields.io/github/issues-pr/joshuafuller/qrtak)](https://github.com/joshuafuller/qrtak/pulls)
-[![GitHub Contributors](https://img.shields.io/github/contributors/joshuafuller/qrtak)](https://github.com/joshuafuller/qrtak/graphs/contributors)
-[![GitHub Last Commit](https://img.shields.io/github/last-commit/joshuafuller/qrtak)](https://github.com/joshuafuller/qrtak/commits/main)
-[![GitHub Release](https://img.shields.io/github/release/joshuafuller/qrtak)](https://github.com/joshuafuller/qrtak/releases)
-[![GitHub License](https://img.shields.io/github/license/joshuafuller/qrtak)](LICENSE)
+[![Node.js](https://img.shields.io/badge/Node.js-20.x-brightgreen)](https://nodejs.org/) [![Vite](https://img.shields.io/badge/Vite-5.x-brightgreen)](https://vitejs.dev/) [![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-yellow)](https://developer.mozilla.org/en-US/docs/Web/JavaScript) [![PWA Ready](https://img.shields.io/badge/PWA-Ready-brightgreen)](https://joshuafuller.github.io/qrtak/)
 
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen)](https://github.com/joshuafuller/qrtak/pulls)
-[![Contributions Welcome](https://img.shields.io/badge/contributions-welcome-brightgreen)](https://github.com/joshuafuller/qrtak/blob/main/CONTRIBUTING.md)
-[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-brightgreen)](https://github.com/joshuafuller/qrtak/graphs/commit-activity)
-[![Open Source](https://img.shields.io/badge/Open%20Source-Yes-brightgreen)](https://github.com/joshuafuller/qrtak)
+[![GitHub Stars](https://img.shields.io/github/stars/joshuafuller/qrtak)](https://github.com/joshuafuller/qrtak/stargazers) [![GitHub Forks](https://img.shields.io/github/forks/joshuafuller/qrtak)](https://github.com/joshuafuller/qrtak/network/members) [![GitHub Issues](https://img.shields.io/github/issues/joshuafuller/qrtak)](https://github.com/joshuafuller/qrtak/issues) [![GitHub Last Commit](https://img.shields.io/github/last-commit/joshuafuller/qrtak)](https://github.com/joshuafuller/qrtak/commits/main)
 
-[![Code Size](https://img.shields.io/github/languages/code-size/joshuafuller/qrtak)](https://github.com/joshuafuller/qrtak)
-[![Repo Size](https://img.shields.io/github/repo-size/joshuafuller/qrtak)](https://github.com/joshuafuller/qrtak)
-[![Language Count](https://img.shields.io/github/languages/count/joshuafuller/qrtak)](https://github.com/joshuafuller/qrtak)
-[![Top Language](https://img.shields.io/github/languages/top/joshuafuller/qrtak)](https://github.com/joshuafuller/qrtak)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen)](https://github.com/joshuafuller/qrtak/pulls) [![Discord](https://img.shields.io/badge/Discord-Join-7289DA)](https://discord.gg/xTdEcpc)
 
-
-[![Netlify Status](https://img.shields.io/badge/Netlify-Ready-brightgreen)](https://netlify.com)
-[![Vercel Status](https://img.shields.io/badge/Vercel-Ready-brightgreen)](https://vercel.com)
-[![GitHub Pages](https://img.shields.io/badge/GitHub-Pages-brightgreen)](https://pages.github.com)
-[![Cloudflare Pages](https://img.shields.io/badge/Cloudflare-Pages-orange)](https://pages.cloudflare.com)
-
-[![Discord](https://img.shields.io/badge/Discord-Join-7289DA)](https://discord.gg/xTdEcpc)
-
+---
 
 A Progressive Web App (PWA) for rapid TAK (Tactical Assault Kit) client deployment through QR code generation. Perfect for tactical environments where speed and simplicity matter.
 
-## 🚀 Features
+## Features
 
 - **ATAK Enrollment** - Generate QR codes for ATAK client enrollment
 - **iTAK Configuration** - Generate QR codes for iTAK client setup  
@@ -63,14 +27,14 @@ A Progressive Web App (PWA) for rapid TAK (Tactical Assault Kit) client deployme
 - **PWA Support** - Works offline after first visit
 - **Responsive Design** - Works on desktop, tablet, and mobile
 
-## 🛠️ Quick Start
+## Quick Start
 
 ### Option 1: Use Online (Recommended)
 **No installation required - use the live version:**
-- **🌐 Live Demo**: [https://joshuafuller.github.io/qrtak/](https://joshuafuller.github.io/qrtak/)
-- **📱 PWA Ready** - Can be installed on mobile devices
-- **🔄 Auto-updates** - Always the latest version
-- **🌍 Global CDN** - Fast loading worldwide
+- **Live Demo**: [https://joshuafuller.github.io/qrtak/](https://joshuafuller.github.io/qrtak/)
+- **PWA Ready** - Can be installed on mobile devices
+- **Auto-updates** - Always the latest version
+- **Global CDN** - Fast loading worldwide
 
 ### Option 2: Local Development
 **For developers and customization:**
@@ -117,9 +81,9 @@ ngrok http 3000
 - **[Vercel](https://vercel.com)** - Run `vercel` command
 - **[GitHub Pages](https://pages.github.com)** - Enable in repository settings
 
-📖 **For detailed deployment options, see [DEPLOYMENT.md](DEPLOYMENT.md)**
+**For detailed deployment options, see [DEPLOYMENT.md](DEPLOYMENT.md)**
 
-### 🚀 One-Command Deployment
+### One-Command Deployment
 **Use our deployment script for instant deployment:**
 ```bash
 # Make script executable (first time only)
@@ -133,7 +97,7 @@ chmod +x deploy.sh
 ./deploy.sh ngrok         # Start ngrok tunnel
 ```
 
-## 📱 Usage
+## Usage
 
 ### ATAK Enrollment
 1. Navigate to "ATAK Enroll" tab
@@ -153,7 +117,7 @@ chmod +x deploy.sh
 3. QR code generates automatically
 4. Download or copy the tak:// URI
 
-## 🏗️ Architecture
+## Architecture
 
 - **Frontend**: Vanilla JavaScript with ES6 modules
 - **Build Tool**: Vite for fast development and optimized builds
@@ -161,7 +125,7 @@ chmod +x deploy.sh
 - **QR Generation**: qrcode library
 - **Storage**: LocalStorage for profile persistence
 
-## ⚠️ Security Considerations
+## Security Considerations
 
 This tool generates QR codes that may contain sensitive information:
 
@@ -170,18 +134,18 @@ This tool generates QR codes that may contain sensitive information:
 - **Local Storage**: Profiles are stored locally in the browser
 - **Network Security**: Use HTTPS in production environments
 
-## 🌐 Browser Support
+## Browser Support
 
 - Chrome 60+
 - Firefox 55+ 
 - Safari 11.1+
 - Edge 79+
 
-## 📄 License
+## License
 
 MIT License - see [LICENSE](LICENSE) file for details
 
-## 🤝 Contributing
+## Contributing
 
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
@@ -189,7 +153,7 @@ MIT License - see [LICENSE](LICENSE) file for details
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-## 📞 Support
+## Support
 
 For issues and questions:
 1. Check existing [issues](https://github.com/joshuafuller/qrtak/issues)
@@ -198,4 +162,4 @@ For issues and questions:
 
 ---
 
-**Note**: Designed for tactical environments where rapid TAK client deployment is critical. Always test configurations in a safe environment before deployment. 
+**Note**: Designed for tactical environments where rapid TAK client deployment is critical. Always test configurations in a safe environment before deployment.
