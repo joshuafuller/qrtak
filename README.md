@@ -13,8 +13,54 @@
 [![PWA Ready](https://img.shields.io/badge/PWA-Ready-brightgreen)](https://joshuafuller.github.io/qrtak/)
 [![License](https://img.shields.io/badge/license-MIT-brightgreen)](LICENSE)
 [![Node.js](https://img.shields.io/badge/Node.js-20.x-brightgreen)](https://nodejs.org/)
+[![Vite](https://img.shields.io/badge/Vite-5.x-brightgreen)](https://vitejs.dev/)
+[![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-yellow)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
+[![HTML5](https://img.shields.io/badge/HTML5-5.0-orange)](https://developer.mozilla.org/en-US/docs/Web/HTML)
+[![CSS3](https://img.shields.io/badge/CSS3-3.0-blue)](https://developer.mozilla.org/en-US/docs/Web/CSS)
 [![ATAK Compatible](https://img.shields.io/badge/ATAK-Compatible-brightgreen)](https://tak.gov/)
 [![iTAK Compatible](https://img.shields.io/badge/iTAK-Compatible-brightgreen)](https://tak.gov/)
+[![Military Grade](https://img.shields.io/badge/Military-Grade-orange)](https://github.com/joshuafuller/qrtak)
+[![Tactical Ready](https://img.shields.io/badge/Tactical-Ready-red)](https://github.com/joshuafuller/qrtak)
+
+[![GitHub Stars](https://img.shields.io/github/stars/joshuafuller/qrtak)](https://github.com/joshuafuller/qrtak/stargazers)
+[![GitHub Forks](https://img.shields.io/github/forks/joshuafuller/qrtak)](https://github.com/joshuafuller/qrtak/network/members)
+[![GitHub Issues](https://img.shields.io/github/issues/joshuafuller/qrtak)](https://github.com/joshuafuller/qrtak/issues)
+[![GitHub Pull Requests](https://img.shields.io/github/issues-pr/joshuafuller/qrtak)](https://github.com/joshuafuller/qrtak/pulls)
+[![GitHub Contributors](https://img.shields.io/github/contributors/joshuafuller/qrtak)](https://github.com/joshuafuller/qrtak/graphs/contributors)
+[![GitHub Last Commit](https://img.shields.io/github/last-commit/joshuafuller/qrtak)](https://github.com/joshuafuller/qrtak/commits/main)
+[![GitHub Release](https://img.shields.io/github/release/joshuafuller/qrtak)](https://github.com/joshuafuller/qrtak/releases)
+[![GitHub License](https://img.shields.io/github/license/joshuafuller/qrtak)](LICENSE)
+
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen)](https://github.com/joshuafuller/qrtak/pulls)
+[![Contributions Welcome](https://img.shields.io/badge/contributions-welcome-brightgreen)](https://github.com/joshuafuller/qrtak/blob/main/CONTRIBUTING.md)
+[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-brightgreen)](https://github.com/joshuafuller/qrtak/graphs/commit-activity)
+[![Open Source](https://img.shields.io/badge/Open%20Source-Yes-brightgreen)](https://github.com/joshuafuller/qrtak)
+[![Made with Love](https://img.shields.io/badge/Made%20with-Love-red)](https://github.com/joshuafuller/qrtak)
+
+[![Code Size](https://img.shields.io/github/languages/code-size/joshuafuller/qrtak)](https://github.com/joshuafuller/qrtak)
+[![Repo Size](https://img.shields.io/github/repo-size/joshuafuller/qrtak)](https://github.com/joshuafuller/qrtak)
+[![Language Count](https://img.shields.io/github/languages/count/joshuafuller/qrtak)](https://github.com/joshuafuller/qrtak)
+[![Top Language](https://img.shields.io/github/languages/top/joshuafuller/qrtak)](https://github.com/joshuafuller/qrtak)
+
+[![Chrome Web Store](https://img.shields.io/badge/Chrome-Web%20Store-blue)](https://chrome.google.com/webstore)
+[![Firefox Add-ons](https://img.shields.io/badge/Firefox-Add--ons-orange)](https://addons.mozilla.org/)
+[![Safari Extensions](https://img.shields.io/badge/Safari-Extensions-blue)](https://developer.apple.com/safari/extensions/)
+[![Edge Add-ons](https://img.shields.io/badge/Edge-Add--ons-blue)](https://microsoftedge.microsoft.com/addons/)
+
+[![Netlify Status](https://img.shields.io/badge/Netlify-Ready-brightgreen)](https://netlify.com)
+[![Vercel Status](https://img.shields.io/badge/Vercel-Ready-brightgreen)](https://vercel.com)
+[![GitHub Pages](https://img.shields.io/badge/GitHub-Pages-brightgreen)](https://pages.github.com)
+[![Cloudflare Pages](https://img.shields.io/badge/Cloudflare-Pages-orange)](https://pages.cloudflare.com)
+
+[![Discord](https://img.shields.io/badge/Discord-Join-7289DA)](https://discord.gg)
+[![Slack](https://img.shields.io/badge/Slack-Join-4A154B)](https://slack.com)
+[![Telegram](https://img.shields.io/badge/Telegram-Join-0088CC)](https://telegram.org)
+[![Matrix](https://img.shields.io/badge/Matrix-Join-000000)](https://matrix.org)
+
+[![Buy Me a Coffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-Support-yellow)](https://buymeacoffee.com)
+[![Ko-fi](https://img.shields.io/badge/Ko--fi-Support-FF5E5B)](https://ko-fi.com)
+[![Patreon](https://img.shields.io/badge/Patreon-Support-FF424D)](https://patreon.com)
+[![Open Collective](https://img.shields.io/badge/Open%20Collective-Support-7FADF7)](https://opencollective.com)
 
 A Progressive Web App (PWA) for rapid TAK (Tactical Assault Kit) client deployment through QR code generation. Perfect for tactical environments where speed and simplicity matter.
 
