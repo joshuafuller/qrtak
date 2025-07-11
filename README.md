@@ -8,6 +8,14 @@
 [![TruffleHog](https://img.shields.io/badge/TruffleHog-Secret%20Scan-blue)](https://github.com/joshuafuller/qrtak/actions/workflows/security.yml)
 [![Semgrep](https://img.shields.io/badge/Semgrep-Code%20Analysis-blue)](https://github.com/joshuafuller/qrtak/actions/workflows/security.yml)
 
+[![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](https://github.com/joshuafuller/qrtak/actions)
+[![Deploy Status](https://img.shields.io/badge/deploy-success-brightgreen)](https://joshuafuller.github.io/qrtak/)
+[![PWA Ready](https://img.shields.io/badge/PWA-Ready-brightgreen)](https://joshuafuller.github.io/qrtak/)
+[![License](https://img.shields.io/badge/license-MIT-brightgreen)](LICENSE)
+[![Node.js](https://img.shields.io/badge/Node.js-20.x-brightgreen)](https://nodejs.org/)
+[![ATAK Compatible](https://img.shields.io/badge/ATAK-Compatible-brightgreen)](https://tak.gov/)
+[![iTAK Compatible](https://img.shields.io/badge/iTAK-Compatible-brightgreen)](https://tak.gov/)
+
 A Progressive Web App (PWA) for rapid TAK (Tactical Assault Kit) client deployment through QR code generation. Perfect for tactical environments where speed and simplicity matter.
 
 ## 🚀 Features
