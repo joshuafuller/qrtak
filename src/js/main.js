@@ -120,7 +120,7 @@ function transferDataFromiTAKToATAK () {
 }
 
 // Auto-populate iTAK form with ATAK data
-// eslint-disable-next-line no-unused-vars
+
 function populateiTAKFromATAK () {
   const atakHost = document.getElementById('atak-host').value;
   const atakUsername = document.getElementById('atak-username').value;
@@ -164,7 +164,7 @@ function populateiTAKFromATAK () {
 }
 
 // Auto-populate ATAK form with iTAK data
-// eslint-disable-next-line no-unused-vars
+
 function populateATAKFromiTAK () {
   const itakUrl = document.getElementById('itak-url').value;
   const itakUsername = document.getElementById('itak-username').value;
@@ -346,7 +346,9 @@ async function downloadQR (type) {
   const container = document.getElementById(`${type}-qr`);
   const canvas = container.querySelector('canvas');
 
-  if (!canvas) return;
+  if (!canvas) {
+    return;
+  }
 
   try {
     const link = document.createElement('a');
@@ -674,11 +676,11 @@ function registerServiceWorker () {
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('/sw.js')
         .then(registration => {
-          // eslint-disable-next-line no-console
+
           // console.log('SW registered: ', registration);
         })
         .catch(registrationError => {
-          // eslint-disable-next-line no-console
+
           // console.log('SW registration failed: ', registrationError);
         });
     });
@@ -751,7 +753,9 @@ async function loadMatrixStats () {
     const matrixData = await response.json();
 
     const statsContainer = document.getElementById('matrix-stats');
-    if (!statsContainer) return;
+    if (!statsContainer) {
+      return;
+    }
 
     const totalPreferences = matrixData.preferences.length;
     const totalVersions = matrixData.versions.length;
@@ -761,12 +765,20 @@ async function loadMatrixStats () {
     matrixData.preferences.forEach(pref => {
       let hasHide = false; let hasDisable = false;
       Object.values(pref.versions).forEach(version => {
-        if (version.hide) hasHide = true;
-        if (version.disable) hasDisable = true;
+        if (version.hide) {
+          hasHide = true;
+        }
+        if (version.disable) {
+          hasDisable = true;
+        }
       });
-      if (hasHide && hasDisable) canBoth++;
-      else if (hasHide) canHide++;
-      else if (hasDisable) canDisable++;
+      if (hasHide && hasDisable) {
+        canBoth++;
+      } else if (hasHide) {
+        canHide++;
+      } else if (hasDisable) {
+        canDisable++;
+      }
     });
 
     statsContainer.innerHTML = `

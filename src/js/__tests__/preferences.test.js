@@ -54,7 +54,6 @@ describe('filterPreferences', () => {
   });
 
   it('filters by category', () => {
-    // eslint-disable-next-line prefer-destructuring
     const filtered = filterPreferences(preferenceData, versionData, 'identity', '', '');
     expect(filtered.find(([key]) => key === 'locationTeam')).toBeTruthy();
     expect(filtered.find(([key]) => key === 'atakRoleType')).toBeTruthy();
@@ -62,14 +61,12 @@ describe('filterPreferences', () => {
   });
 
   it('filters by search term', () => {
-    // eslint-disable-next-line prefer-destructuring
     const filtered = filterPreferences(preferenceData, versionData, '', 'Coord', '');
     expect(filtered.find(([key]) => key === 'coord_display_pref')).toBeTruthy();
     expect(filtered.find(([key]) => key === 'locationTeam')).toBeFalsy();
   });
 
   it('filters by version (hide/disable)', () => {
-    // eslint-disable-next-line prefer-destructuring
     const filtered = filterPreferences(preferenceData, versionData, '', '', '5.4.0');
     // Only locationTeam and atakRoleType are in versionData for 5.4.0
     expect(filtered.find(([key]) => key === 'locationTeam')).toBeTruthy();
@@ -78,7 +75,6 @@ describe('filterPreferences', () => {
   });
 
   it('combines filters', () => {
-    // eslint-disable-next-line prefer-destructuring
     const filtered = filterPreferences(preferenceData, versionData, 'identity', 'Role', '5.4.0');
     expect(filtered.find(([key]) => key === 'atakRoleType')).toBeTruthy();
     expect(filtered.find(([key]) => key === 'locationTeam')).toBeFalsy();

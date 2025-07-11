@@ -272,7 +272,9 @@ function setupEventListeners () {
 
 // Setup version awareness
 function setupVersionAwareness () {
-  if (!versionSelect) return;
+  if (!versionSelect) {
+    return;
+  }
 
   // Populate version select
   const versions = Object.keys(versionData).sort((a, b) => {
@@ -281,7 +283,9 @@ function setupVersionAwareness () {
     for (let i = 0; i < Math.max(aParts.length, bParts.length); i++) {
       const aVal = aParts[i] || 0;
       const bVal = bParts[i] || 0;
-      if (aVal !== bVal) return bVal - aVal; // Descending order
+      if (aVal !== bVal) {
+        return bVal - aVal;
+      } // Descending order
     }
     return 0;
   });
@@ -548,7 +552,9 @@ function updatePreferenceValue (key, value) {
 function validatePreference (key, pref, value) {
   const validationDiv = document.getElementById(`validation-${key}`);
 
-  if (!validationDiv) return;
+  if (!validationDiv) {
+    return;
+  }
 
   let isValid = true;
   let message = '';
@@ -608,7 +614,9 @@ function renderSelectedPreferences () {
 
   selectedPreferences.forEach((value, key) => {
     const pref = preferenceData.preferenceKeys[key];
-    if (!pref) return;
+    if (!pref) {
+      return;
+    }
 
     const item = document.createElement('div');
     item.className = 'selected-item';
@@ -754,10 +762,14 @@ async function updatePreferencesQR () {
 
 // Download QR code
 async function downloadQR (type) {
-  if (type !== 'preferences') return;
+  if (type !== 'preferences') {
+    return;
+  }
 
   const canvas = preferencesQR.querySelector('canvas');
-  if (!canvas) return;
+  if (!canvas) {
+    return;
+  }
 
   const link = document.createElement('a');
   link.download = 'atak-preferences.png';
@@ -767,10 +779,14 @@ async function downloadQR (type) {
 
 // Copy URI
 function copyURI (type) {
-  if (type !== 'preferences') return;
+  if (type !== 'preferences') {
+    return;
+  }
 
   const { url } = preferencesQR.dataset;
-  if (!url) return;
+  if (!url) {
+    return;
+  }
 
   navigator.clipboard.writeText(url).then(() => {
     showNotification('Preference URI copied to clipboard', 'success');
@@ -781,7 +797,9 @@ function copyURI (type) {
 
 // Generate data package
 function generateDataPackage () {
-  if (selectedPreferences.size === 0) return;
+  if (selectedPreferences.size === 0) {
+    return;
+  }
 
   // Create config.pref content
   const configPref = generateConfigPref(selectedPreferences, preferenceData);

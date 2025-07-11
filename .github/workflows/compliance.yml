@@ -25,6 +25,8 @@ jobs:
         
     - name: Install dependencies
       run: npm ci
+      env:
+        PUPPETEER_SKIP_DOWNLOAD: true
       
     - name: Check license compliance
       run: |
@@ -55,6 +57,8 @@ jobs:
         
     - name: Install dependencies
       run: npm ci
+      env:
+        PUPPETEER_SKIP_DOWNLOAD: true
       
     - name: Run ESLint
       run: npx eslint . --ext .js,.jsx,.ts,.tsx --format json --output-file eslint-report.json
@@ -81,6 +85,8 @@ jobs:
         
     - name: Install dependencies
       run: npm ci
+      env:
+        PUPPETEER_SKIP_DOWNLOAD: true
       
     - name: Generate dependency graph
       run: npm ls --all --json > dependency-graph.json
