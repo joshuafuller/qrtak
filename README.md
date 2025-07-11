@@ -2,6 +2,12 @@
 
 > Generate TAK client configuration QR codes instantly
 
+[![Security Scan](https://github.com/joshuafuller/qrtak/workflows/Security%20Scan/badge.svg)](https://github.com/joshuafuller/qrtak/actions/workflows/security.yml)
+[![Snyk Security](https://img.shields.io/badge/Snyk-Security%20Scan-blue)](https://app.snyk.io/org/joshuafuller/project/qrtak)
+[![Trivy Security](https://img.shields.io/badge/Trivy-Container%20Scan-blue)](https://github.com/joshuafuller/qrtak/actions/workflows/security.yml)
+[![TruffleHog](https://img.shields.io/badge/TruffleHog-Secret%20Scan-blue)](https://github.com/joshuafuller/qrtak/actions/workflows/security.yml)
+[![Semgrep](https://img.shields.io/badge/Semgrep-Code%20Analysis-blue)](https://github.com/joshuafuller/qrtak/actions/workflows/security.yml)
+
 A Progressive Web App (PWA) for rapid TAK (Tactical Assault Kit) client deployment through QR code generation. Perfect for tactical environments where speed and simplicity matter.
 
 ## 🚀 Features
