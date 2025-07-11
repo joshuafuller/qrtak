@@ -47,7 +47,7 @@
 [![GitHub Pages](https://img.shields.io/badge/GitHub-Pages-brightgreen)](https://pages.github.com)
 [![Cloudflare Pages](https://img.shields.io/badge/Cloudflare-Pages-orange)](https://pages.cloudflare.com)
 
-[![Discord](https://img.shields.io/badge/Discord-Join-7289DA)](https://discord.gg)
+[![Discord](https://img.shields.io/badge/Discord-Join-7289DA)](https://discord.gg/xTdEcpc)
 
 
 A Progressive Web App (PWA) for rapid TAK (Tactical Assault Kit) client deployment through QR code generation. Perfect for tactical environments where speed and simplicity matter.
