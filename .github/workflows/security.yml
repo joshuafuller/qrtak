@@ -87,7 +87,7 @@ jobs:
         docker build -t qrtak:latest .
       
     - name: Run Trivy vulnerability scan
-      uses: aquasecurity/trivy-action@0.30.0
+      uses: aquasecurity/trivy-action@0.32.0
       with:
         image-ref: 'qrtak:latest'
         format: 'sarif'
