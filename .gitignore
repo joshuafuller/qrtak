@@ -131,3 +131,6 @@ pnpm-lock.yaml
 # Deployment artifacts
 .vercel
 .netlify 
+
+# Secrets
+.secrets
