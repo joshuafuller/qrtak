@@ -2,15 +2,7 @@
 
 > Generate TAK client configuration QR codes instantly
 
-[![License](https://img.shields.io/badge/license-MIT-brightgreen)](LICENSE) [![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](https://github.com/joshuafuller/qrtak/actions) [![Deploy Status](https://img.shields.io/badge/deploy-success-brightgreen)](https://joshuafuller.github.io/qrtak/) [![Security Scan](https://github.com/joshuafuller/qrtak/workflows/Security%20Scan/badge.svg)](https://github.com/joshuafuller/qrtak/actions/workflows/security.yml)
-
-[![Military Grade](https://img.shields.io/badge/Military-Grade-orange)](https://github.com/joshuafuller/qrtak) [![Tactical Ready](https://img.shields.io/badge/Tactical-Ready-red)](https://github.com/joshuafuller/qrtak) [![ATAK Compatible](https://img.shields.io/badge/ATAK-Compatible-brightgreen)](https://tak.gov/) [![iTAK Compatible](https://img.shields.io/badge/iTAK-Compatible-brightgreen)](https://tak.gov/)
-
-[![Node.js](https://img.shields.io/badge/Node.js-20.x-brightgreen)](https://nodejs.org/) [![Vite](https://img.shields.io/badge/Vite-5.x-brightgreen)](https://vitejs.dev/) [![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-yellow)](https://developer.mozilla.org/en-US/docs/Web/JavaScript) [![PWA Ready](https://img.shields.io/badge/PWA-Ready-brightgreen)](https://joshuafuller.github.io/qrtak/)
-
-[![GitHub Stars](https://img.shields.io/github/stars/joshuafuller/qrtak)](https://github.com/joshuafuller/qrtak/stargazers) [![GitHub Forks](https://img.shields.io/github/forks/joshuafuller/qrtak)](https://github.com/joshuafuller/qrtak/network/members) [![GitHub Issues](https://img.shields.io/github/issues/joshuafuller/qrtak)](https://github.com/joshuafuller/qrtak/issues) [![GitHub Last Commit](https://img.shields.io/github/last-commit/joshuafuller/qrtak)](https://github.com/joshuafuller/qrtak/commits/main)
-
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen)](https://github.com/joshuafuller/qrtak/pulls) [![Discord](https://img.shields.io/badge/Discord-Join-7289DA)](https://discord.gg/xTdEcpc)
+[![License](https://img.shields.io/badge/license-MIT-brightgreen)](LICENSE) [![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](https://github.com/joshuafuller/qrtak/actions) [![Deploy Status](https://img.shields.io/badge/deploy-success-brightgreen)](https://joshuafuller.github.io/qrtak/) [![Node.js](https://img.shields.io/badge/Node.js-20.x-brightgreen)](https://nodejs.org/)
 
 ---
 
