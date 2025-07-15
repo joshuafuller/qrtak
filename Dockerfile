@@ -1,5 +1,5 @@
 # Multi-stage build for qrtak with security enhancements
-FROM node:20-alpine AS builder
+FROM node:24-alpine AS builder
 
 # Add security scanning tools
 RUN apk add --no-cache \
