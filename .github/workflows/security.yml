@@ -53,16 +53,16 @@ jobs:
       run: npm audit --audit-level=moderate
       
     - name: Run Snyk to check for vulnerabilities
-      if: ${{ secrets.SNYK_TOKEN != '' }}
-      uses: snyk/actions/node@master
+      if: github.actor != 'dependabot[bot]' && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
       env:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      uses: snyk/actions/node@master
       with:
         args: --severity-threshold=high --sarif-file-output=snyk.sarif
       continue-on-error: true
       
     - name: Debug Snyk token (masked)
-      if: always()
+      if: github.actor != 'dependabot[bot]' && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
       run: |
         if [ -n "${{ secrets.SNYK_TOKEN }}" ]; then
           echo "SNYK_TOKEN is set (length: ${#SNYK_TOKEN})"
@@ -70,8 +70,8 @@ jobs:
           echo "SNYK_TOKEN is not set"
         fi
       
-    - name: Upload Snyk results to GitHub Security tab
-      if: ${{ secrets.SNYK_TOKEN != '' }}
+    - name: Upload Snyk SARIF
+      if: github.actor != 'dependabot[bot]' && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && success()
       uses: github/codeql-action/upload-sarif@v3
       with:
         sarif_file: snyk.sarif
