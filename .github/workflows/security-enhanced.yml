@@ -162,16 +162,24 @@ jobs:
         path: reports/
       continue-on-error: true
         
-    # OSV Scanner
-    - name: Run OSV Scanner
-      uses: google/osv-scanner-action@v2.1.0
+    # OSV Scanner - Direct CLI usage since action requires reusable workflows
+    - name: Install OSV Scanner
+      run: |
+        curl -sSfL https://github.com/google/osv-scanner/releases/download/v1.9.1/osv-scanner_linux_amd64 -o osv-scanner
+        chmod +x osv-scanner
+        sudo mv osv-scanner /usr/local/bin/
       continue-on-error: true
       
-    - name: Process OSV Results
-      if: always()
+    - name: Run OSV Scanner
       run: |
-        echo "### OSV Scanner" >> $GITHUB_STEP_SUMMARY
-        echo "OSV Scanner completed" >> $GITHUB_STEP_SUMMARY
+        osv-scanner --format json . > osv-results.json || true
+        echo "### OSV Scanner Results" >> $GITHUB_STEP_SUMMARY
+        if [ -f osv-results.json ]; then
+          echo "OSV Scanner completed - results saved" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "OSV Scanner completed" >> $GITHUB_STEP_SUMMARY
+        fi
+      continue-on-error: true
 
   # SBOM Generation
   sbom-generation:
