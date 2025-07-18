@@ -61,14 +61,6 @@ jobs:
         args: --severity-threshold=high --sarif-file-output=snyk.sarif
       continue-on-error: true
       
-    - name: Debug Snyk token (masked)
-      if: github.actor != 'dependabot[bot]' && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
-      run: |
-        if [ -n "${{ secrets.SNYK_TOKEN }}" ]; then
-          echo "SNYK_TOKEN is set (length: ${#SNYK_TOKEN})"
-        else
-          echo "SNYK_TOKEN is not set"
-        fi
       
     - name: Upload Snyk SARIF
       if: github.actor != 'dependabot[bot]' && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && success()
@@ -88,7 +80,7 @@ jobs:
         docker build -t qrtak:latest .
       
     - name: Run Trivy vulnerability scan
-      uses: aquasecurity/trivy-action@0.32.0
+      uses: aquasecurity/trivy-action@master
       with:
         image-ref: 'qrtak:latest'
         format: 'sarif'

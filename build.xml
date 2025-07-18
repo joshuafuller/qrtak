@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="qrtak" default="test" basedir=".">
+    <description>
+        QR TAK build file for testing and building the project
+    </description>
+
+    <!-- Set global properties -->
+    <property name="src.dir" location="src"/>
+    <property name="dist.dir" location="dist"/>
+    <property name="test.dir" location="tests"/>
+    <property name="lib.dir" location="node_modules"/>
+    <property name="build.dir" location="build"/>
+    <property name="reports.dir" location="reports"/>
+
+    <!-- Target: Clean -->
+    <target name="clean" description="Clean build artifacts">
+        <delete dir="${build.dir}"/>
+        <delete dir="${dist.dir}"/>
+        <delete dir="${reports.dir}"/>
+    </target>
+
+    <!-- Target: Init -->
+    <target name="init" depends="clean" description="Initialize build structure">
+        <mkdir dir="${build.dir}"/>
+        <mkdir dir="${dist.dir}"/>
+        <mkdir dir="${reports.dir}"/>
+        <mkdir dir="${reports.dir}/tests"/>
+    </target>
+
+    <!-- Target: Install dependencies -->
+    <target name="install" description="Install npm dependencies">
+        <exec executable="npm" failonerror="true">
+            <arg value="ci"/>
+            <env key="PUPPETEER_SKIP_DOWNLOAD" value="true"/>
+        </exec>
+    </target>
+
+    <!-- Target: Build -->
+    <target name="build" depends="init,install" description="Build the project">
+        <echo message="Building QR TAK project..."/>
+        <exec executable="npm" failonerror="true">
+            <arg value="run"/>
+            <arg value="build"/>
+        </exec>
+    </target>
+
+    <!-- Target: Test -->
+    <target name="test" depends="install" description="Run Jest tests">
+        <echo message="Running Jest tests..."/>
+        <exec executable="npm" failonerror="true" resultproperty="test.result">
+            <arg value="test"/>
+            <arg value="--"/>
+            <arg value="--ci"/>
+            <arg value="--json"/>
+            <arg value="--outputFile=${reports.dir}/tests/jest-results.json"/>
+        </exec>
+        <condition property="tests.failed">
+            <not>
+                <equals arg1="${test.result}" arg2="0"/>
+            </not>
+        </condition>
+        <fail if="tests.failed" message="Tests failed!"/>
+    </target>
+
+    <!-- Target: Test with coverage -->
+    <target name="test-coverage" depends="install" description="Run tests with coverage">
+        <echo message="Running tests with coverage..."/>
+        <exec executable="npm" failonerror="true">
+            <arg value="test"/>
+            <arg value="--"/>
+            <arg value="--coverage"/>
+            <arg value="--ci"/>
+            <arg value="--coverageDirectory=${reports.dir}/coverage"/>
+        </exec>
+    </target>
+
+    <!-- Target: Lint -->
+    <target name="lint" depends="install" description="Run ESLint">
+        <echo message="Running ESLint..."/>
+        <exec executable="npm" failonerror="false" resultproperty="lint.result">
+            <arg value="run"/>
+            <arg value="lint"/>
+        </exec>
+        <condition property="lint.failed">
+            <not>
+                <equals arg1="${lint.result}" arg2="0"/>
+            </not>
+        </condition>
+        <echo message="Linting completed with result: ${lint.result}"/>
+    </target>
+
+    <!-- Target: Security audit -->
+    <target name="security-audit" depends="install" description="Run security audit">
+        <echo message="Running npm security audit..."/>
+        <exec executable="npm" failonerror="false">
+            <arg value="audit"/>
+            <arg value="--audit-level=moderate"/>
+        </exec>
+    </target>
+
+    <!-- Target: Docker build -->
+    <target name="docker-build" description="Build Docker image">
+        <echo message="Building Docker image..."/>
+        <exec executable="docker" failonerror="true">
+            <arg value="build"/>
+            <arg value="-t"/>
+            <arg value="qrtak:latest"/>
+            <arg value="."/>
+        </exec>
+    </target>
+
+    <!-- Target: Full CI pipeline -->
+    <target name="ci" depends="clean,install,lint,test-coverage,security-audit,build" 
+            description="Run full CI pipeline">
+        <echo message="CI pipeline completed successfully!"/>
+    </target>
+
+    <!-- Target: Quick test -->
+    <target name="quick-test" description="Run tests without install">
+        <echo message="Running quick tests..."/>
+        <exec executable="npm" failonerror="true">
+            <arg value="test"/>
+        </exec>
+    </target>
+
+    <!-- Target: Help -->
+    <target name="help" description="Show available targets">
+        <echo message="Available targets:"/>
+        <echo message="  ant clean          - Clean build artifacts"/>
+        <echo message="  ant install        - Install npm dependencies"/>
+        <echo message="  ant build          - Build the project"/>
+        <echo message="  ant test           - Run Jest tests"/>
+        <echo message="  ant test-coverage  - Run tests with coverage"/>
+        <echo message="  ant lint           - Run ESLint"/>
+        <echo message="  ant security-audit - Run security audit"/>
+        <echo message="  ant docker-build   - Build Docker image"/>
+        <echo message="  ant ci             - Run full CI pipeline"/>
+        <echo message="  ant quick-test     - Run tests without install"/>
+        <echo message="  ant help           - Show this help"/>
+    </target>
+
+</project>

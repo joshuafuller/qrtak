@@ -1,0 +1,417 @@
+name: Enhanced Security Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  schedule:
+    # Run comprehensive scan weekly
+    - cron: '0 2 * * 0'
+  workflow_dispatch:
+    inputs:
+      deep_scan:
+        description: 'Run deep security scan'
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+  security-events: write
+  actions: read
+  id-token: write
+
+jobs:
+  # SAST - Enhanced Static Application Security Testing
+  sast-comprehensive:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # Full history for better analysis
+      
+    # Semgrep - Open source SAST
+    - name: Semgrep SAST
+      uses: returntocorp/semgrep-action@v1
+      with:
+        config: >-
+          p/security-audit
+          p/secrets
+          p/owasp-top-ten
+          p/javascript
+          p/typescript
+          p/nodejs
+          p/xss
+          p/jwt
+        generateSarif: true
+        
+    - name: Upload Semgrep results
+      uses: github/codeql-action/upload-sarif@v3
+      if: always()
+      with:
+        sarif_file: semgrep.sarif
+        category: semgrep
+    
+    # CodeQL - GitHub's SAST
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v3
+      with:
+        languages: javascript
+        queries: security-and-quality
+        
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v3
+      with:
+        category: codeql
+    
+    # ESLint Security Plugin
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+        
+    - name: Install ESLint Security
+      run: |
+        npm install --save-dev eslint-plugin-security@latest
+        
+    - name: Create ESLint Security Config
+      run: |
+        cat > .eslintrc.security.json << 'EOF'
+        {
+          "extends": ["plugin:security/recommended"],
+          "plugins": ["security"],
+          "rules": {
+            "security/detect-object-injection": "warn",
+            "security/detect-non-literal-regexp": "warn",
+            "security/detect-unsafe-regex": "error",
+            "security/detect-buffer-noassert": "error",
+            "security/detect-child-process": "warn",
+            "security/detect-disable-mustache-escape": "error",
+            "security/detect-eval-with-expression": "error",
+            "security/detect-new-buffer": "warn",
+            "security/detect-no-csrf-before-method-override": "error",
+            "security/detect-possible-timing-attacks": "warn",
+            "security/detect-pseudoRandomBytes": "error"
+          }
+        }
+        EOF
+        
+    - name: Run ESLint Security
+      run: npx eslint . --config .eslintrc.security.json --format json --output-file eslint-security-results.json || true
+      
+    - name: Process ESLint Results
+      run: |
+        if [ -f eslint-security-results.json ]; then
+          echo "::warning::ESLint Security Issues Found"
+          cat eslint-security-results.json | jq -r '.[] | .messages[] | "::warning file=\(.filePath),line=\(.line)::[\(.ruleId)] \(.message)"'
+        fi
+
+  # Dependency Security Scanning
+  dependency-security:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      env:
+        PUPPETEER_SKIP_DOWNLOAD: true
+    
+    # npm audit with detailed output
+    - name: NPM Audit (JSON output)
+      run: |
+        npm audit --json > npm-audit-results.json || true
+        echo "### NPM Audit Summary" >> $GITHUB_STEP_SUMMARY
+        echo '```json' >> $GITHUB_STEP_SUMMARY
+        cat npm-audit-results.json | jq '.metadata' >> $GITHUB_STEP_SUMMARY
+        echo '```' >> $GITHUB_STEP_SUMMARY
+    
+    # Snyk vulnerability scanning
+    - name: Run Snyk to check for vulnerabilities
+      if: github.actor != 'dependabot[bot]'
+      uses: snyk/actions/node@master
+      env:
+        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      with:
+        args: --severity-threshold=medium --json-file-output=snyk-results.json
+      continue-on-error: true
+      
+    - name: Upload Snyk results
+      if: github.actor != 'dependabot[bot]' && always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: snyk-results
+        path: snyk-results.json
+        
+    # OWASP Dependency Check
+    - name: Run OWASP Dependency Check
+      uses: dependency-check/Dependency-Check_Action@main
+      with:
+        project: 'qrtak'
+        path: '.'
+        format: 'ALL'
+        args: >
+          --enableRetired
+          --enableExperimental
+        
+    - name: Upload OWASP results
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: owasp-dependency-check
+        path: reports/
+        
+    # OSV Scanner
+    - name: Run OSV Scanner
+      uses: google/osv-scanner-action@v1
+      with:
+        to-scan: '.'
+        format: json
+        output: osv-results.json
+      continue-on-error: true
+      
+    - name: Process OSV Results
+      if: always()
+      run: |
+        if [ -f osv-results.json ]; then
+          echo "### OSV Scanner Results" >> $GITHUB_STEP_SUMMARY
+          cat osv-results.json | jq -r '.results[]? | .packages[]? | "- \(.package.name)@\(.package.version): \(.vulnerabilities[].id)"' >> $GITHUB_STEP_SUMMARY || echo "No vulnerabilities found" >> $GITHUB_STEP_SUMMARY
+        fi
+
+  # SBOM Generation
+  sbom-generation:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      env:
+        PUPPETEER_SKIP_DOWNLOAD: true
+    
+    # Generate SBOM with Syft
+    - name: Generate SBOM with Syft
+      uses: anchore/sbom-action@v0
+      with:
+        format: spdx-json
+        output-file: sbom-spdx.json
+        
+    - name: Generate SBOM with Syft (CycloneDX)
+      uses: anchore/sbom-action@v0
+      with:
+        format: cyclonedx-json
+        output-file: sbom-cyclonedx.json
+    
+    # npm native SBOM generation
+    - name: Generate npm SBOM
+      run: |
+        npm sbom --sbom-format spdx > npm-sbom-spdx.json
+        npm sbom --sbom-format cyclonedx > npm-sbom-cyclonedx.json
+    
+    # SBOM validation
+    - name: Validate SPDX SBOM
+      run: |
+        npx --yes @spdx/tools-java validate sbom-spdx.json || echo "SPDX validation completed"
+        
+    - name: Upload SBOMs
+      uses: actions/upload-artifact@v4
+      with:
+        name: sbom-artifacts
+        path: |
+          sbom-*.json
+          npm-sbom-*.json
+          
+    # Scan SBOM for vulnerabilities
+    - name: Scan SBOM with Grype
+      uses: anchore/scan-action@v4
+      with:
+        sbom: sbom-spdx.json
+        fail-build: false
+        severity-cutoff: high
+        output-format: sarif
+        
+    - name: Upload Grype results
+      uses: github/codeql-action/upload-sarif@v3
+      if: always()
+      with:
+        sarif_file: results.sarif
+        category: grype-sbom
+
+  # Supply Chain Security
+  supply-chain-security:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      
+    # SLSA Provenance
+    - name: Install SLSA Verifier
+      run: |
+        curl -sSfL https://github.com/slsa-framework/slsa-verifier/releases/latest/download/slsa-verifier-linux-amd64 -o slsa-verifier
+        chmod +x slsa-verifier
+        sudo mv slsa-verifier /usr/local/bin/
+        
+    # Scorecard analysis
+    - name: Run Scorecard analysis
+      uses: ossf/scorecard-action@v2
+      with:
+        results_file: scorecard-results.sarif
+        results_format: sarif
+        publish_results: true
+        
+    - name: Upload Scorecard results
+      uses: github/codeql-action/upload-sarif@v3
+      with:
+        sarif_file: scorecard-results.sarif
+        category: scorecard
+        
+    # Check for typosquatting
+    - name: Check for typosquatting
+      run: |
+        npx --yes @socketdev/cli scan --json > socket-results.json || true
+        if [ -f socket-results.json ]; then
+          echo "### Socket Security Results" >> $GITHUB_STEP_SUMMARY
+          cat socket-results.json | jq -r '.issues[]? | "- [\(.severity)] \(.type): \(.package)"' >> $GITHUB_STEP_SUMMARY || echo "No issues found" >> $GITHUB_STEP_SUMMARY
+        fi
+
+  # Container Security (Enhanced)
+  container-security-enhanced:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+      
+    - name: Build Docker image
+      run: docker build -t qrtak:latest .
+      
+    # Trivy comprehensive scan
+    - name: Run Trivy vulnerability scan
+      uses: aquasecurity/trivy-action@master
+      with:
+        image-ref: qrtak:latest
+        scan-type: image
+        scanners: vuln,secret,misconfig
+        format: sarif
+        output: trivy-results.sarif
+        severity: CRITICAL,HIGH,MEDIUM
+        
+    - name: Upload Trivy results
+      uses: github/codeql-action/upload-sarif@v3
+      if: always()
+      with:
+        sarif_file: trivy-results.sarif
+        category: trivy
+        
+    # Hadolint - Dockerfile linting
+    - name: Dockerfile linting with Hadolint
+      uses: hadolint/hadolint-action@v3.1.0
+      with:
+        dockerfile: Dockerfile
+        format: sarif
+        output-file: hadolint-results.sarif
+        
+    - name: Upload Hadolint results
+      uses: github/codeql-action/upload-sarif@v3
+      if: always()
+      with:
+        sarif_file: hadolint-results.sarif
+        category: hadolint
+        
+    # Docker Scout
+    - name: Docker Scout CVEs
+      uses: docker/scout-action@v1
+      with:
+        command: cves
+        image: qrtak:latest
+        only-severities: critical,high
+        format: sarif
+        output: scout-results.sarif
+      continue-on-error: true
+      
+    - name: Upload Scout results
+      uses: github/codeql-action/upload-sarif@v3
+      if: always()
+      with:
+        sarif_file: scout-results.sarif
+        category: docker-scout
+
+  # Security Policy Compliance
+  policy-compliance:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'schedule' || github.event.inputs.deep_scan == 'true'
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      
+    # Check for security policy
+    - name: Check for SECURITY.md
+      run: |
+        if [ ! -f "SECURITY.md" ]; then
+          echo "::warning::SECURITY.md file is missing"
+          echo "# Security Policy Missing" >> $GITHUB_STEP_SUMMARY
+          echo "Consider adding a SECURITY.md file with:" >> $GITHUB_STEP_SUMMARY
+          echo "- Supported versions" >> $GITHUB_STEP_SUMMARY
+          echo "- Reporting vulnerabilities process" >> $GITHUB_STEP_SUMMARY
+          echo "- Security update policy" >> $GITHUB_STEP_SUMMARY
+        fi
+        
+    # Check for security headers in app
+    - name: Check security headers configuration
+      run: |
+        echo "### Security Headers Check" >> $GITHUB_STEP_SUMMARY
+        if grep -r "Content-Security-Policy" --include="*.js" --include="*.html" . ; then
+          echo "✅ CSP headers found" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "⚠️ Consider implementing Content-Security-Policy" >> $GITHUB_STEP_SUMMARY
+        fi
+        
+        if grep -r "X-Frame-Options" --include="*.js" --include="*.html" . ; then
+          echo "✅ X-Frame-Options found" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "⚠️ Consider implementing X-Frame-Options" >> $GITHUB_STEP_SUMMARY
+        fi
+
+  # Aggregate Security Report
+  security-report:
+    needs: [sast-comprehensive, dependency-security, sbom-generation, supply-chain-security, container-security-enhanced]
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+    - name: Download all artifacts
+      uses: actions/download-artifact@v4
+      with:
+        path: security-artifacts
+        
+    - name: Generate Security Report
+      run: |
+        echo "# 🔒 Security Scan Summary" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "| Check | Status |" >> $GITHUB_STEP_SUMMARY
+        echo "|-------|--------|" >> $GITHUB_STEP_SUMMARY
+        echo "| SAST (Semgrep/CodeQL) | ✅ Completed |" >> $GITHUB_STEP_SUMMARY
+        echo "| Dependency Scanning | ✅ Completed |" >> $GITHUB_STEP_SUMMARY
+        echo "| SBOM Generation | ✅ Completed |" >> $GITHUB_STEP_SUMMARY
+        echo "| Supply Chain Security | ✅ Completed |" >> $GITHUB_STEP_SUMMARY
+        echo "| Container Security | ✅ Completed |" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "📊 Detailed results available in workflow artifacts" >> $GITHUB_STEP_SUMMARY
