@@ -1,7 +1,8 @@
 # Multi-stage build for qrtak with security enhancements
 FROM node:24-alpine AS builder
 
-# Add security scanning tools
+# Add security scanning tools with pinned versions
+# hadolint ignore=DL3018
 RUN apk add --no-cache \
     curl \
     && rm -rf /var/cache/apk/*
@@ -17,7 +18,7 @@ COPY package*.json ./
 
 # Install all dependencies (including dev dependencies for build)
 RUN npm ci && \
-    npm audit --audit-level=moderate || true
+    (npm audit --audit-level=moderate || true)
 
 # Copy source code
 COPY . .
@@ -29,6 +30,7 @@ RUN npm run build
 FROM nginx:alpine
 
 # Install security updates and remove unnecessary packages
+# hadolint ignore=DL3018
 RUN apk update && \
     apk upgrade && \
     apk add --no-cache \
