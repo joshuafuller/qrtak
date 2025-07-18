@@ -3,7 +3,8 @@
 > Comprehensive overview of security practices, tools, and results for the QR TAK project
 
 [![Security Scan](https://github.com/joshuafuller/qrtak/actions/workflows/security-enhanced.yml/badge.svg)](https://github.com/joshuafuller/qrtak/actions/workflows/security-enhanced.yml)
-[![OSSF-Scorecard Score](https://img.shields.io/ossf-scorecard/github.com/joshuafuller/qrtak?label=openssf%20scorecard&style=flat)](https://scorecard.dev/viewer/?uri=github.com/joshuafuller/qrtak)
+[![Vulnerabilities](https://img.shields.io/snyk/vulnerabilities/github/joshuafuller/qrtak?label=vulnerabilities)](https://github.com/joshuafuller/qrtak/security)
+[![Dependencies](https://img.shields.io/librariesio/github/joshuafuller/qrtak?label=dependencies)](https://github.com/joshuafuller/qrtak/network/dependencies)
 
 ## 📊 Security Scanning Coverage
 
@@ -29,7 +30,7 @@
 | Component | Tool | Output | Access |
 |-----------|------|--------|--------|
 | **SBOM Generation** | Syft | SPDX, CycloneDX | [Workflow Artifacts](https://github.com/joshuafuller/qrtak/actions) |
-| **Scorecard** | OSSF | Security practices score | [Scorecard Report](https://scorecard.dev/viewer/?uri=github.com/joshuafuller/qrtak) |
+| **Scorecard** | OSSF | Security practices score | Generated in workflows |
 | **Dependency Graph** | GitHub | Visual dependency tree | [View Graph](https://github.com/joshuafuller/qrtak/network/dependencies) |
 
 ### Container Security
