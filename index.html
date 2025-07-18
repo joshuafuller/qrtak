@@ -3,13 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>TAK Onboarding Platform</title>
     <meta name="description" content="Generate TAK client configuration QR codes for rapid deployment">
+    <meta name="keywords" content="TAK, ATAK, iTAK, QR code, configuration, deployment">
+    <meta name="author" content="TAK Onboarding Platform">
+    
+    <!-- PWA & Mobile -->
+    <meta name="theme-color" content="#1e40af">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="TAK QR">
+    
+    <!-- Icons -->
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" href="/icon-192.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png">
+    
+    <!-- Styles & Scripts -->
     <link rel="stylesheet" href="/src/styles/main.css">
     <script type="module" src="/src/js/main.js"></script>
-<link rel="manifest" href="/manifest.webmanifest"><script id="vite-plugin-pwa:register-sw" src="/registerSW.js"></script></head>
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.webmanifest">
+    <script id="vite-plugin-pwa:register-sw" src="/registerSW.js"></script>
+</head>
 <body>
+    <a href="#main-content" class="sr-only skip-link">Skip to main content</a>
     <div class="app">
         <!-- Header -->
         <header class="header">
@@ -23,6 +45,22 @@
                         <p class="subtitle">Generate configuration QR codes for rapid TAK client deployment</p>
                     </div>
                     <div class="header-actions">
+                        <button id="theme-toggle" class="theme-toggle" title="Toggle dark mode" aria-label="Toggle dark mode">
+                            <svg class="theme-icon theme-icon-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="5"/>
+                                <line x1="12" y1="1" x2="12" y2="3"/>
+                                <line x1="12" y1="21" x2="12" y2="23"/>
+                                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+                                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                                <line x1="1" y1="12" x2="3" y2="12"/>
+                                <line x1="21" y1="12" x2="23" y2="12"/>
+                                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+                                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+                            </svg>
+                            <svg class="theme-icon theme-icon-dark" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                            </svg>
+                        </button>
                         <a href="https://github.com/joshuafuller/qrtak" target="_blank" class="github-link" title="View on GitHub">
                             <svg class="github-icon" viewBox="0 0 24 24" fill="currentColor">
                                 <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
@@ -38,23 +76,21 @@
         </header>
 
         <!-- Main Content -->
-        <main class="main">
+        <main class="main" id="main-content">
             <div class="container">
                 <!-- Tab Navigation -->
-                <div class="tabs">
-                    <button class="tab-btn active" data-tab="atak">ATAK Enroll</button>
-                    <button class="tab-btn" data-tab="itak">iTAK Config</button>
-                    <button class="tab-btn" data-tab="import">URL Import</button>
-                    <button class="tab-btn" data-tab="preferences">Preferences</button>
-                    <button class="tab-btn" data-tab="matrix">Version Matrix</button>
-                    <button class="tab-btn" data-tab="profiles">Profiles</button>
-                    <button class="tab-btn" data-tab="help">Help</button>
+                <div class="tabs" role="tablist" aria-label="Configuration options">
+                    <button class="tab-btn active" data-tab="atak" role="tab" aria-selected="true" aria-controls="atak-tab">ATAK Enroll</button>
+                    <button class="tab-btn" data-tab="itak" role="tab" aria-selected="false" aria-controls="itak-tab">iTAK Config</button>
+                    <button class="tab-btn" data-tab="import" role="tab" aria-selected="false" aria-controls="import-tab">URL Import</button>
+                    <button class="tab-btn" data-tab="profiles" role="tab" aria-selected="false" aria-controls="profiles-tab">Profiles</button>
+                    <button class="tab-btn" data-tab="help" role="tab" aria-selected="false" aria-controls="help-tab">Help</button>
                 </div>
 
                 <!-- Tab Content -->
                 <div class="tab-content">
                     <!-- ATAK Enroll Tab -->
-                    <div class="tab-pane active" id="atak-tab">
+                    <div class="tab-pane active" id="atak-tab" role="tabpanel" aria-labelledby="atak-btn">
                         <div class="form-section">
                             <h2>ATAK Enrollment Configuration</h2>
                             <p class="form-description">Configure ATAK client enrollment for Android devices</p>
@@ -66,7 +102,7 @@
                                 <div class="form-group">
                                     <label for="atak-host">Server Hostname/IP:</label>
                                     <input type="text" id="atak-host" name="host" placeholder="tak.example.com or 192.168.1.100" required>
-                                    <div class="help-text">Enter your TAK server's hostname or IP address</div>
+                                    <div class="help-text">Enter your TAK server's hostname or IP address (without https://)</div>
                                 </div>
                                 <div class="form-group">
                                     <label for="atak-username">Username:</label>
@@ -77,7 +113,7 @@
                                     <label for="atak-token">Token/Password:</label>
                                     <input type="password" id="atak-token" name="token" placeholder="your-token" required>
                                     <div class="warning">
-                                        ⚠️ Warning: Including passwords in QR codes may pose security risks
+                                        ⚠️ Warning: Password will be stored in plaintext in the QR code. Use only in controlled environments!
                                     </div>
                                 </div>
                             </form>
@@ -96,10 +132,13 @@
                     </div>
 
                     <!-- iTAK Config Tab -->
-                    <div class="tab-pane" id="itak-tab">
+                    <div class="tab-pane" id="itak-tab" role="tabpanel" aria-labelledby="itak-btn">
                         <div class="form-section">
                             <h2>iTAK Configuration</h2>
                             <p class="form-description">Configure iTAK client enrollment for iOS devices. Credentials are entered after scanning the QR code.</p>
+                            <div style="background-color: #e3f2fd; color: #1e293b; border-left: 4px solid #1e40af; padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+                                <span style="font-size: 1.2em;">ℹ️</span> <strong style="color: #1e293b;">Note:</strong> <span style="color: #1e293b;">iTAK will prompt for username/password after scanning. The QR only contains server connection info.</span>
+                            </div>
                             <div id="itak-data-status" class="data-status" style="display: none;">
                                 <span class="status-icon">ℹ️</span>
                                 <span class="status-text">Server details shared with ATAK tab</span>
@@ -144,7 +183,7 @@
                     </div>
 
                     <!-- URL Import Tab -->
-                    <div class="tab-pane" id="import-tab">
+                    <div class="tab-pane" id="import-tab" role="tabpanel" aria-labelledby="import-btn">
                         <div class="form-section">
                             <h2>URL Import Configuration</h2>
                             <p class="form-description">Import data packages or configuration files via URL</p>
@@ -169,149 +208,9 @@
                         </div>
                     </div>
 
-                    <!-- Preferences Tab -->
-                    <div class="tab-pane" id="preferences-tab">
-                        <div class="form-section">
-                            <h2>ATAK Preferences Configuration</h2>
-                            <p class="form-description">Configure advanced ATAK settings and preferences. Browse by category or search for specific settings.</p>
-                            
-                            <!-- Category and Search Controls -->
-                            <div class="preferences-controls">
-                                <div class="control-group">
-                                    <label for="preference-category">Category:</label>
-                                    <select id="preference-category" class="form-select">
-                                        <option value="">All Categories</option>
-                                        <option value="identity">Identity & Team</option>
-                                        <option value="display">Display & UI</option>
-                                        <option value="network">Network & Connectivity</option>
-                                        <option value="gps">GPS & Location</option>
-                                        <option value="communication">Communication</option>
-                                        <option value="tools">Tools & Features</option>
-                                        <option value="navigation">Route & Navigation</option>
-                                        <option value="notifications">Chat & Notifications</option>
-                                        <option value="system">System</option>
-                                    </select>
-                                </div>
-                                <div class="control-group">
-                                    <label for="preference-search">Search:</label>
-                                    <input type="text" id="preference-search" placeholder="Search preferences..." class="form-input">
-                                </div>
-                                <div class="control-group">
-                                    <label for="atak-version">ATAK Version:</label>
-                                    <select id="atak-version" class="form-select">
-                                        <option value="">All Versions</option>
-                                    </select>
-                                </div>
-                                <div class="control-group">
-                                    <button id="clear-preferences" class="btn btn-secondary">Clear All</button>
-                                </div>
-                            </div>
-
-                            <!-- Hide/Disable Controls -->
-                            <div class="hide-disable-section">
-                                <div class="control-group">
-                                    <label class="checkbox-label">
-                                        <input type="checkbox" id="hide-disable-toggle">
-                                        <span class="checkmark"></span>
-                                        Enable Hide/Disable Mode
-                                    </label>
-                                </div>
-                                <div id="hide-disable-container" style="display: none;">
-                                    <!-- Hide/Disable controls will be populated here -->
-                                </div>
-                            </div>
-
-                            <!-- Template Selection -->
-                            <div class="template-section">
-                                <h3>Quick Templates</h3>
-                                <div class="template-buttons">
-                                    <button class="template-btn" data-template="fire">Fire Department</button>
-                                    <button class="template-btn" data-template="police">Police</button>
-                                    <button class="template-btn" data-template="ems">EMS</button>
-                                    <button class="template-btn" data-template="military">Military</button>
-                                    <button class="template-btn" data-template="sar">Search & Rescue</button>
-                                </div>
-                            </div>
-
-                            <!-- Preferences List -->
-                            <div class="preferences-container">
-                                <div class="preferences-list" id="preferences-list">
-                                    <!-- Preferences will be populated here -->
-                                </div>
-                            </div>
-
-                            <!-- Selected Preferences Summary -->
-                            <div class="selected-preferences" id="selected-preferences" style="display: none;">
-                                <h3>Selected Preferences (<span id="preference-count">0</span>)</h3>
-                                <div class="selected-list" id="selected-list">
-                                    <!-- Selected preferences will be shown here -->
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="qr-section">
-                            <h3>Generated QR Code</h3>
-                            <p class="qr-description">Scan this QR code to apply the selected preferences to ATAK</p>
-                            <div id="preferences-qr" class="qr-container">
-                                <div class="qr-placeholder">Select preferences above to generate QR code</div>
-                            </div>
-                            <div class="qr-actions">
-                                <button id="preferences-download" class="btn btn-primary" disabled>Download PNG</button>
-                                <button id="preferences-copy" class="btn btn-secondary" disabled>Copy URI</button>
-                                <button id="preferences-package" class="btn btn-secondary" disabled>Generate Data Package</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Version Matrix Tab -->
-                    <div class="tab-pane" id="matrix-tab">
-                        <div class="matrix-section">
-                            <h2>ATAK Preference Version Matrix</h2>
-                            <p class="matrix-description">
-                                Comprehensive view of preference availability and control options across ATAK versions. 
-                                This matrix shows which preferences can be hidden or disabled in each version.
-                            </p>
-                            
-                            <div class="matrix-actions">
-                                <a href="/docs/matrix/version-matrix-viewer.html" target="_blank" class="btn btn-primary">
-                                    Open Full Matrix Viewer
-                                </a>
-                                <button id="download-matrix" class="btn btn-secondary">Download Matrix Data</button>
-                            </div>
-
-                            <div class="matrix-summary">
-                                <h3>Matrix Summary</h3>
-                                <div id="matrix-stats" class="matrix-stats">
-                                    <div class="loading">Loading matrix data...</div>
-                                </div>
-                            </div>
-
-                            <div class="matrix-legend">
-                                <h3>Legend</h3>
-                                <div class="legend-items">
-                                    <div class="legend-item">
-                                        <span class="legend-color hide"></span>
-                                        <span>Can Hide</span>
-                                    </div>
-                                    <div class="legend-item">
-                                        <span class="legend-color disable"></span>
-                                        <span>Can Disable</span>
-                                    </div>
-                                    <div class="legend-item">
-                                        <span class="legend-color both"></span>
-                                        <span>Can Hide & Disable</span>
-                                    </div>
-                                    <div class="legend-item">
-                                        <span class="legend-color none"></span>
-                                        <span>Not Available</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
 
                     <!-- Profiles Tab -->
-                    <div class="tab-pane" id="profiles-tab">
+                    <div class="tab-pane" id="profiles-tab" role="tabpanel" aria-labelledby="profiles-btn">
                         <div class="profiles-section">
                             <h2>Configuration Profiles</h2>
                             <p>Save and manage configuration profiles for quick deployment</p>
@@ -331,7 +230,7 @@
                     </div>
 
                     <!-- Help Tab -->
-                    <div class="tab-pane" id="help-tab">
+                    <div class="tab-pane" id="help-tab" role="tabpanel" aria-labelledby="help-btn">
                         <div class="help-section">
                             <h2>TAK Onboarding Platform Help</h2>
                             <p class="help-intro">Welcome to the TAK Onboarding Platform! This tool helps you quickly configure TAK clients for rapid deployment.</p>
@@ -344,14 +243,14 @@
                                         <div class="step-number">1</div>
                                         <div class="step-content">
                                             <h4>Choose Configuration Type</h4>
-                                            <p>Select the appropriate tab for your needs: ATAK Enroll, iTAK Config, URL Import, or Preferences.</p>
+                                            <p>Select the appropriate tab for your needs: ATAK Enroll, iTAK Config, URL Import, or Profiles.</p>
                                         </div>
                                     </div>
                                     <div class="help-step">
                                         <div class="step-number">2</div>
                                         <div class="step-content">
                                             <h4>Enter Configuration Details</h4>
-                                            <p>Fill in the required fields with your TAK server information and preferences.</p>
+                                            <p>Fill in the required fields with your TAK server information.</p>
                                         </div>
                                     </div>
                                     <div class="help-step">
@@ -403,15 +302,6 @@
                                         </div>
                                     </div>
                                     <div class="help-tab-item">
-                                        <h4>Preferences</h4>
-                                        <p>Configure advanced ATAK settings and preferences. Browse 711+ settings by category or use pre-built templates.</p>
-                                        <div class="help-features">
-                                            <span class="feature-tag">Advanced Settings</span>
-                                            <span class="feature-tag">Templates</span>
-                                            <span class="feature-tag">Data Package</span>
-                                        </div>
-                                    </div>
-                                    <div class="help-tab-item">
                                         <h4>Profiles</h4>
                                         <p>Save and manage configuration profiles for quick deployment. Perfect for team standardization and mass onboarding.</p>
                                         <div class="help-features">
@@ -423,75 +313,6 @@
                                 </div>
                             </div>
 
-                            <!-- Preferences Guide -->
-                            <div class="help-section-content">
-                                <h3>⚙️ Preferences Configuration Guide</h3>
-                                <div class="help-preferences">
-                                    <div class="help-preference-category">
-                                        <h4>Identity & Team Settings</h4>
-                                        <p>Configure user identity, team affiliation, and role information.</p>
-                                        <ul>
-                                            <li><strong>My Callsign:</strong> User's unique identifier</li>
-                                            <li><strong>My Team:</strong> Team color (Red, Blue, Green, etc.)</li>
-                                            <li><strong>My Role:</strong> Operational role (Team Member, Team Lead, Medic, etc.)</li>
-                                        </ul>
-                                    </div>
-                                    <div class="help-preference-category">
-                                        <h4>Display & UI Settings</h4>
-                                        <p>Customize how information is displayed and the user interface appearance.</p>
-                                        <ul>
-                                            <li><strong>Coordinate Format:</strong> MGRS, UTM, DD, DM, DMS</li>
-                                            <li><strong>Altitude Units:</strong> Feet or Meters</li>
-                                            <li><strong>Large Text Mode:</strong> Accessibility feature for better visibility</li>
-                                        </ul>
-                                    </div>
-                                    <div class="help-preference-category">
-                                        <h4>Network & Connectivity</h4>
-                                        <p>Control network behavior and server connection settings.</p>
-                                        <ul>
-                                            <li><strong>Location Broadcasting:</strong> Enable/disable position sharing</li>
-                                            <li><strong>Server Connection Widget:</strong> Show connection status</li>
-                                            <li><strong>Mesh Network Mode:</strong> Enable peer-to-peer connections</li>
-                                        </ul>
-                                    </div>
-                                    <div class="help-preference-category">
-                                        <h4>GPS & Location</h4>
-                                        <p>Configure GPS source and location reporting behavior.</p>
-                                        <ul>
-                                            <li><strong>GPS Source:</strong> Internal, External, or Network GPS</li>
-                                            <li><strong>GPS Time:</strong> Use GPS time instead of device time</li>
-                                            <li><strong>Location Strategy:</strong> Dynamic or constant reporting</li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Templates Guide -->
-                            <div class="help-section-content">
-                                <h3>🎯 Quick Templates</h3>
-                                <div class="help-templates">
-                                    <div class="help-template">
-                                        <h4>Fire Department</h4>
-                                        <p>Red team color, Team Lead role, UTM coordinates, large text mode for field visibility.</p>
-                                    </div>
-                                    <div class="help-template">
-                                        <h4>Police</h4>
-                                        <p>Blue team color, Team Member role, external GPS support, dynamic location reporting.</p>
-                                    </div>
-                                    <div class="help-template">
-                                        <h4>EMS</h4>
-                                        <p>Green team color, Medic role, communication preferences, notification settings for medical operations.</p>
-                                    </div>
-                                    <div class="help-template">
-                                        <h4>Military</h4>
-                                        <p>Dark Green team color, Team Lead role, MGRS coordinates, GPS time synchronization.</p>
-                                    </div>
-                                    <div class="help-template">
-                                        <h4>Search & Rescue</h4>
-                                        <p>Orange team color, Team Member role, UTM coordinates, mesh network mode for field operations.</p>
-                                    </div>
-                                </div>
-                            </div>
 
                             <!-- Best Practices -->
                             <div class="help-section-content">
@@ -531,9 +352,9 @@
                                     <div class="trouble-item">
                                         <h4>QR Code Issues</h4>
                                         <ul>
-                                            <li><strong>QR Code Too Large:</strong> Reduce the number of preferences or use data packages</li>
+                                            <li><strong>QR Code Too Large:</strong> Try using data packages instead of direct configuration</li>
                                             <li><strong>Scanning Fails:</strong> Ensure good lighting and clean QR code display</li>
-                                            <li><strong>Invalid Configuration:</strong> Check preference values and validation messages</li>
+                                            <li><strong>Invalid Configuration:</strong> Check your input values and validation messages</li>
                                         </ul>
                                     </div>
                                     <div class="trouble-item">
@@ -545,12 +366,6 @@
                                         </ul>
                                     </div>
                                     <div class="trouble-item">
-                                        <h4>Preference Issues</h4>
-                                        <ul>
-                                            <li><strong>Invalid Values:</strong> Check spelling and case sensitivity</li>
-                                            <li><strong>Type Mismatches:</strong> Ensure boolean values are true/false, not "true"/"false"</li>
-                                            <li><strong>Version Compatibility:</strong> Verify preferences work with your ATAK version</li>
-                                        </ul>
                                     </div>
                                 </div>
                             </div>
@@ -591,9 +406,8 @@
                                 <div class="help-contact">
                                     <p>For technical support or feature requests:</p>
                                     <ul>
-                                        <li>📧 <strong>Email:</strong> support@tak-onboarding.com</li>
-                                        <li>🐛 <strong>Bug Reports:</strong> <a href="https://github.com/your-repo/issues" target="_blank">GitHub Issues</a></li>
-                                        <li>💬 <strong>Discussions:</strong> <a href="https://github.com/your-repo/discussions" target="_blank">GitHub Discussions</a></li>
+                                        <li>🐛 <strong>Bug Reports:</strong> <a href="https://github.com/joshuafuller/qrtak/issues" target="_blank">GitHub Issues</a></li>
+                                        <li>💬 <strong>Discussions:</strong> <a href="https://github.com/joshuafuller/qrtak/discussions" target="_blank">GitHub Discussions</a></li>
                                     </ul>
                                 </div>
                             </div>
@@ -621,7 +435,7 @@
     </div>
 
     <!-- Modal for Profile Management -->
-    <div id="profile-modal" class="modal">
+    <div id="profile-modal" class="modal" role="dialog" aria-labelledby="modal-title" aria-modal="true">
         <div class="modal-content">
             <div class="modal-header">
                 <h3 id="modal-title">Save Profile</h3>

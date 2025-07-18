@@ -16,9 +16,7 @@
     "security:audit": "npm audit --audit-level=moderate",
     "security:check": "npm audit && npx license-checker --summary",
     "build:docker": "docker build -t qrtak:latest .",
-    "scan:container": "trivy image qrtak:latest",
-    "screenshots": "node scripts/simple-screenshot-only.js",
-    "screenshots:single": "node scripts/simple-screenshot-only.js"
+    "scan:container": "trivy image qrtak:latest"
   },
   "keywords": [
     "tak",
