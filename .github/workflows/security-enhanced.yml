@@ -273,23 +273,6 @@ jobs:
         chmod +x slsa-verifier
         sudo mv slsa-verifier /usr/local/bin/
         
-    # Scorecard analysis (skip on PRs)
-    - name: Run Scorecard analysis
-      if: github.event_name != 'pull_request'
-      uses: ossf/scorecard-action@v2.3.3
-      with:
-        results_file: scorecard-results.sarif
-        results_format: sarif
-        publish_results: true
-      continue-on-error: true
-        
-    - name: Upload Scorecard results
-      if: github.event_name != 'pull_request' && success()
-      uses: github/codeql-action/upload-sarif@v3
-      with:
-        sarif_file: scorecard-results.sarif
-        category: scorecard
-        
     # Check for typosquatting  
     - name: Check npm dependencies
       run: |
