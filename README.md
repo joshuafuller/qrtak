@@ -4,6 +4,8 @@
 
 [![License](https://img.shields.io/badge/license-MIT-brightgreen)](LICENSE) [![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](https://github.com/joshuafuller/qrtak/actions) [![Deploy Status](https://img.shields.io/badge/deploy-success-brightgreen)](https://joshuafuller.github.io/qrtak/) [![Node.js](https://img.shields.io/badge/Node.js-20.x-brightgreen)](https://nodejs.org/)
 
+[![Security Scan](https://github.com/joshuafuller/qrtak/actions/workflows/security-enhanced.yml/badge.svg)](https://github.com/joshuafuller/qrtak/actions/workflows/security-enhanced.yml) [![OSSF-Scorecard Score](https://img.shields.io/ossf-scorecard/github.com/joshuafuller/qrtak?label=openssf%20scorecard&style=flat)](https://scorecard.dev/viewer/?uri=github.com/joshuafuller/qrtak) [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/9965/badge)](https://www.bestpractices.dev/projects/9965)
+
 ---
 
 A Progressive Web App (PWA) for rapid TAK (Tactical Assault Kit) client deployment through QR code generation. Perfect for tactical environments where speed and simplicity matter.
@@ -119,14 +121,41 @@ chmod +x deploy.sh
 - **QR Generation**: qrcode library
 - **Storage**: LocalStorage for profile persistence
 
-## Security Considerations
+## 🔒 Security
 
-This tool generates QR codes that may contain sensitive information:
+### Security-First Development
+
+QR TAK implements comprehensive security scanning and best practices:
+
+#### Automated Security Scanning
+- **🛡️ SAST Analysis**: Semgrep, CodeQL, and ESLint Security scan every commit
+- **📦 Dependency Security**: npm audit, Snyk, OWASP, and OSV Scanner check for vulnerabilities
+- **🐳 Container Security**: Trivy and Hadolint scan Docker images
+- **🔍 Secret Detection**: TruffleHog prevents exposed credentials
+- **📊 Supply Chain**: SBOM generation and OSSF Scorecard evaluation
+
+#### Security Features
+- **Client-Side Only**: All processing happens in your browser - no data transmitted
+- **Content Security Policy**: Strict CSP headers prevent XSS attacks
+- **Input Validation**: All inputs sanitized to prevent injection
+- **Secure Dependencies**: Automated updates via Dependabot
+- **HTTPS Enforced**: Service worker requires secure contexts
+
+#### Viewing Security Results
+- **[📊 Security Dashboard](docs/SECURITY-DASHBOARD.md)**: Comprehensive security overview and metrics
+- **[🛡️ GitHub Security](https://github.com/joshuafuller/qrtak/security)**: GitHub Security tab shows all scan results
+- **[✅ Workflow Status](https://github.com/joshuafuller/qrtak/actions/workflows/security-enhanced.yml)**: Live security scan status
+- **[🔗 Dependency Graph](https://github.com/joshuafuller/qrtak/network/dependencies)**: View all dependencies
+- **[📋 Security Policy](SECURITY.md)**: Report vulnerabilities responsibly
+
+### Operational Security
+
+When using QR TAK, consider:
 
 - **QR Code Visibility**: QR codes on screens may be visible to others
-- **Password Storage**: Tokens/passwords in QR codes are not encrypted
-- **Local Storage**: Profiles are stored locally in the browser
-- **Network Security**: Use HTTPS in production environments
+- **Token Security**: Use short-lived tokens when possible
+- **Profile Storage**: Profiles are stored locally in browser storage
+- **Network Security**: Always use HTTPS in production
 
 ## Browser Support
 
