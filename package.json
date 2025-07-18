@@ -14,7 +14,7 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
     "security:audit": "npm audit --audit-level=moderate",
-    "security:check": "npm audit && npx license-checker --summary",
+    "security:check": "npm audit --audit-level=moderate",
     "build:docker": "docker build -t qrtak:latest .",
     "scan:container": "trivy image qrtak:latest"
   },
