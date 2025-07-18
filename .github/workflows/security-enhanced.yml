@@ -280,7 +280,7 @@ jobs:
       with:
         results_file: scorecard-results.sarif
         results_format: sarif
-        publish_results: false
+        publish_results: true
       continue-on-error: true
         
     - name: Upload Scorecard results
