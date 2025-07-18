@@ -164,7 +164,7 @@ jobs:
         
     # OSV Scanner
     - name: Run OSV Scanner
-      uses: google/osv-scanner-action@v2.0.2
+      uses: google/osv-scanner-action@v2.1.0
       continue-on-error: true
       
     - name: Process OSV Results
