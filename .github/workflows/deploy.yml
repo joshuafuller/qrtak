@@ -7,6 +7,8 @@ on:
   pull_request:
     branches: [ main, develop ]
 
+permissions: read-all
+
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
@@ -34,7 +36,7 @@ jobs:
       run: npm audit --audit-level=moderate
       
     - name: Check for secrets
-      uses: trufflesecurity/trufflehog@main
+      uses: trufflesecurity/trufflehog@907ac64fd42b18dab2ceba2fda39834d3f8ba7e3
       with:
         extra_args: --only-verified
 
@@ -106,7 +108,7 @@ jobs:
         cache-to: type=gha,mode=max
         
     - name: Scan container image
-      uses: aquasecurity/trivy-action@master
+      uses: aquasecurity/trivy-action@dc5a429b52fcf669ce959baa2c2dd26090d2a6c4
       with:
         image-ref: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:sha-${{ github.sha }}
         format: 'sarif'

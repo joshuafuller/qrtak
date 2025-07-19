@@ -1,0 +1,31 @@
+name: ClusterFuzzLite
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    - cron: '0 5 * * 0'
+
+permissions: read-all
+
+jobs:
+  fuzzing:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build fuzzers
+        uses: google/clusterfuzzlite/actions/build_fuzzers@40f9a53e632516d2ec9f738eadd284635529fbad
+        with:
+          language: javascript
+          project-src-path: .
+          sanitizer: address
+          storage-repo: ${{ github.repository }}
+      - name: Run fuzzers
+        uses: google/clusterfuzzlite/actions/run_fuzzers@40f9a53e632516d2ec9f738eadd284635529fbad
+        with:
+          language: javascript
+          fuzz-seconds: 600
+          sanitizer: address
+          mode: fuzz
+          storage-repo: ${{ github.repository }}
