@@ -520,20 +520,23 @@ const ProfileManager = (function () {
     const profileName = document.getElementById('profile-name');
     const profileDescription = document.getElementById('profile-description');
 
-    const name = profileName?.value.trim() || '';
-    const description = profileDescription?.value.trim() || '';
+    const nameInput = profileName?.value.trim() || '';
+    const descInput = profileDescription?.value.trim() || '';
 
-    if (!name) {
+    const sanitizedName = sanitizeInput(nameInput);
+    const sanitizedDescription = sanitizeInput(descInput);
+
+    if (!sanitizedName) {
       UIController.showNotification(ERROR_MESSAGES.PROFILE_NAME_REQUIRED, 'error');
       return;
     }
 
     const profileData = getCurrentFormData();
-    profileData.name = sanitizeInput(name);
-    profileData.description = sanitizeInput(description);
+    profileData.name = sanitizedName;
+    profileData.description = sanitizedDescription;
 
     // Check if profile exists
-    const existingIndex = profiles.findIndex(p => p.name === name);
+    const existingIndex = profiles.findIndex(p => p.name === sanitizedName);
     if (existingIndex >= 0) {
       // eslint-disable-next-line no-alert
       if (!confirm(ERROR_MESSAGES.PROFILE_EXISTS)) {
