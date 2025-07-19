@@ -131,7 +131,7 @@ jobs:
     # Snyk vulnerability scanning
     - name: Run Snyk to check for vulnerabilities
       if: github.actor != 'dependabot[bot]'
-      uses: snyk/actions/node@master
+      uses: snyk/actions/node@b98d498629f1c368650224d6d212bf7dfa89e4bf
       env:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       with:
@@ -147,7 +147,7 @@ jobs:
         
     # OWASP Dependency Check (simplified)
     - name: Run OWASP Dependency Check
-      uses: dependency-check/Dependency-Check_Action@main
+      uses: dependency-check/Dependency-Check_Action@75ba02d6183445fe0761d26e836bde58b1560600
       with:
         project: 'qrtak'
         path: '.'
@@ -295,7 +295,7 @@ jobs:
       
     # Trivy comprehensive scan
     - name: Run Trivy vulnerability scan
-      uses: aquasecurity/trivy-action@master
+      uses: aquasecurity/trivy-action@dc5a429b52fcf669ce959baa2c2dd26090d2a6c4
       with:
         image-ref: qrtak:latest
         scan-type: image
