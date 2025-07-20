@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/joshuafuller/qrtak/compare/v1.1.1...v1.2.0) (2025-07-20)
+
+
+### Features
+
+* add Docker package cleanup workflow and script ([98ae604](https://github.com/joshuafuller/qrtak/commit/98ae604ed96d915fabb06b925e2652a2eb97ccdc))
+
 ## [1.1.1](https://github.com/joshuafuller/qrtak/compare/v1.1.0...v1.1.1) (2025-07-20)
 
 
