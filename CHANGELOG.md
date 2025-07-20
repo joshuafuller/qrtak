@@ -1,3 +1,10 @@
+## [1.2.4](https://github.com/joshuafuller/qrtak/compare/v1.2.3...v1.2.4) (2025-07-20)
+
+
+### Bug Fixes
+
+* sync package-lock.json and remove duplicate CODEOWNERS ([7ba0593](https://github.com/joshuafuller/qrtak/commit/7ba0593406264f04cdc3fc8178a4d04c6ff477be))
+
 ## [1.2.3](https://github.com/joshuafuller/qrtak/compare/v1.2.2...v1.2.3) (2025-07-20)
 
 
