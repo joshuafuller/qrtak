@@ -9,6 +9,12 @@ on:
     # Weekly comprehensive scan
     - cron: '0 2 * * 0'
   workflow_dispatch:
+    inputs:
+      deep_scan:
+        description: 'Run deep security scan'
+        required: false
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -188,3 +194,32 @@ jobs:
             fi
           done
 
+  # Fuzz Testing (only on schedule or manual trigger)
+  fuzz-testing:
+    name: Fuzz Testing
+    runs-on: ubuntu-latest
+    if: |
+      github.event_name == 'schedule' || 
+      (github.event_name == 'workflow_dispatch' && github.event.inputs.deep_scan == 'true')
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.0.1
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: |
+          npm ci
+          npm install --save-dev @jazzer.js/core
+        env:
+          PUPPETEER_SKIP_DOWNLOAD: true
+          npm_config_package_lock: false
+
+      - name: Run Fuzz Tests
+        run: |
+          npx jazzer fuzz tests --sync_timeout=20000 || true
+        continue-on-error: true
