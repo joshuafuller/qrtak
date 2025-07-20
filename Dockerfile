@@ -20,7 +20,9 @@ COPY package*.json ./
 
 # Install all dependencies including dev (for building)
 # This layer is cached when package.json doesn't change
-RUN npm ci --force && \
+# Install platform-specific optional dependencies
+RUN npm ci --force --ignore-scripts && \
+    npm rebuild && \
     npm cache clean --force
 
 # Stage 3: Builder (source code and build)

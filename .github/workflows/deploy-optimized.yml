@@ -116,7 +116,7 @@ jobs:
         
     - name: Run tests (shard ${{ matrix.shard }})
       run: |
-        npm test -- --shard=${{ matrix.shard }}/2 --coverage
+        npx jest --shard=${{ matrix.shard }}/2 --coverage
       
     - name: Upload coverage
       uses: actions/upload-artifact@v4
@@ -153,7 +153,7 @@ jobs:
           build-
           
     - name: Build
-      run: npm run build
+      run: npx vite build
       
     - name: Upload build artifacts
       uses: actions/upload-artifact@v4
@@ -169,7 +169,7 @@ jobs:
     if: github.event_name != 'pull_request'
     strategy:
       matrix:
-        platform: [linux/amd64, linux/arm64]
+        platform: [linux/amd64]
     steps:
     - name: Checkout
       uses: actions/checkout@v4
