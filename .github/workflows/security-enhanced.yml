@@ -65,9 +65,10 @@ jobs:
     - name: Install dependencies and ESLint Security
       run: |
         npm ci
-        npm install eslint-plugin-security@latest
+        npm install eslint-plugin-security@latest --no-save
       env:
         PUPPETEER_SKIP_DOWNLOAD: true
+        npm_config_package_lock: false
         
     - name: Create ESLint Security Config
       run: |
@@ -118,6 +119,7 @@ jobs:
       run: npm ci
       env:
         PUPPETEER_SKIP_DOWNLOAD: true
+        npm_config_package_lock: false
     
     # npm audit with detailed output
     - name: NPM Audit (JSON output)
@@ -198,6 +200,7 @@ jobs:
       run: npm ci
       env:
         PUPPETEER_SKIP_DOWNLOAD: true
+        npm_config_package_lock: false
     
     # Generate SBOM with Syft
     - name: Generate SBOM with Syft
@@ -266,6 +269,7 @@ jobs:
       run: npm ci
       env:
         PUPPETEER_SKIP_DOWNLOAD: true
+        npm_config_package_lock: false
       
     # SLSA Provenance
     - name: Install SLSA Verifier
