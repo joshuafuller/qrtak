@@ -6,123 +6,75 @@ We release patches for security vulnerabilities. Currently supported versions:
 
 | Version | Supported          |
 | ------- | ------------------ |
-| 1.0.x   | :white_check_mark: |
-| < 1.0   | :x:                |
+| 1.4.x   | :white_check_mark: |
+| < 1.4   | :x:                |
 
 ## Reporting a Vulnerability
 
-We take the security of QR TAK seriously. If you have discovered a security vulnerability, please follow these steps:
+We take the security of QRTAK seriously. If you believe you have found a security vulnerability, please report it to us as described below.
 
-### How to Report
+### Please do NOT:
+- Open a public issue
+- Disclose the vulnerability publicly before we've had a chance to fix it
 
-1. **DO NOT** open a public issue
-2. Use GitHub's Security Advisory feature:
-   - Go to the Security tab
-   - Click "Report a vulnerability"
-   - Provide detailed information
-3. Or contact the maintainers directly through secure channels
+### Please DO:
+- Email us at: joshuafuller@users.noreply.github.com
+- Provide detailed steps to reproduce the vulnerability
+- Include the impact and potential exploit scenarios
+- Allow us reasonable time to respond and fix the issue
 
-### What to Include
+### What to expect:
+- An acknowledgment within 48 hours
+- Regular updates on our progress
+- Credit in the release notes (unless you prefer to remain anonymous)
 
-Please provide:
-- Description of the vulnerability
-- Steps to reproduce
-- Potential impact
-- Suggested fix (if any)
+## Security Measures
 
-### Response Timeline
+This project implements several security measures:
 
-- **Initial Response**: Within 48 hours
-- **Status Update**: Within 5 business days
-- **Resolution Target**: Based on severity
-  - Critical: 7 days
-  - High: 14 days
-  - Medium: 30 days
-  - Low: 90 days
+### Automated Security Scanning
+- **Dependabot**: Automated dependency updates
+- **CodeQL**: Static analysis for security vulnerabilities
+- **Trivy**: Container vulnerability scanning
+- **Grype**: Additional container security validation
+- **OSSF Scorecard**: Security best practices evaluation
+- **Snyk**: Dependency vulnerability scanning
 
-## Security Best Practices
+### Supply Chain Security
+- All dependencies are locked with exact versions
+- SBOM (Software Bill of Materials) generated for each release
+- All GitHub Actions are pinned to specific SHA commits
+- Automated security updates via Dependabot
 
-This project implements:
-
-### Application Security
+### Code Security
 - Content Security Policy (CSP) headers
+- No external dependencies in production code (except QR code library)
 - Input validation and sanitization
-- XSS prevention measures
-- Secure QR code generation
-- Client-side only processing (no data transmitted)
+- Secure defaults for all configurations
 
-### Supply Chain Security
-- Dependency scanning (npm audit, Snyk, OWASP, OSV Scanner)
-- SBOM generation (SPDX and CycloneDX formats)
-- Container image scanning (Trivy, Docker Scout)
-- SLSA provenance verification
-- Typosquatting detection (Socket.dev)
+## Security Best Practices for Users
 
-### Development Security
-- SAST scanning (Semgrep, CodeQL, ESLint Security)
-- Security linting with specialized rules
-- Secret detection (TruffleHog)
-- Regular security updates via Dependabot
-- Security scorecard analysis
+1. **Always use HTTPS** when deploying QRTAK
+2. **Keep your instance updated** with the latest security patches
+3. **Use strong passwords** for TAK server connections
+4. **Verify QR codes** before scanning in production environments
+5. **Run in containers** for better isolation
+6. **Enable all security headers** in your web server configuration
 
-## Security Features
+## Disclosure Policy
 
-### QR Code Generation
-- Client-side only processing
-- No data transmission to external servers
-- Secure random generation for cryptographic values
-- Input validation to prevent injection attacks
+When we receive a security report, we will:
 
-### Progressive Web App
-- HTTPS enforcement
-- Secure service worker implementation
-- Content Security Policy
-- Subresource Integrity (SRI) for external resources
+1. Confirm the vulnerability
+2. Determine the affected versions
+3. Develop a fix
+4. Release a security update
+5. Publicly disclose the vulnerability details
 
-## Compliance
+We aim to complete this process within 30 days of the initial report.
 
-This project aims to comply with:
-- OWASP Top 10 recommendations
-- NIST Cybersecurity Framework guidelines
-- CIS Controls where applicable
-- SLSA framework requirements
+## Attribution
 
-## Security Tools in CI/CD
+We'd like to thank the following security researchers for responsibly disclosing vulnerabilities:
 
-### Static Analysis (SAST)
-- **Semgrep**: Open-source static analysis
-- **CodeQL**: GitHub's semantic code analysis
-- **ESLint Security**: JavaScript-specific security rules
-
-### Dependency Security
-- **npm audit**: Native vulnerability scanning
-- **Snyk**: Comprehensive vulnerability database
-- **OWASP Dependency Check**: Known vulnerability detection
-- **OSV Scanner**: Google's vulnerability scanner
-
-### Container Security
-- **Trivy**: Comprehensive vulnerability scanner
-- **Docker Scout**: Docker's native security scanner
-- **Hadolint**: Dockerfile best practices
-
-### Supply Chain Security
-- **Scorecard**: OSSF security scorecard
-- **Socket.dev**: Supply chain attack detection
-- **SLSA**: Supply chain integrity verification
-
-### SBOM Generation
-- **Syft**: Multi-format SBOM generation
-- **npm sbom**: Native SBOM support
-- Format support: SPDX, CycloneDX
-
-## Responsible Disclosure
-
-We follow responsible disclosure practices:
-1. **Private reporting**: All security issues are handled privately
-2. **Timely response**: We commit to responding within 48 hours
-3. **Credit**: Security researchers will be credited in advisories
-4. **No legal action**: We won't take legal action against security researchers following these guidelines
-
-## Contact
-
-For security concerns, please use the GitHub Security Advisory feature or contact the maintainers directly through secure channels 
+_None reported yet - be the first!_

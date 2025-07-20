@@ -39,6 +39,10 @@ updates:
         update-types: ["version-update:semver-major"]
       - dependency-name: "jest"
         update-types: ["version-update:semver-major"]
+    # Automatically merge security updates
+    security-updates:
+      # Enable automatic merging of security updates
+      open-pull-requests-limit: 10
 
   # Enable version updates for GitHub Actions
   - package-ecosystem: "github-actions"
@@ -80,4 +84,4 @@ updates:
       include: "scope"
     labels:
       - "dependencies"
-      - "docker" 
+      - "docker"

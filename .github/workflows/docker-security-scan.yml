@@ -13,6 +13,10 @@ on:
       - 'Dockerfile*'
       - 'package*.json'
 
+permissions:
+  contents: read
+  security-events: write
+
 jobs:
   trivy-scan:
     name: Trivy Security Scan
@@ -25,7 +29,7 @@ jobs:
         run: docker build -t qrtak:scan .
 
       - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@v0
+        uses: aquasecurity/trivy-action@6e7b7d1fd3e4fef0c5fa8cce1229c54b2c9bd0d8 # v0.24.0
         with:
           image-ref: qrtak:scan
           format: 'sarif'
@@ -62,7 +66,7 @@ jobs:
         run: docker build -t qrtak:scan .
 
       - name: Run Grype vulnerability scanner
-        uses: anchore/scan-action@v6
+        uses: anchore/scan-action@5ed195fb06065271e8c44c6802e4c3148c83a2f5 # v6.0.0
         id: grype
         with:
           image: qrtak:scan
@@ -88,7 +92,7 @@ jobs:
         run: docker build -t qrtak:scan .
 
       - name: Generate SBOM with Syft
-        uses: anchore/sbom-action@v0
+        uses: anchore/sbom-action@61119d458adab75f756bc0b9e4bde25725f86a7a # v0.17.2
         with:
           image: qrtak:scan
           format: spdx-json

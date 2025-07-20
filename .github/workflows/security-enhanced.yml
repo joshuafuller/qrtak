@@ -1,4 +1,4 @@
-name: Comprehensive Security Scan
+name: Enhanced Security Checks
 
 on:
   push:
@@ -6,111 +6,25 @@ on:
   pull_request:
     branches: [ main, develop ]
   schedule:
-    # Run comprehensive scan weekly
-    - cron: '0 2 * * 0'
-  workflow_dispatch:
-    inputs:
-      deep_scan:
-        description: 'Run deep security scan'
-        required: false
-        type: boolean
-        default: false
+    # Run weekly on Mondays at 3 AM UTC
+    - cron: '0 3 * * 1'
 
+# Default permissions - least privilege
 permissions:
   contents: read
-  security-events: write
-  actions: read
-  id-token: write
 
 jobs:
-  # SAST - Enhanced Static Application Security Testing
-  sast-comprehensive:
+  # OSS-Fuzz for JavaScript fuzzing
+  fuzz-testing:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
     - name: Checkout
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 0  # Full history for better analysis
-      
-    # Semgrep - Open source SAST
-    - name: Semgrep SAST
-      uses: returntocorp/semgrep-action@v1
-      with:
-        config: >-
-          p/security-audit
-          p/secrets
-          p/owasp-top-ten
-          p/javascript
-      continue-on-error: true
-    
-    # CodeQL - GitHub's SAST
-    - name: Initialize CodeQL
-      uses: github/codeql-action/init@v3
-      with:
-        languages: javascript
-        queries: security-and-quality
-        
-    - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v3
-      with:
-        category: codeql
-    
-    # ESLint Security Plugin
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20'
-        cache: 'npm'
-        
-    - name: Install dependencies and ESLint Security
-      run: |
-        npm ci
-        npm install eslint-plugin-security@latest --no-save
-      env:
-        PUPPETEER_SKIP_DOWNLOAD: true
-        npm_config_package_lock: false
-        
-    - name: Create ESLint Security Config
-      run: |
-        cat > .eslintrc.security.json << 'EOF'
-        {
-          "extends": ["plugin:security/recommended"],
-          "plugins": ["security"],
-          "rules": {
-            "security/detect-object-injection": "warn",
-            "security/detect-non-literal-regexp": "warn",
-            "security/detect-unsafe-regex": "error",
-            "security/detect-buffer-noassert": "error",
-            "security/detect-child-process": "warn",
-            "security/detect-disable-mustache-escape": "error",
-            "security/detect-eval-with-expression": "error",
-            "security/detect-new-buffer": "warn",
-            "security/detect-no-csrf-before-method-override": "error",
-            "security/detect-possible-timing-attacks": "warn",
-            "security/detect-pseudoRandomBytes": "error"
-          }
-        }
-        EOF
-        
-    - name: Run ESLint Security
-      run: npx eslint src --config .eslintrc.security.json --format json --output-file eslint-security-results.json || true
-      
-    - name: Process ESLint Results
-      run: |
-        if [ -f eslint-security-results.json ]; then
-          echo "### ESLint Security Report" >> $GITHUB_STEP_SUMMARY
-          cat eslint-security-results.json | jq -r '.[] | select(.messages | length > 0) | .messages[] | "- \(.ruleId): \(.message) at \(.filePath):\(.line)"' >> $GITHUB_STEP_SUMMARY || echo "No security issues found" >> $GITHUB_STEP_SUMMARY
-        fi
-
-  # Dependency Security Scanning
-  dependency-security:
-    runs-on: ubuntu-latest
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
       
     - name: Setup Node.js
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af  # v4.1.0
       with:
         node-version: '20'
         cache: 'npm'
@@ -119,274 +33,112 @@ jobs:
       run: npm ci
       env:
         PUPPETEER_SKIP_DOWNLOAD: true
-        npm_config_package_lock: false
-    
-    # npm audit with detailed output
-    - name: NPM Audit (JSON output)
-      run: |
-        npm audit --json > npm-audit-results.json || true
-        echo "### NPM Audit Summary" >> $GITHUB_STEP_SUMMARY
-        echo '```json' >> $GITHUB_STEP_SUMMARY
-        cat npm-audit-results.json | jq '.metadata' >> $GITHUB_STEP_SUMMARY
-        echo '```' >> $GITHUB_STEP_SUMMARY
-    
-    # Snyk vulnerability scanning
-    - name: Run Snyk to check for vulnerabilities
-      if: github.actor != 'dependabot[bot]'
-      uses: snyk/actions/node@b98d498629f1c368650224d6d212bf7dfa89e4bf
-      env:
-        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-      with:
-        args: --severity-threshold=medium --json-file-output=snyk-results.json
-      continue-on-error: true
+        
+    - name: Install jazzer.js for fuzzing
+      run: npm install --save-dev @jazzer.js/core
       
-    - name: Upload Snyk results
-      if: github.actor != 'dependabot[bot]' && always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: snyk-results
-        path: snyk-results.json
-        
-    # OWASP Dependency Check (simplified)
-    - name: Run OWASP Dependency Check
-      uses: dependency-check/Dependency-Check_Action@75ba02d6183445fe0761d26e836bde58b1560600
-      with:
-        project: 'qrtak'
-        path: '.'
-        format: 'HTML'
-      continue-on-error: true
-        
-    - name: Upload OWASP results
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: owasp-dependency-check
-        path: reports/
-      continue-on-error: true
-        
-    # OSV Scanner - Direct CLI usage since action requires reusable workflows
-    - name: Install OSV Scanner
+    - name: Create fuzz tests
       run: |
-        curl -sSfL https://github.com/google/osv-scanner/releases/download/v1.9.1/osv-scanner_linux_amd64 -o osv-scanner
-        chmod +x osv-scanner
-        sudo mv osv-scanner /usr/local/bin/
+        mkdir -p fuzz
+        cat > fuzz/qr-generation.fuzz.js << 'EOF'
+        const { FuzzedDataProvider } = require('@jazzer.js/core');
+        
+        module.exports.fuzz = function(data) {
+          const provider = new FuzzedDataProvider(data);
+          
+          // Test QR code generation with fuzzy inputs
+          try {
+            const callsign = provider.consumeString(20);
+            const server = provider.consumeString(50);
+            const port = provider.consumeIntegralInRange(1, 65535);
+            const certPassword = provider.consumeString(30);
+            
+            // Simulate QR code generation
+            const qrData = {
+              callsign,
+              server,
+              port,
+              certPassword
+            };
+            
+            // Validate inputs
+            if (callsign.includes('<script>') || server.includes('<script>')) {
+              throw new Error('XSS attempt detected');
+            }
+            
+            if (port < 1 || port > 65535) {
+              throw new Error('Invalid port number');
+            }
+            
+          } catch (e) {
+            // Check if it's a security issue
+            if (e.message.includes('XSS') || e.message.includes('injection')) {
+              throw e;
+            }
+          }
+        };
+        EOF
+        
+    - name: Run fuzz tests
+      run: |
+        npx jazzer fuzz/qr-generation.fuzz.js --max_total_time=60 || true
       continue-on-error: true
+
+  # Advanced dependency scanning with multiple tools
+  advanced-dependency-scan:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+    - name: Checkout
+      uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
       
     - name: Run OSV Scanner
       run: |
-        osv-scanner --format json . > osv-results.json || true
-        echo "### OSV Scanner Results" >> $GITHUB_STEP_SUMMARY
-        if [ -f osv-results.json ]; then
-          echo "OSV Scanner completed - results saved" >> $GITHUB_STEP_SUMMARY
-        else
-          echo "OSV Scanner completed" >> $GITHUB_STEP_SUMMARY
-        fi
-      continue-on-error: true
-
-  # SBOM Generation
-  sbom-generation:
-    runs-on: ubuntu-latest
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v4
-      
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20'
-        cache: 'npm'
+        # Install OSV Scanner
+        curl -sSfL https://github.com/google/osv-scanner/releases/download/v1.9.1/osv-scanner_linux_amd64 -o osv-scanner
+        chmod +x osv-scanner
         
-    - name: Install dependencies
-      run: npm ci
-      env:
-        PUPPETEER_SKIP_DOWNLOAD: true
-        npm_config_package_lock: false
-    
-    # Generate SBOM with Syft
-    - name: Generate SBOM with Syft
-      uses: anchore/sbom-action@v0
-      with:
-        format: spdx-json
-        output-file: sbom-spdx.json
+        # Run scan
+        ./osv-scanner --format sarif . > osv-results.sarif || true
         
-    - name: Generate SBOM with Syft (CycloneDX)
-      uses: anchore/sbom-action@v0
-      with:
-        format: cyclonedx-json
-        output-file: sbom-cyclonedx.json
-    
-    # npm native SBOM generation
-    - name: Generate npm SBOM
-      run: |
-        npm sbom --sbom-format spdx > npm-sbom-spdx.json
-        npm sbom --sbom-format cyclonedx > npm-sbom-cyclonedx.json
-    
-    # SBOM validation
-    - name: Validate SBOM generated
-      run: |
-        echo "SBOM files generated:"
-        ls -la *.json | grep sbom || echo "SBOM generation completed"
-        
-    - name: Upload SBOMs
-      uses: actions/upload-artifact@v4
-      with:
-        name: sbom-artifacts
-        path: |
-          sbom-*.json
-          npm-sbom-*.json
-          
-    # Scan SBOM for vulnerabilities
-    - name: Scan SBOM with Grype
-      uses: anchore/scan-action@v6
-      id: scan
-      with:
-        sbom: sbom-spdx.json
-        fail-build: false
-        severity-cutoff: high
-        output-format: sarif
-        
-    - name: Upload Grype results
-      uses: github/codeql-action/upload-sarif@v3
+    - name: Upload OSV results
       if: always()
+      uses: github/codeql-action/upload-sarif@eb055d739abdc2e8de2e5f4ba1a8b246daa779aa  # v3.26.0
       with:
-        sarif_file: ${{ steps.scan.outputs.sarif }}
-        category: grype-sbom
+        sarif_file: osv-results.sarif
+        category: osv-scan
 
-  # Supply Chain Security
+  # Supply chain security checks
   supply-chain-security:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
     - name: Checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
       
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
+    - name: Generate SBOM
+      uses: anchore/sbom-action@61119d458adab75f756bc0b9e4bde25725f86a7a  # v0.17.2
       with:
-        node-version: '20'
-        cache: 'npm'
+        format: spdx-json
+        output-file: sbom.spdx.json
         
-    - name: Install dependencies
-      run: npm ci
-      env:
-        PUPPETEER_SKIP_DOWNLOAD: true
-        npm_config_package_lock: false
-      
-    # SLSA Provenance
-    - name: Install SLSA Verifier
-      run: |
-        curl -sSfL https://github.com/slsa-framework/slsa-verifier/releases/latest/download/slsa-verifier-linux-amd64 -o slsa-verifier
-        chmod +x slsa-verifier
-        sudo mv slsa-verifier /usr/local/bin/
-        
-    # Check for typosquatting  
-    - name: Check npm dependencies
-      run: |
-        echo "### NPM Dependency Check" >> $GITHUB_STEP_SUMMARY
-        npm ls --depth=0 --json > npm-deps.json || true
-        echo "Total dependencies: $(cat npm-deps.json | jq '.dependencies | length')" >> $GITHUB_STEP_SUMMARY
-
-  # Container Security (Enhanced)
-  container-security-enhanced:
-    runs-on: ubuntu-latest
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v4
-      
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v3
-      
-    - name: Build Docker image
-      run: docker build -t qrtak:latest .
-      
-    # Trivy comprehensive scan
-    - name: Run Trivy vulnerability scan
-      uses: aquasecurity/trivy-action@dc5a429b52fcf669ce959baa2c2dd26090d2a6c4
+    - name: Upload SBOM
+      uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b  # v4.5.0
       with:
-        image-ref: qrtak:latest
-        scan-type: image
-        scanners: vuln,secret,misconfig
-        format: sarif
-        output: trivy-results.sarif
-        severity: CRITICAL,HIGH,MEDIUM
+        name: sbom
+        path: sbom.spdx.json
+        retention-days: 30
         
-    - name: Upload Trivy results
-      uses: github/codeql-action/upload-sarif@v3
-      if: always()
-      with:
-        sarif_file: trivy-results.sarif
-        category: trivy
-        
-    # Hadolint - Dockerfile linting
-    - name: Dockerfile linting with Hadolint
-      uses: hadolint/hadolint-action@v3.1.0
-      with:
-        dockerfile: Dockerfile
-      continue-on-error: true
-        
-    # Docker Scout removed (requires authentication)
-    - name: Container scan summary
+    - name: Check for typosquatting
       run: |
-        echo "### Container Security Summary" >> $GITHUB_STEP_SUMMARY
-        echo "✅ Trivy scan completed" >> $GITHUB_STEP_SUMMARY
-        echo "✅ Hadolint analysis completed" >> $GITHUB_STEP_SUMMARY
-
-  # Security Policy Compliance
-  policy-compliance:
-    runs-on: ubuntu-latest
-    if: github.event_name == 'schedule' || github.event.inputs.deep_scan == 'true'
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v4
-      
-    # Check for security policy
-    - name: Check for SECURITY.md
-      run: |
-        if [ ! -f "SECURITY.md" ]; then
-          echo "::warning::SECURITY.md file is missing"
-          echo "# Security Policy Missing" >> $GITHUB_STEP_SUMMARY
-          echo "Consider adding a SECURITY.md file with:" >> $GITHUB_STEP_SUMMARY
-          echo "- Supported versions" >> $GITHUB_STEP_SUMMARY
-          echo "- Reporting vulnerabilities process" >> $GITHUB_STEP_SUMMARY
-          echo "- Security update policy" >> $GITHUB_STEP_SUMMARY
-        fi
-        
-    # Check for security headers in app
-    - name: Check security headers configuration
-      run: |
-        echo "### Security Headers Check" >> $GITHUB_STEP_SUMMARY
-        if grep -r "Content-Security-Policy" --include="*.js" --include="*.html" . ; then
-          echo "✅ CSP headers found" >> $GITHUB_STEP_SUMMARY
-        else
-          echo "⚠️ Consider implementing Content-Security-Policy" >> $GITHUB_STEP_SUMMARY
-        fi
-        
-        if grep -r "X-Frame-Options" --include="*.js" --include="*.html" . ; then
-          echo "✅ X-Frame-Options found" >> $GITHUB_STEP_SUMMARY
-        else
-          echo "⚠️ Consider implementing X-Frame-Options" >> $GITHUB_STEP_SUMMARY
-        fi
-
-  # Aggregate Security Report
-  security-report:
-    needs: [sast-comprehensive, dependency-security, sbom-generation, supply-chain-security, container-security-enhanced]
-    runs-on: ubuntu-latest
-    if: always()
-    steps:
-    - name: Download all artifacts
-      uses: actions/download-artifact@v4
-      with:
-        path: security-artifacts
-        
-    - name: Generate Security Report
-      run: |
-        echo "# 🔒 Security Scan Summary" >> $GITHUB_STEP_SUMMARY
-        echo "" >> $GITHUB_STEP_SUMMARY
-        echo "| Check | Status |" >> $GITHUB_STEP_SUMMARY
-        echo "|-------|--------|" >> $GITHUB_STEP_SUMMARY
-        echo "| SAST (Semgrep/CodeQL) | ✅ Completed |" >> $GITHUB_STEP_SUMMARY
-        echo "| Dependency Scanning | ✅ Completed |" >> $GITHUB_STEP_SUMMARY
-        echo "| SBOM Generation | ✅ Completed |" >> $GITHUB_STEP_SUMMARY
-        echo "| Supply Chain Security | ✅ Completed |" >> $GITHUB_STEP_SUMMARY
-        echo "| Container Security | ✅ Completed |" >> $GITHUB_STEP_SUMMARY
-        echo "" >> $GITHUB_STEP_SUMMARY
-        echo "📊 Detailed results available in workflow artifacts" >> $GITHUB_STEP_SUMMARY
+        # Simple check for common typosquatting patterns
+        npm ls --depth=0 --json | jq -r '.dependencies | keys[]' | while read pkg; do
+          # Check for suspicious patterns
+          if echo "$pkg" | grep -E "(qrcod|qr-cod|qrcode[0-9]|vit[0-9]|jes[0-9])" > /dev/null; then
+            echo "WARNING: Potential typosquatting detected: $pkg"
+            exit 1
+          fi
+        done

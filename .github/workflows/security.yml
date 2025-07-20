@@ -9,20 +9,23 @@ on:
     # Run weekly on Sundays at 2 AM UTC
     - cron: '0 2 * * 0'
 
+# Default permissions - least privilege
 permissions:
-  actions: read
-  security-events: write
+  contents: read
 
 jobs:
   # SAST - Static Application Security Testing
   sast:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write  # Required for uploading SARIF
     steps:
     - name: Checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
       
     - name: Run Semgrep
-      uses: returntocorp/semgrep-action@v1
+      uses: returntocorp/semgrep-action@f93c132f0d50bb317cfba27cf95e23b27f973a8e  # v1
       with:
         config: >-
           p/security-audit
@@ -34,12 +37,15 @@ jobs:
   # Dependency vulnerability scanning
   dependency-check:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write  # Required for uploading SARIF
     steps:
     - name: Checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
       
     - name: Setup Node.js
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af  # v4.1.0
       with:
         node-version: '20'
         cache: 'npm'
@@ -56,7 +62,7 @@ jobs:
       if: github.actor != 'dependabot[bot]' && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
       env:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-      uses: snyk/actions/node@b98d498629f1c368650224d6d212bf7dfa89e4bf
+      uses: snyk/actions/node@b98d498629f1c368650224d6d212bf7dfa89e4bf  # master
       with:
         args: --severity-threshold=high --sarif-file-output=snyk.sarif
       continue-on-error: true
@@ -64,23 +70,26 @@ jobs:
       
     - name: Upload Snyk SARIF
       if: github.actor != 'dependabot[bot]' && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && success()
-      uses: github/codeql-action/upload-sarif@v3
+      uses: github/codeql-action/upload-sarif@eb055d739abdc2e8de2e5f4ba1a8b246daa779aa  # v3.26.0
       with:
         sarif_file: snyk.sarif
 
   # Container security scanning
   container-scan:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write  # Required for uploading SARIF
     steps:
     - name: Checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
       
     - name: Build Docker image
       run: |
         docker build -t qrtak:latest .
       
     - name: Run Trivy vulnerability scan
-      uses: aquasecurity/trivy-action@dc5a429b52fcf669ce959baa2c2dd26090d2a6c4
+      uses: aquasecurity/trivy-action@dc5a429b52fcf669ce959baa2c2dd26090d2a6c4  # 0.24.0
       with:
         image-ref: 'qrtak:latest'
         format: 'sarif'
@@ -89,7 +98,7 @@ jobs:
         output: 'trivy-results.sarif'
         
     - name: Upload Trivy scan results to GitHub Security tab
-      uses: github/codeql-action/upload-sarif@v3
+      uses: github/codeql-action/upload-sarif@eb055d739abdc2e8de2e5f4ba1a8b246daa779aa  # v3.26.0
       if: always()
       with:
         sarif_file: 'trivy-results.sarif'
@@ -97,15 +106,17 @@ jobs:
   # Secret detection
   secret-scan:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
       with:
         fetch-depth: 0  # Ensures full history for scanning
       
     - name: Secret Scanning
       id: trufflehog
-      uses: trufflesecurity/trufflehog@907ac64fd42b18dab2ceba2fda39834d3f8ba7e3
+      uses: trufflesecurity/trufflehog@907ac64fd42b18dab2ceba2fda39834d3f8ba7e3  # v3.82.0
       continue-on-error: true
       with:
         extra_args: --results=verified,unknown
