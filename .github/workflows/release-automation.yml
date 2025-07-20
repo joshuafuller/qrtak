@@ -96,6 +96,11 @@ jobs:
             type=semver,pattern={{version}},value=${{ steps.get_tag.outputs.tag }}
             type=semver,pattern={{major}}.{{minor}},value=${{ steps.get_tag.outputs.tag }}
             type=semver,pattern={{major}},value=${{ steps.get_tag.outputs.tag }}
+          labels: |
+            org.opencontainers.image.title=qrtak
+            org.opencontainers.image.description=Generate TAK client configuration QR codes instantly
+            org.opencontainers.image.vendor=TAK Onboarding Platform Team
+            org.opencontainers.image.licenses=MIT
 
       - name: Build and push Docker image
         id: docker
