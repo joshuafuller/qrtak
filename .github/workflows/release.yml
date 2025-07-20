@@ -59,7 +59,16 @@ jobs:
         id: semantic
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npx semantic-release
+          GIT_AUTHOR_NAME: github-actions[bot]
+          GIT_AUTHOR_EMAIL: github-actions[bot]@users.noreply.github.com
+          GIT_COMMITTER_NAME: github-actions[bot]
+          GIT_COMMITTER_EMAIL: github-actions[bot]@users.noreply.github.com
+        run: |
+          # Note: This requires either:
+          # 1. A PAT with bypass branch protection permissions (secrets.RELEASE_TOKEN)
+          # 2. Or temporarily disable "Include administrators" in branch protection
+          # 3. Or add github-actions[bot] to bypass list in branch protection
+          npx semantic-release
 
       # Sign artifacts if release was created
       - name: Install cosign
