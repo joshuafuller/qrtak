@@ -20,7 +20,7 @@ jobs:
           language: javascript
           project-src-path: .
           sanitizer: address
-          storage-repo: ${{ github.repository }}
+          storage-repo: https://github.com/${{ github.repository }}.git
       - name: Run fuzzers
         uses: google/clusterfuzzlite/actions/run_fuzzers@40f9a53e632516d2ec9f738eadd284635529fbad
         with:
@@ -28,4 +28,4 @@ jobs:
           fuzz-seconds: 600
           sanitizer: address
           mode: fuzz
-          storage-repo: ${{ github.repository }}
+          storage-repo: https://github.com/${{ github.repository }}.git
