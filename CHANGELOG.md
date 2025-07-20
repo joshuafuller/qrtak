@@ -1,3 +1,15 @@
+# [1.1.0](https://github.com/joshuafuller/qrtak/compare/v1.0.5...v1.1.0) (2025-07-20)
+
+
+### Bug Fixes
+
+* remove SHA-based tags from Docker releases ([d3bca44](https://github.com/joshuafuller/qrtak/commit/d3bca44e6f3faf7a18e28a6f296e981ac16c476f))
+
+
+### Features
+
+* re-enable multi-architecture Docker builds ([81d571b](https://github.com/joshuafuller/qrtak/commit/81d571b0629de3e79ffd465586b43714c3ac3741))
+
 ## [1.0.5](https://github.com/joshuafuller/qrtak/compare/v1.0.4...v1.0.5) (2025-07-20)
 
 
