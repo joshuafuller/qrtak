@@ -1,6 +1,7 @@
 {
   "name": "qrtak",
   "version": "1.0.0",
+  "private": true,
   "description": "Generate TAK client configuration QR codes instantly",
   "main": "index.html",
   "type": "module",
