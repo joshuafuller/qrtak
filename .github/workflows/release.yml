@@ -26,7 +26,7 @@ jobs:
         run: |
           tar czf qrtak-dist.tgz dist
       - name: Install cosign
-        uses: sigstore/cosign-installer@v3
+        uses: sigstore/cosign-installer@<commit-sha>
       - name: Sign artifact
         run: cosign sign-blob --yes --output-signature qrtak-dist.tgz.sig qrtak-dist.tgz
       - name: Create GitHub Release
