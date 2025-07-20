@@ -194,12 +194,14 @@ jobs:
             fi
           done
 
-  # Fuzz Testing (only on schedule or manual trigger)
+  # Fuzz Testing
   fuzz-testing:
     name: Fuzz Testing
     runs-on: ubuntu-latest
     if: |
       github.event_name == 'schedule' || 
+      github.event_name == 'push' ||
+      github.event_name == 'pull_request' ||
       (github.event_name == 'workflow_dispatch' && github.event.inputs.deep_scan == 'true')
     steps:
       - name: Checkout
@@ -225,7 +227,13 @@ jobs:
       - name: Run Fuzz Tests
         run: |
           echo "Running fuzz tests..."
-          # Run fuzzing for 30 seconds per test
-          npx jazzer fuzz tests/fuzz.test.js --sync_timeout=30000 --time_limit_ms=30000 || true
+          # Quick fuzz for PRs (10 seconds), longer for scheduled runs (5 minutes)
+          if [[ "${{ github.event_name }}" == "schedule" ]]; then
+            FUZZ_TIME=300000  # 5 minutes for scheduled runs
+          else
+            FUZZ_TIME=10000   # 10 seconds for PRs
+          fi
+          echo "Fuzzing for $((FUZZ_TIME/1000)) seconds..."
+          npx jazzer fuzz tests/fuzz.test.js --sync_timeout=30000 --time_limit_ms=$FUZZ_TIME || true
           echo "Fuzz testing completed"
         continue-on-error: true
