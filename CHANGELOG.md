@@ -1,3 +1,10 @@
+## [1.3.1](https://github.com/joshuafuller/qrtak/compare/v1.3.0...v1.3.1) (2025-07-20)
+
+
+### Performance Improvements
+
+* optimize Docker build performance with parallel architecture builds ([f3a39ce](https://github.com/joshuafuller/qrtak/commit/f3a39ce1b69c576de0fff168fb22ac1dc36e3eae))
+
 # [1.3.0](https://github.com/joshuafuller/qrtak/compare/v1.2.4...v1.3.0) (2025-07-20)
 
 
