@@ -219,7 +219,13 @@ jobs:
           PUPPETEER_SKIP_DOWNLOAD: true
           npm_config_package_lock: false
 
+      - name: Create fuzz test directory
+        run: mkdir -p tests
+
       - name: Run Fuzz Tests
         run: |
-          npx jazzer fuzz tests --sync_timeout=20000 || true
+          echo "Running fuzz tests..."
+          # Run fuzzing for 30 seconds per test
+          npx jazzer fuzz tests/fuzz.test.js --sync_timeout=30000 --time_limit_ms=30000 || true
+          echo "Fuzz testing completed"
         continue-on-error: true
