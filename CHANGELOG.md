@@ -1,3 +1,10 @@
+## [1.0.5](https://github.com/joshuafuller/qrtak/compare/v1.0.4...v1.0.5) (2025-07-20)
+
+
+### Bug Fixes
+
+* only build Docker images in CI, don't push on every commit ([aa0c954](https://github.com/joshuafuller/qrtak/commit/aa0c954a8bc3ec82d1e62c0a87cfb4ae2653882d))
+
 ## [1.0.4](https://github.com/joshuafuller/qrtak/compare/v1.0.3...v1.0.4) (2025-07-20)
 
 
