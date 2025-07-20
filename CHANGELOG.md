@@ -1,3 +1,10 @@
+## [1.1.1](https://github.com/joshuafuller/qrtak/compare/v1.1.0...v1.1.1) (2025-07-20)
+
+
+### Bug Fixes
+
+* resolve Rollup native module issues for ARM builds ([642f4eb](https://github.com/joshuafuller/qrtak/commit/642f4eb0d0d5d8f1f1fd49aedc934947c2fc75d5))
+
 # [1.1.0](https://github.com/joshuafuller/qrtak/compare/v1.0.5...v1.1.0) (2025-07-20)
 
 
