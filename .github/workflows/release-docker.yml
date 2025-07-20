@@ -121,11 +121,10 @@ jobs:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
             type=raw,value=latest,priority=1000
-            type=raw,value=${{ github.event.release.tag_name }}
-            type=raw,value=${{ github.event.release.tag_name }},suffix=,enable=${{ !startsWith(github.event.release.tag_name, 'v') }}
-            type=semver,pattern={{version}},value=${{ github.event.release.tag_name }}
-            type=semver,pattern={{major}}.{{minor}},value=${{ github.event.release.tag_name }}
-            type=semver,pattern={{major}},value=${{ github.event.release.tag_name }}
+            type=raw,value=v${{ inputs.version }}
+            type=semver,pattern={{version}},value=v${{ inputs.version }}
+            type=semver,pattern={{major}}.{{minor}},value=v${{ inputs.version }}
+            type=semver,pattern={{major}},value=v${{ inputs.version }}
           labels: |
             org.opencontainers.image.title=qrtak
             org.opencontainers.image.description=Generate TAK client configuration QR codes instantly
