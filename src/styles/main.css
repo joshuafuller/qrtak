@@ -818,7 +818,7 @@ a:hover {
   padding: var(--spacing-xl);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
-  max-width: 900px;
+  max-width: 1400px;
   margin: 0 auto;
 }
 
@@ -917,6 +917,7 @@ a:hover {
 .help-tabs {
   display: grid;
   gap: var(--spacing-lg);
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
 }
 
 .help-tab-item {
