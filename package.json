@@ -54,7 +54,7 @@
     "qrcode": "^1.5.3"
   },
   "overrides": {
-    "glob": "^10.4.5",
+    "glob": "^8.1.0",
     "inflight": "npm:lru-cache@^10.4.3",
     "sourcemap-codec": "npm:@jridgewell/sourcemap-codec@^1.5.0"
   }

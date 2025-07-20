@@ -235,6 +235,7 @@ jobs:
     # Scan SBOM for vulnerabilities
     - name: Scan SBOM with Grype
       uses: anchore/scan-action@v4
+      id: scan
       with:
         sbom: sbom-spdx.json
         fail-build: false
@@ -245,7 +246,7 @@ jobs:
       uses: github/codeql-action/upload-sarif@v3
       if: always()
       with:
-        sarif_file: anchore-results.sarif
+        sarif_file: ${{ steps.scan.outputs.sarif }}
         category: grype-sbom
 
   # Supply Chain Security
