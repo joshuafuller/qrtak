@@ -1,3 +1,10 @@
+## [1.0.1](https://github.com/joshuafuller/qrtak/compare/v1.0.0...v1.0.1) (2025-07-20)
+
+
+### Bug Fixes
+
+* temporarily disable ARM64 builds to fix CI/CD failures ([990e160](https://github.com/joshuafuller/qrtak/commit/990e1600f84ad77c44ca886314f03f38bcfa01fa))
+
 # [1.0.0](https://github.com/joshuafuller/qrtak/compare/v0.0.0...v1.0.0) (2025-07-20)
 
 
