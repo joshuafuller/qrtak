@@ -116,7 +116,7 @@ jobs:
         
     - name: Run tests (shard ${{ matrix.shard }})
       run: |
-        npx jest --shard=${{ matrix.shard }}/2 --coverage
+        npm test -- --shard=${{ matrix.shard }}/2 --coverage
       
     - name: Upload coverage
       uses: actions/upload-artifact@v4
@@ -153,7 +153,7 @@ jobs:
           build-
           
     - name: Build
-      run: npx vite build
+      run: npm run build
       
     - name: Upload build artifacts
       uses: actions/upload-artifact@v4
