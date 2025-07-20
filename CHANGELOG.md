@@ -1,3 +1,10 @@
+## [1.2.3](https://github.com/joshuafuller/qrtak/compare/v1.2.2...v1.2.3) (2025-07-20)
+
+
+### Bug Fixes
+
+* use correct Snyk badge URL format ([1348fab](https://github.com/joshuafuller/qrtak/commit/1348fab5ac23d5a8e5c5082f0f74baacf3e1c65d))
+
 ## [1.2.2](https://github.com/joshuafuller/qrtak/compare/v1.2.1...v1.2.2) (2025-07-20)
 
 
