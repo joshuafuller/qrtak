@@ -1,3 +1,10 @@
+# [1.3.0](https://github.com/joshuafuller/qrtak/compare/v1.2.4...v1.3.0) (2025-07-20)
+
+
+### Features
+
+* add Docker version badge and improve help page layout ([4db6e72](https://github.com/joshuafuller/qrtak/commit/4db6e7223e31f441e9d0267b82f6c5e3ac550b86))
+
 ## [1.2.4](https://github.com/joshuafuller/qrtak/compare/v1.2.3...v1.2.4) (2025-07-20)
 
 
