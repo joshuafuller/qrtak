@@ -1,3 +1,10 @@
+## [1.4.4](https://github.com/joshuafuller/qrtak/compare/v1.4.3...v1.4.4) (2025-07-20)
+
+
+### Bug Fixes
+
+* resolve npm EACCES permission errors in security workflow ([6eb04a1](https://github.com/joshuafuller/qrtak/commit/6eb04a123f62b38ae82af99da30271ef093249ec))
+
 ## [1.4.3](https://github.com/joshuafuller/qrtak/compare/v1.4.2...v1.4.3) (2025-07-20)
 
 
