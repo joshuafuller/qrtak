@@ -1,3 +1,10 @@
+## [1.3.2](https://github.com/joshuafuller/qrtak/compare/v1.3.1...v1.3.2) (2025-07-20)
+
+
+### Bug Fixes
+
+* sanitize profile names before duplicate check ([2d75d0d](https://github.com/joshuafuller/qrtak/commit/2d75d0d86d0212084f15411a1cb59449816ec329))
+
 ## [1.3.1](https://github.com/joshuafuller/qrtak/compare/v1.3.0...v1.3.1) (2025-07-20)
 
 
