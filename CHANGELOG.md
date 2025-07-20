@@ -1,3 +1,10 @@
+## [1.4.1](https://github.com/joshuafuller/qrtak/compare/v1.4.0...v1.4.1) (2025-07-20)
+
+
+### Bug Fixes
+
+* resolve npm permission errors and SARIF file path issues ([4cd59e8](https://github.com/joshuafuller/qrtak/commit/4cd59e8d7c53675e8b310ae4c67b9b3a53139348))
+
 # [1.4.0](https://github.com/joshuafuller/qrtak/compare/v1.3.2...v1.4.0) (2025-07-20)
 
 
