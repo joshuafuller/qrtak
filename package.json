@@ -17,7 +17,11 @@
     "security:audit": "npm audit --audit-level=moderate",
     "security:check": "npm audit --audit-level=moderate",
     "build:docker": "docker build -t qrtak:latest .",
-    "scan:container": "trivy image qrtak:latest"
+    "scan:trivy": "trivy image qrtak:latest",
+    "scan:grype": "grype qrtak:latest",
+    "scan:container": "npm run scan:trivy",
+    "scan:all": "npm run scan:trivy && npm run scan:grype",
+    "sbom:generate": "syft qrtak:latest -o spdx-json > sbom.spdx.json"
   },
   "keywords": [
     "tak",

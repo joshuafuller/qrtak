@@ -20,6 +20,19 @@ updates:
     labels:
       - "dependencies"
       - "npm"
+    groups:
+      # Group all npm development dependencies together
+      dev-dependencies:
+        patterns:
+          - "@babel/*"
+          - "@semantic-release/*"
+          - "eslint*"
+          - "jest*"
+          - "babel-jest"
+        dependency-type: "development"
+      # Group all production dependencies together  
+      production:
+        dependency-type: "production"
     ignore:
       # Ignore major version updates for critical dependencies
       - dependency-name: "vite"
