@@ -50,8 +50,8 @@ jobs:
       - name: TruffleHog Secret Scan
         uses: trufflesecurity/trufflehog@907ac64fd42b18dab2ceba2fda39834d3f8ba7e3 # v3.78.1
         with:
-          base: ${{ github.event.repository.default_branch }}
-          head: HEAD
+          base: "${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before || github.event.repository.default_branch }}"
+          head: "${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}"
           extra_args: --debug --only-verified
 
       # SAST with Semgrep
@@ -123,7 +123,7 @@ jobs:
 
       # Grype Scan
       - name: Run Grype
-        uses: anchore/scan-action@5ed195fb06065271e8c44c6802e4c3148c83a2f5 # v6.0.0
+        uses: anchore/scan-action@16910ac423301c6d30554b83a7f71ac6ff4a51f3 # v6.4.0
         id: grype
         with:
           image: qrtak:scan
@@ -194,12 +194,14 @@ jobs:
             fi
           done
 
-  # Fuzz Testing (only on schedule or manual trigger)
+  # Fuzz Testing
   fuzz-testing:
     name: Fuzz Testing
     runs-on: ubuntu-latest
     if: |
       github.event_name == 'schedule' || 
+      github.event_name == 'push' ||
+      github.event_name == 'pull_request' ||
       (github.event_name == 'workflow_dispatch' && github.event.inputs.deep_scan == 'true')
     steps:
       - name: Checkout
@@ -219,7 +221,19 @@ jobs:
           PUPPETEER_SKIP_DOWNLOAD: true
           npm_config_package_lock: false
 
+      - name: Create fuzz test directory
+        run: mkdir -p tests
+
       - name: Run Fuzz Tests
         run: |
-          npx jazzer fuzz tests --sync_timeout=20000 || true
+          echo "Running fuzz tests..."
+          # Quick fuzz for PRs (10 seconds), longer for scheduled runs (5 minutes)
+          if [[ "${{ github.event_name }}" == "schedule" ]]; then
+            FUZZ_TIME=300000  # 5 minutes for scheduled runs
+          else
+            FUZZ_TIME=10000   # 10 seconds for PRs
+          fi
+          echo "Fuzzing for $((FUZZ_TIME/1000)) seconds..."
+          npx jazzer fuzz tests/fuzz.test.js --sync_timeout=30000 --time_limit_ms=$FUZZ_TIME || true
+          echo "Fuzz testing completed"
         continue-on-error: true
