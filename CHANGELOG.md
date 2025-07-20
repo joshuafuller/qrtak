@@ -1,3 +1,10 @@
+## [1.2.1](https://github.com/joshuafuller/qrtak/compare/v1.2.0...v1.2.1) (2025-07-20)
+
+
+### Bug Fixes
+
+* add Docker image labels for package description ([419e299](https://github.com/joshuafuller/qrtak/commit/419e2994c2b0f17f1eb8cc5995a0eec2ec3dddbc))
+
 # [1.2.0](https://github.com/joshuafuller/qrtak/compare/v1.1.1...v1.2.0) (2025-07-20)
 
 
