@@ -25,14 +25,39 @@ A Progressive Web App (PWA) for rapid TAK (Tactical Assault Kit) client deployme
 
 ## Quick Start
 
-### Option 1: Use Online (Recommended)
+### Option 1: Try It Online (Recommended)
 **No installation required - use the live version:**
-- **Live Demo**: [https://joshuafuller.github.io/qrtak/](https://joshuafuller.github.io/qrtak/)
-- **PWA Ready** - Can be installed on mobile devices
-- **Auto-updates** - Always the latest version
-- **Global CDN** - Fast loading worldwide
 
-### Option 2: Local Development
+🌐 **[https://joshuafuller.github.io/qrtak/](https://joshuafuller.github.io/qrtak/)**
+
+**Features:**
+- ⚡ Instant access - no setup needed
+- 📱 PWA ready - install on mobile devices
+- 🔄 Auto-updates - always the latest version
+- 🌍 Global CDN - fast loading worldwide
+- 🔒 Secure - HTTPS only
+
+### Option 2: Self-Host with Docker
+**Deploy your own instance in seconds:**
+
+```bash
+# Run latest version
+docker run -d -p 8080:80 ghcr.io/joshuafuller/qrtak:latest
+
+# Or use docker-compose
+curl -O https://raw.githubusercontent.com/joshuafuller/qrtak/main/docker-compose.yml
+docker-compose up -d
+```
+
+**Access at:** http://localhost:8080
+
+**Why self-host?**
+- 🏢 Keep data on-premises
+- 🛡️ Control your own security
+- 🎨 Customize for your organization
+- 🚀 No external dependencies
+
+### Option 3: Local Development
 **For developers and customization:**
 
 **Prerequisites:**
@@ -56,7 +81,7 @@ npm run build
 npm run preview
 ```
 
-### Option 3: Quick Sharing
+### Option 4: Quick Sharing
 **Share your local server with anyone:**
 ```bash
 # Install ngrok
@@ -71,7 +96,7 @@ ngrok http 3000
 
 **Result**: Get a public URL like `https://abc123.ngrok.io` that anyone can access!
 
-### Option 4: One-Click Deploy
+### Option 5: One-Click Deploy
 **Deploy to your own hosting:**
 - **[Netlify](https://netlify.com)** - Drag & drop the `dist` folder
 - **[Vercel](https://vercel.com)** - Run `vercel` command
@@ -92,6 +117,67 @@ chmod +x deploy.sh
 ./deploy.sh serve         # Start local server
 ./deploy.sh ngrok         # Start ngrok tunnel
 ```
+
+## Docker Deployment
+
+### Quick Start
+
+```bash
+# Pull and run the latest version
+docker run -d -p 8080:80 --name qrtak ghcr.io/joshuafuller/qrtak:latest
+```
+
+### Using Docker Compose
+
+```yaml
+# docker-compose.yml
+version: '3.8'
+services:
+  qrtak:
+    image: ghcr.io/joshuafuller/qrtak:latest
+    ports:
+      - "8080:80"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+```
+
+### Available Tags
+
+- `latest` - Latest stable release
+- `v1.2.3` - Specific version
+- `1.2` - Latest patch of minor version
+- `1` - Latest minor/patch of major version
+- `main` - Latest commit from main branch
+- `main-abc123f` - Specific commit
+
+### Environment Variables
+
+```bash
+# Run with custom settings
+docker run -d -p 8080:80 \
+  -e APP_VERSION=custom \
+  ghcr.io/joshuafuller/qrtak:latest
+```
+
+### Multi-Architecture Support
+
+Images are available for:
+- `linux/amd64` - Intel/AMD processors
+- `linux/arm64` - Apple Silicon, AWS Graviton
+- `linux/arm/v7` - Raspberry Pi and other ARM devices
+
+Docker automatically selects the correct architecture.
+
+### Security Features
+
+- Runs as non-root user (nginx)
+- Security-hardened Alpine Linux base
+- Regular vulnerability scanning
+- Signed container images
 
 ## Usage
 

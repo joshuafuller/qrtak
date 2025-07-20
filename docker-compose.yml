@@ -2,12 +2,19 @@ version: '3.8'
 
 services:
   qrtak:
-    build: .
+    image: ghcr.io/joshuafuller/qrtak:latest
+    # Uncomment to build locally instead:
+    # build: .
     ports:
-      - "80:80"
+      - "8080:80"
     restart: unless-stopped
     environment:
       - NODE_ENV=production
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.qrtak.rule=Host(`qrtak.local`)"

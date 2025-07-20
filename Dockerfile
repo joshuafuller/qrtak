@@ -1,5 +1,5 @@
 # Multi-stage build for qrtak with security enhancements
-FROM node:24-alpine AS builder
+FROM node:20-alpine AS builder
 
 # Build arguments
 ARG VERSION=dev
