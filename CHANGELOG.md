@@ -1,3 +1,10 @@
+## [1.0.4](https://github.com/joshuafuller/qrtak/compare/v1.0.3...v1.0.4) (2025-07-20)
+
+
+### Bug Fixes
+
+* remove problematic optimized workflow ([96a4905](https://github.com/joshuafuller/qrtak/commit/96a490500fa1a7110739158bcf23f63ac6bcd41a))
+
 ## [1.0.3](https://github.com/joshuafuller/qrtak/compare/v1.0.2...v1.0.3) (2025-07-20)
 
 
