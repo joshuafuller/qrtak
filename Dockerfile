@@ -1,7 +1,70 @@
-# Multi-stage build for qrtak with security enhancements
+# Multi-stage build optimized for caching and speed
+# Stage 1: Dependencies (cached separately from source)
+FROM node:20-alpine AS dependencies
+
+WORKDIR /app
+
+# Copy only package files first (most stable layer)
+COPY package*.json ./
+
+# Install production dependencies only
+RUN npm ci --omit=dev --force
+
+# Stage 2: Build dependencies (includes dev deps)
+FROM node:20-alpine AS build-dependencies
+
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+
+# Install all dependencies including dev (for building)
+# This layer is cached when package.json doesn't change
+RUN npm ci --force && \
+    npm cache clean --force
+
+# Stage 3: Builder (source code and build)
 FROM node:20-alpine AS builder
 
 # Build arguments
+ARG VERSION=dev
+ARG BUILD_DATE
+ARG VCS_REF
+
+# Add curl for health checks in build stage
+RUN apk add --no-cache curl
+
+WORKDIR /app
+
+# Copy dependencies from previous stage
+COPY --from=build-dependencies /app/node_modules ./node_modules
+COPY package*.json ./
+
+# Copy source code (this layer changes most frequently)
+COPY . .
+
+# Build the application
+RUN npm run build
+
+# Stage 4: Production base (rarely changes)
+FROM nginx:alpine AS production-base
+
+# Install security updates and tools
+# This layer is cached unless base image updates
+RUN apk update && \
+    apk upgrade && \
+    apk add --no-cache curl && \
+    rm -rf /var/cache/apk/* && \
+    # Create non-root user (nginx user already exists)
+    adduser -S nginx -u 1001 -G nginx || true && \
+    # Setup directories
+    mkdir -p /var/cache/nginx && \
+    chown -R nginx:nginx /var/cache/nginx
+
+# Stage 5: Final production image
+FROM production-base AS production
+
+# Build arguments for labels
 ARG VERSION=dev
 ARG BUILD_DATE
 ARG VCS_REF
@@ -16,67 +79,23 @@ LABEL org.opencontainers.image.created=$BUILD_DATE \
       org.opencontainers.image.licenses="MIT" \
       org.opencontainers.image.source="https://github.com/joshuafuller/qrtak"
 
-# Add security scanning tools with pinned versions
-# hadolint ignore=DL3018
-RUN apk add --no-cache \
-    curl \
-    && rm -rf /var/cache/apk/*
-
-# Create non-root user for security
-RUN addgroup -g 1001 -S nodejs && \
-    adduser -S nextjs -u 1001
-
-WORKDIR /app
-
-# Copy package files
-COPY package*.json ./
-
-# Install all dependencies (including dev dependencies for build)
-RUN npm ci && \
-    (npm audit --audit-level=moderate || true)
-
-# Copy source code
-COPY . .
-
-# Build the application
-RUN npm run build
-
-# Production stage with security hardening
-FROM nginx:alpine
-
-# Install security updates and remove unnecessary packages
-# hadolint ignore=DL3018
-RUN apk update && \
-    apk upgrade && \
-    apk add --no-cache \
-    curl \
-    && rm -rf /var/cache/apk/*
-
-# Create non-root user (nginx user already exists in nginx:alpine)
-RUN adduser -S nginx -u 1001 -G nginx || true
-
-# Add version info
-ARG VERSION=dev
+# Set version environment variable
 ENV APP_VERSION=$VERSION
 
-# Copy built files to nginx
-COPY --from=builder /app/dist /usr/share/nginx/html
-
-# Copy docs directory for static JSON/reference files
-COPY docs /usr/share/nginx/html/docs
-
-# Create version file
-RUN echo "{\"version\":\"$VERSION\",\"build_date\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"}" > /usr/share/nginx/html/version.json
-
-# Copy custom nginx config with security headers
+# Copy nginx config first (changes less frequently than app code)
 COPY nginx.conf /etc/nginx/nginx.conf
 
-# Set proper permissions
-RUN chown -R nginx:nginx /usr/share/nginx/html && \
-    chmod -R 755 /usr/share/nginx/html
+# Copy static docs (changes occasionally)
+COPY docs /usr/share/nginx/html/docs
 
-# Ensure nginx can write to its cache directory
-RUN mkdir -p /var/cache/nginx && chown -R nginx:nginx /var/cache/nginx
+# Copy built application (changes most frequently)
+COPY --from=builder /app/dist /usr/share/nginx/html
+
+# Create version file
+RUN echo "{\"version\":\"$VERSION\",\"build_date\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"}" > /usr/share/nginx/html/version.json && \
+    # Set proper permissions
+    chown -R nginx:nginx /usr/share/nginx/html && \
+    chmod -R 755 /usr/share/nginx/html
 
 # Switch to non-root user
 USER nginx
@@ -89,4 +108,4 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
     CMD curl -f http://localhost/ || exit 1
 
 # Start nginx
-CMD ["nginx", "-g", "daemon off;"] 
+CMD ["nginx", "-g", "daemon off;"]
