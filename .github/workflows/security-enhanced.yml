@@ -65,7 +65,7 @@ jobs:
     - name: Install dependencies and ESLint Security
       run: |
         npm ci
-        npm install --save-dev eslint-plugin-security@latest
+        npm install eslint-plugin-security@latest
       env:
         PUPPETEER_SKIP_DOWNLOAD: true
         
@@ -245,7 +245,7 @@ jobs:
       uses: github/codeql-action/upload-sarif@v3
       if: always()
       with:
-        sarif_file: results.sarif
+        sarif_file: anchore-results.sarif
         category: grype-sbom
 
   # Supply Chain Security
