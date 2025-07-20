@@ -1,3 +1,10 @@
+## [1.0.2](https://github.com/joshuafuller/qrtak/compare/v1.0.1...v1.0.2) (2025-07-20)
+
+
+### Bug Fixes
+
+* use npm commands instead of npx in optimized workflow ([80bc072](https://github.com/joshuafuller/qrtak/commit/80bc072ff31c5b604a585c56c9b89b2a797d35f9))
+
 ## [1.0.1](https://github.com/joshuafuller/qrtak/compare/v1.0.0...v1.0.1) (2025-07-20)
 
 
