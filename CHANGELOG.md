@@ -1,3 +1,10 @@
+## [1.4.3](https://github.com/joshuafuller/qrtak/compare/v1.4.2...v1.4.3) (2025-07-20)
+
+
+### Bug Fixes
+
+* resolve workflow failures and test issues ([79c6ca0](https://github.com/joshuafuller/qrtak/commit/79c6ca097a29b3ff439b58d35bf5652d1eed22d4))
+
 ## [1.4.2](https://github.com/joshuafuller/qrtak/compare/v1.4.1...v1.4.2) (2025-07-20)
 
 
