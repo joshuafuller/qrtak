@@ -1,3 +1,10 @@
+# [1.4.0](https://github.com/joshuafuller/qrtak/compare/v1.3.2...v1.4.0) (2025-07-20)
+
+
+### Features
+
+* add comprehensive container security scanning with Trivy and Grype ([00e659a](https://github.com/joshuafuller/qrtak/commit/00e659a1a9b87d092a360b16464eedb26f9dd4ab))
+
 ## [1.3.2](https://github.com/joshuafuller/qrtak/compare/v1.3.1...v1.3.2) (2025-07-20)
 
 
