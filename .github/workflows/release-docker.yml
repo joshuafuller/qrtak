@@ -150,13 +150,13 @@ jobs:
       - name: Generate SBOM
         uses: anchore/sbom-action@v0
         with:
-          image: ${{ env.REGISTRY }}/${{ github.repository }}:${{ github.event.release.tag_name }}
+          image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:v${{ inputs.version }}
           format: spdx-json
           output-file: sbom.spdx.json
 
       - name: Upload SBOM
         uses: actions/upload-artifact@v4
         with:
-          name: sbom-${{ github.event.release.tag_name }}
+          name: sbom-v${{ inputs.version }}
           path: sbom.spdx.json
           retention-days: 90
