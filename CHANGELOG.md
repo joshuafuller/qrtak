@@ -1,3 +1,10 @@
+## [1.4.2](https://github.com/joshuafuller/qrtak/compare/v1.4.1...v1.4.2) (2025-07-20)
+
+
+### Bug Fixes
+
+* resolve npm deprecation warnings with dependency overrides ([641a2ce](https://github.com/joshuafuller/qrtak/commit/641a2ce74eecec6e05233fd9ff209d03573fb643))
+
 ## [1.4.1](https://github.com/joshuafuller/qrtak/compare/v1.4.0...v1.4.1) (2025-07-20)
 
 
