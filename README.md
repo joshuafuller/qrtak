@@ -4,7 +4,7 @@
 
 [![License](https://img.shields.io/badge/license-MIT-brightgreen)](LICENSE) [![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](https://github.com/joshuafuller/qrtak/actions) [![Deploy Status](https://img.shields.io/badge/deploy-success-brightgreen)](https://joshuafuller.github.io/qrtak/) [![Node.js](https://img.shields.io/badge/Node.js-20.x-brightgreen)](https://nodejs.org/) [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/joshuafuller/qrtak)
 
-[![Security Scan](https://github.com/joshuafuller/qrtak/actions/workflows/security-enhanced.yml/badge.svg)](https://github.com/joshuafuller/qrtak/actions/workflows/security-enhanced.yml) [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/joshuafuller/qrtak/badge)](https://scorecard.dev/viewer/?uri=github.com/joshuafuller/qrtak) [![Vulnerabilities](https://img.shields.io/snyk/vulnerabilities/github/joshuafuller/qrtak?label=vulnerabilities)](https://github.com/joshuafuller/qrtak/security)
+[![Security Scan](https://github.com/joshuafuller/qrtak/actions/workflows/security-enhanced.yml/badge.svg)](https://github.com/joshuafuller/qrtak/actions/workflows/security-enhanced.yml) [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/joshuafuller/qrtak/badge)](https://scorecard.dev/viewer/?uri=github.com/joshuafuller/qrtak) [![Vulnerabilities](https://img.shields.io/snyk/vulnerabilities/github/joshuafuller/qrtak?label=vulnerabilities)](https://github.com/joshuafuller/qrtak/security) [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/10934/badge)](https://bestpractices.coreinfrastructure.org/projects/10934)
 
 ---
 
