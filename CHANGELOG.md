@@ -1,3 +1,10 @@
+## [1.0.3](https://github.com/joshuafuller/qrtak/compare/v1.0.2...v1.0.3) (2025-07-20)
+
+
+### Bug Fixes
+
+* remove cosign signing to fix CI/CD failures ([0b99a5a](https://github.com/joshuafuller/qrtak/commit/0b99a5a8a23b8df9ae2f9eb341e000a595ee7940))
+
 ## [1.0.2](https://github.com/joshuafuller/qrtak/compare/v1.0.1...v1.0.2) (2025-07-20)
 
 
