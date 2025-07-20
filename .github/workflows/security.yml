@@ -1,4 +1,4 @@
-name: Security Scan
+name: Security Essentials
 
 on:
   push:

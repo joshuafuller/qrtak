@@ -1,4 +1,4 @@
-name: Enhanced Security Pipeline
+name: Comprehensive Security Scan
 
 on:
   push:
