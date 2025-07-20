@@ -8,7 +8,9 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install production dependencies only
-RUN npm ci --omit=dev --force
+# Fix for Rollup issues - use npm install instead of ci
+RUN rm -rf node_modules package-lock.json && \
+    npm install --omit=dev
 
 # Stage 2: Build dependencies (includes dev deps)
 FROM node:20-alpine AS build-dependencies
@@ -20,9 +22,10 @@ COPY package*.json ./
 
 # Install all dependencies including dev (for building)
 # This layer is cached when package.json doesn't change
-# Install platform-specific optional dependencies
-# Use --no-optional to skip optional native dependencies that cause issues on ARM
-RUN npm ci --no-optional || npm ci --force --no-optional
+# Fix for Rollup native module issues on different architectures
+RUN rm -rf node_modules package-lock.json && \
+    npm install && \
+    npm cache clean --force
 
 # Stage 3: Builder (source code and build)
 FROM node:20-alpine AS builder
