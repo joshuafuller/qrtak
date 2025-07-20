@@ -1,8 +1,14 @@
-name: Optimized Docker Release
+name: Docker Release
 
 on:
   release:
     types: [published]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to build'
+        required: true
+        type: string
 
 permissions:
   contents: read
