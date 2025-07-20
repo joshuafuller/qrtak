@@ -1,3 +1,10 @@
+## [1.4.6](https://github.com/joshuafuller/qrtak/compare/v1.4.5...v1.4.6) (2025-07-20)
+
+
+### Bug Fixes
+
+* improve typosquatting detection and verify qrcode package ([cc56ce0](https://github.com/joshuafuller/qrtak/commit/cc56ce0b2755196a6c0152ad75998c99e4e93187))
+
 ## [1.4.5](https://github.com/joshuafuller/qrtak/compare/v1.4.4...v1.4.5) (2025-07-20)
 
 
