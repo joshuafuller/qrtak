@@ -1,3 +1,10 @@
+## [1.2.2](https://github.com/joshuafuller/qrtak/compare/v1.2.1...v1.2.2) (2025-07-20)
+
+
+### Bug Fixes
+
+* replace broken Snyk vulnerability badge ([6cfa6b7](https://github.com/joshuafuller/qrtak/commit/6cfa6b74cd4d23ae6dd77fe185dc96a0c13b3ab8))
+
 ## [1.2.1](https://github.com/joshuafuller/qrtak/compare/v1.2.0...v1.2.1) (2025-07-20)
 
 
