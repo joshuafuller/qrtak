@@ -62,7 +62,7 @@ jobs:
         run: docker build -t qrtak:scan .
 
       - name: Run Grype vulnerability scanner
-        uses: anchore/scan-action@v4
+        uses: anchore/scan-action@v6
         id: grype
         with:
           image: qrtak:scan
