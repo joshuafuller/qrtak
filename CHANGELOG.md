@@ -1,3 +1,10 @@
+## [1.4.5](https://github.com/joshuafuller/qrtak/compare/v1.4.4...v1.4.5) (2025-07-20)
+
+
+### Bug Fixes
+
+* address critical security findings from code scanning ([6ef649c](https://github.com/joshuafuller/qrtak/commit/6ef649cb276ac368144006851094c850f63245a9))
+
 ## [1.4.4](https://github.com/joshuafuller/qrtak/compare/v1.4.3...v1.4.4) (2025-07-20)
 
 
