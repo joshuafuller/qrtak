@@ -30,7 +30,7 @@ jobs:
       - name: Sign artifact
         run: cosign sign-blob --yes --output-signature qrtak-dist.tgz.sig qrtak-dist.tgz
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@<commit-sha>
         with:
           files: |
             qrtak-dist.tgz
