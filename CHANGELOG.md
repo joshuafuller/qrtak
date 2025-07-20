@@ -1,3 +1,10 @@
+## [1.4.7](https://github.com/joshuafuller/qrtak/compare/v1.4.6...v1.4.7) (2025-07-20)
+
+
+### Bug Fixes
+
+* address high priority security findings ([1fd8861](https://github.com/joshuafuller/qrtak/commit/1fd88611aa2f89dbcd7ad497095752df5a14cbf9))
+
 ## [1.4.6](https://github.com/joshuafuller/qrtak/compare/v1.4.5...v1.4.6) (2025-07-20)
 
 
