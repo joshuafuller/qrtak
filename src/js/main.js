@@ -1,4 +1,12 @@
 import QRCode from 'qrcode';
+import {
+  debounce,
+  sanitizeInput,
+  extractHostnameFromURL,
+  isValidHostname,
+  isValidPort,
+  isValidURL
+} from './utils.js';
 
 // ============================================================================
 // Constants and Configuration
@@ -54,106 +62,6 @@ const ERROR_MESSAGES = {
   LOAD_PROFILES_ERROR: 'Error loading profiles'
 };
 
-// ============================================================================
-// Utility Functions
-// ============================================================================
-
-/**
- * Debounce function to limit rate of function calls
- * @param {Function} func - Function to debounce
- * @param {number} wait - Delay in milliseconds
- * @returns {Function} Debounced function
- */
-function debounce (func, wait) {
-  let timeout;
-  return function executedFunction (...args) {
-    const later = () => {
-      clearTimeout(timeout);
-      func.apply(this, args);
-    };
-    clearTimeout(timeout);
-    timeout = setTimeout(later, wait);
-  };
-}
-
-/**
- * Sanitize user input to prevent XSS
- * @param {string} input - User input to sanitize
- * @returns {string} Sanitized input
- */
-function sanitizeInput (input) {
-  const div = document.createElement('div');
-  div.textContent = input;
-  return div.innerHTML;
-}
-
-/**
- * Extract hostname from URL with robust error handling
- * @param {string} url - URL to parse
- * @returns {string} Extracted hostname or empty string
- */
-function extractHostnameFromURL (url) {
-  if (!url || typeof url !== 'string') {
-    return '';
-  }
-
-  try {
-    const trimmedUrl = url.trim();
-    const urlToParse = trimmedUrl.startsWith('http') ? trimmedUrl : `https://${trimmedUrl}`;
-    const urlObj = new URL(urlToParse);
-    return urlObj.hostname;
-  } catch {
-    // Fallback parsing for invalid URLs
-    const urlParts = url.trim().replace(/^https?:\/\//, '').split('/');
-    const [hostPart] = urlParts;
-    const [hostName] = hostPart.split(':');
-    return hostName || '';
-  }
-}
-
-/**
- * Validate hostname/IP address
- * @param {string} hostname - Hostname to validate
- * @returns {boolean} True if valid
- */
-function isValidHostname (hostname) {
-  if (!hostname) {
-    return false;
-  }
-  // Check for IP address
-  const ipPattern = /^(\d{1,3}\.){3}\d{1,3}$/;
-  if (ipPattern.test(hostname)) {
-    const parts = hostname.split('.');
-    return parts.every(part => parseInt(part) >= 0 && parseInt(part) <= 255);
-  }
-  // Check for hostname
-  return CONFIG.PATTERNS.HOSTNAME.test(hostname);
-}
-
-/**
- * Validate port number
- * @param {string|number} port - Port to validate
- * @returns {boolean} True if valid
- */
-function isValidPort (port) {
-  return CONFIG.PATTERNS.PORT.test(String(port));
-}
-
-/**
- * Validate URL
- * @param {string} url - URL to validate
- * @returns {boolean} True if valid
- */
-function isValidURL (url) {
-  try {
-    new URL(url);
-    return true;
-  } catch {
-    return false;
-  }
-}
-
-// ============================================================================
 // Tab Manager Module
 // ============================================================================
 

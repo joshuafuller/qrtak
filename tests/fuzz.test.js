@@ -78,4 +78,4 @@ function fuzzInputValidation(data) {
 module.exports = {
   fuzzQRGeneration,
   fuzzInputValidation
-};
+}
