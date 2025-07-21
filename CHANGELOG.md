@@ -5,6 +5,13 @@
 
 * address high priority security findings ([1fd8861](https://github.com/joshuafuller/qrtak/commit/1fd88611aa2f89dbcd7ad497095752df5a14cbf9))
 
+## [3.0.1](https://github.com/joshuafuller/qrtak/compare/qrtak-v3.0.0...qrtak-v3.0.1) (2025-07-21)
+
+
+### Bug Fixes
+
+* **ci:** checkout before running renovate ([#35](https://github.com/joshuafuller/qrtak/issues/35)) ([4199f92](https://github.com/joshuafuller/qrtak/commit/4199f925daab8e8af910618a45ff791a3b5d26da))
+
 ## [3.0.0](https://github.com/joshuafuller/qrtak/compare/qrtak-v2.0.0...qrtak-v3.0.0) (2025-07-20)
 
 
