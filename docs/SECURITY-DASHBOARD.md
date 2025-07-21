@@ -53,7 +53,7 @@
 - ✅ **Signed Commits** - Verify contributor identity
 - ✅ **Branch Protection** - Require reviews and checks
 - ✅ **Secret Scanning** - Prevent credential exposure
-- ✅ **Automated Updates** - Dependabot for dependencies
+- ✅ **Automated Updates** - Dependabot & Renovate for dependencies
 - ✅ **Security Policy** - Clear vulnerability reporting
 
 ## 📈 Security Metrics
