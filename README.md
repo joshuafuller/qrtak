@@ -224,7 +224,7 @@ QR TAK implements comprehensive security scanning and best practices:
 - **Client-Side Only**: All processing happens in your browser - no data transmitted
 - **Content Security Policy**: Strict CSP headers prevent XSS attacks
 - **Input Validation**: All inputs sanitized to prevent injection
-- **Secure Dependencies**: Automated updates via Dependabot
+- **Secure Dependencies**: Automated updates via Dependabot & Renovate
 - **HTTPS Enforced**: Service worker requires secure contexts
 
 #### Viewing Security Results
