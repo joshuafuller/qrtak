@@ -68,6 +68,7 @@ const ERROR_MESSAGES = {
 
 const TabManager = (function () {
   let currentTab = CONFIG.TABS.ATAK;
+  let lastConfigTab = currentTab;
 
   /**
    * Initialize tab management
@@ -120,6 +121,9 @@ const TabManager = (function () {
     }
 
     currentTab = tabName;
+    if ([CONFIG.TABS.ATAK, CONFIG.TABS.ITAK, CONFIG.TABS.IMPORT].includes(tabName)) {
+      lastConfigTab = tabName;
+    }
   }
 
   /**
@@ -164,7 +168,8 @@ const TabManager = (function () {
   return {
     init,
     switchTab,
-    getCurrentTab: () => currentTab
+    getCurrentTab: () => currentTab,
+    getLastConfigTab: () => lastConfigTab
   };
 })();
 
@@ -410,35 +415,38 @@ const ProfileManager = (function () {
    */
   function getCurrentFormData () {
     const currentTab = TabManager.getCurrentTab();
-    const data = {
-      type: currentTab,
-      timestamp: Date.now()
+    const tabForData = [CONFIG.TABS.ATAK, CONFIG.TABS.ITAK, CONFIG.TABS.IMPORT].includes(currentTab)
+      ? currentTab
+      : TabManager.getLastConfigTab();
+
+    const atak = {
+      host: document.getElementById('atak-host')?.value || '',
+      username: document.getElementById('atak-username')?.value || '',
+      token: document.getElementById('atak-token')?.value || ''
+    };
+    const itak = {
+      description: document.getElementById('itak-description')?.value || '',
+      url: document.getElementById('itak-url')?.value || '',
+      port: document.getElementById('itak-port')?.value || '',
+      protocol: document.getElementById('itak-protocol')?.value || ''
+    };
+    const importData = {
+      url: document.getElementById('import-url')?.value || ''
     };
 
-    switch (currentTab) {
-    case CONFIG.TABS.ATAK: {
-      const host = document.getElementById('atak-host')?.value || '';
-      const username = document.getElementById('atak-username')?.value || '';
-      const token = document.getElementById('atak-token')?.value || '';
-      Object.assign(data, { host, username, token });
-      break;
-    }
-    case CONFIG.TABS.ITAK: {
-      const description = document.getElementById('itak-description')?.value || '';
-      const url = document.getElementById('itak-url')?.value || '';
-      const port = document.getElementById('itak-port')?.value || '';
-      const protocol = document.getElementById('itak-protocol')?.value || '';
-      Object.assign(data, { description, url, port, protocol });
-      break;
-    }
-    case CONFIG.TABS.IMPORT: {
-      const url = document.getElementById('import-url')?.value || '';
-      Object.assign(data, { url });
-      break;
-    }
-    }
+    const savedTabs = [];
+    if (Object.values(atak).some(v => v)) savedTabs.push(CONFIG.TABS.ATAK);
+    if (Object.values(itak).some(v => v)) savedTabs.push(CONFIG.TABS.ITAK);
+    if (importData.url) savedTabs.push(CONFIG.TABS.IMPORT);
 
-    return data;
+    return {
+      type: tabForData,
+      timestamp: Date.now(),
+      savedTabs,
+      atak,
+      itak,
+      import: importData
+    };
   }
 
   /**
@@ -490,59 +498,60 @@ const ProfileManager = (function () {
       return;
     }
 
-    switch (profile.type) {
-    case CONFIG.TABS.ATAK: {
+    const atakData = profile.atak || {
+      host: profile.host,
+      username: profile.username,
+      token: profile.token
+    };
+    const itakData = profile.itak || {
+      description: profile.description,
+      url: profile.url,
+      port: profile.port,
+      protocol: profile.protocol
+    };
+    const importData = profile.import || { url: profile.url };
+
+    const loadedTabs = [];
+
+    if (atakData && (atakData.host || atakData.username || atakData.token)) {
       const hostInput = document.getElementById('atak-host');
       const usernameInput = document.getElementById('atak-username');
       const tokenInput = document.getElementById('atak-token');
 
-      if (hostInput) {
-        hostInput.value = profile.host || '';
-      }
-      if (usernameInput) {
-        usernameInput.value = profile.username || '';
-      }
-      if (tokenInput) {
-        tokenInput.value = profile.token || '';
-      }
+      if (hostInput) hostInput.value = atakData.host || '';
+      if (usernameInput) usernameInput.value = atakData.username || '';
+      if (tokenInput) tokenInput.value = atakData.token || '';
 
       QRGenerator.updateATAKQR();
-      TabManager.switchTab(CONFIG.TABS.ATAK);
-      break;
+      loadedTabs.push(CONFIG.TABS.ATAK);
     }
-    case CONFIG.TABS.ITAK: {
+
+    if (itakData && (itakData.description || itakData.url || itakData.port || itakData.protocol)) {
       const descInput = document.getElementById('itak-description');
       const urlInput = document.getElementById('itak-url');
       const portInput = document.getElementById('itak-port');
       const protocolInput = document.getElementById('itak-protocol');
 
-      if (descInput) {
-        descInput.value = profile.description || '';
-      }
-      if (urlInput) {
-        urlInput.value = profile.url || '';
-      }
-      if (portInput) {
-        portInput.value = profile.port || '8089';
-      }
-      if (protocolInput) {
-        protocolInput.value = profile.protocol || CONFIG.PROTOCOLS.HTTPS;
-      }
+      if (descInput) descInput.value = itakData.description || '';
+      if (urlInput) urlInput.value = itakData.url || '';
+      if (portInput) portInput.value = itakData.port || '8089';
+      if (protocolInput) protocolInput.value = itakData.protocol || CONFIG.PROTOCOLS.HTTPS;
 
       QRGenerator.updateiTAKQR();
-      TabManager.switchTab(CONFIG.TABS.ITAK);
-      break;
+      loadedTabs.push(CONFIG.TABS.ITAK);
     }
-    case CONFIG.TABS.IMPORT: {
+
+    if (importData && importData.url) {
       const urlInput = document.getElementById('import-url');
-      if (urlInput) {
-        urlInput.value = profile.url || '';
-      }
+      if (urlInput) urlInput.value = importData.url || '';
 
       QRGenerator.updateImportQR();
-      TabManager.switchTab(CONFIG.TABS.IMPORT);
-      break;
+      loadedTabs.push(CONFIG.TABS.IMPORT);
     }
+
+    const initialTab = profile.savedTabs?.[0] || profile.type || loadedTabs[0];
+    if (initialTab) {
+      TabManager.switchTab(initialTab);
     }
 
     ModalManager.closeModal();
@@ -581,11 +590,14 @@ const ProfileManager = (function () {
 
     container.innerHTML = profiles.map(profile => {
       const safeProfile = JSON.stringify(profile).replace(/"/g, '&quot;');
+      const tabs = profile.savedTabs?.length
+        ? profile.savedTabs.join(', ').toUpperCase()
+        : (profile.type || '').toUpperCase();
       return `
         <div class="profile-card">
           <h4>${sanitizeInput(profile.name)}</h4>
           <p>${sanitizeInput(profile.description || 'No description')}</p>
-          <p><strong>Type:</strong> ${profile.type.toUpperCase()}</p>
+          <p><strong>Tabs:</strong> ${tabs}</p>
           <p><strong>Created:</strong> ${new Date(profile.timestamp).toLocaleDateString()}</p>
           <div class="profile-actions">
             <button class="btn btn-primary" onclick="ProfileManager.loadProfile(${safeProfile})">Load</button>
