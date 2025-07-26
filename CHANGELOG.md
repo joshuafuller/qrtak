@@ -5,6 +5,13 @@
 
 * address high priority security findings ([1fd8861](https://github.com/joshuafuller/qrtak/commit/1fd88611aa2f89dbcd7ad497095752df5a14cbf9))
 
+## [3.1.0](https://github.com/joshuafuller/qrtak/compare/qrtak-v3.0.2...qrtak-v3.1.0) (2025-07-26)
+
+
+### Features
+
+* allow profiles to save all tabs ([#46](https://github.com/joshuafuller/qrtak/issues/46)) ([35d0ba2](https://github.com/joshuafuller/qrtak/commit/35d0ba278e5669c396d829470f126c73e950c316))
+
 ## [3.0.2](https://github.com/joshuafuller/qrtak/compare/qrtak-v3.0.1...qrtak-v3.0.2) (2025-07-26)
 
 
