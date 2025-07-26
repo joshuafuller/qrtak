@@ -17,18 +17,18 @@
     <meta name="apple-mobile-web-app-title" content="TAK QR">
     
     <!-- Icons -->
-    <link rel="icon" type="image/x-icon" href="/favicon.ico">
-    <link rel="apple-touch-icon" href="/icon-192.png">
-    <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
-    <link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
     
     <!-- Styles & Scripts -->
-    <link rel="stylesheet" href="/src/styles/main.css">
-    <script type="module" src="/src/js/main.js"></script>
+    <link rel="stylesheet" href="src/styles/main.css">
+    <script type="module" src="src/js/main.js"></script>
     
     <!-- PWA Manifest -->
-    <link rel="manifest" href="/manifest.webmanifest">
-    <script id="vite-plugin-pwa:register-sw" src="/registerSW.js"></script>
+    <link rel="manifest" href="manifest.webmanifest">
+    <script id="vite-plugin-pwa:register-sw" src="registerSW.js"></script>
 </head>
 <body>
     <a href="#main-content" class="sr-only skip-link">Skip to main content</a>
@@ -429,7 +429,10 @@
         <!-- Footer -->
         <footer class="footer">
             <div class="container">
-                <p>&copy; 2025 TAK Onboarding Platform. Offline-first PWA for rapid TAK deployment.</p>
+                <p>&copy; 2025 TAK Onboarding Platform. Offline-first PWA for rapid TAK deployment.
+                    <span id="app-version"></span>
+                    <span id="update-notice" class="update-notice" style="display:none;">(update available)</span>
+                </p>
             </div>
         </footer>
     </div>
