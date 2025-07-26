@@ -516,12 +516,20 @@ a:hover {
   background-color: var(--color-background);
   border-radius: var(--radius-md);
   margin-bottom: var(--spacing-lg);
+  position: relative;
+  overflow: hidden;
 }
 
 .qr-container canvas {
   max-width: 100%;
   height: auto;
   image-rendering: crisp-edges;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: opacity var(--transition-fast);
 }
 
 .qr-placeholder {

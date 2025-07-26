@@ -200,11 +200,30 @@ const QRGenerator = (function () {
         }
       });
 
-      container.innerHTML = '';
+      // Remove placeholder if present
+      const placeholder = container.querySelector('.qr-placeholder');
+      if (placeholder) {
+        placeholder.remove();
+      }
+
+      const oldCanvas = container.querySelector('canvas');
+
       container.setAttribute('aria-label', 'QR code generated successfully');
       if (canvas && typeof canvas === 'object' && canvas.nodeType === 1) {
+        canvas.style.opacity = '0';
         container.appendChild(canvas);
+
+        // Trigger fade-in
+        canvas.offsetHeight; // force reflow
+        canvas.style.opacity = '1';
+
+        // Fade out old canvas if it exists
+        if (oldCanvas) {
+          oldCanvas.style.opacity = '0';
+          oldCanvas.addEventListener('transitionend', () => oldCanvas.remove(), { once: true });
+        }
       }
+
       return canvas;
     } catch (error) {
       // eslint-disable-next-line no-console
