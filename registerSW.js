@@ -9,6 +9,20 @@ if ('serviceWorker' in navigator) {
       ? new URL('.', currentScript.src).pathname
       : '/';
 
-    navigator.serviceWorker.register(`${base}sw.js`, { scope: base });
+    navigator.serviceWorker.register(`${base}sw.js`, { scope: base }).then((reg) => {
+      reg.addEventListener('updatefound', () => {
+        const newWorker = reg.installing;
+        if (newWorker) {
+          newWorker.addEventListener('statechange', () => {
+            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+              if (window.showNotification) {
+                window.showNotification('New version available. Refreshing...', 'info');
+              }
+              setTimeout(() => window.location.reload(), 1000);
+            }
+          });
+        }
+      });
+    });
   });
 }

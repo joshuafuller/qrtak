@@ -4,9 +4,9 @@ export const PATTERNS = {
   URL: /^https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)$/
 };
 
-export function debounce(func, wait) {
+export function debounce (func, wait) {
   let timeout;
-  return function executedFunction(...args) {
+  return function executedFunction (...args) {
     const later = () => {
       clearTimeout(timeout);
       func.apply(this, args);
@@ -16,13 +16,13 @@ export function debounce(func, wait) {
   };
 }
 
-export function sanitizeInput(input) {
+export function sanitizeInput (input) {
   const div = document.createElement('div');
   div.textContent = input;
   return div.innerHTML;
 }
 
-export function extractHostnameFromURL(url) {
+export function extractHostnameFromURL (url) {
   if (!url || typeof url !== 'string') {
     return '';
   }
@@ -40,7 +40,7 @@ export function extractHostnameFromURL(url) {
   }
 }
 
-export function isValidHostname(hostname) {
+export function isValidHostname (hostname) {
   if (!hostname) {
     return false;
   }
@@ -52,11 +52,11 @@ export function isValidHostname(hostname) {
   return PATTERNS.HOSTNAME.test(hostname);
 }
 
-export function isValidPort(port) {
+export function isValidPort (port) {
   return PATTERNS.PORT.test(String(port));
 }
 
-export function isValidURL(url) {
+export function isValidURL (url) {
   try {
     new URL(url);
     return true;
