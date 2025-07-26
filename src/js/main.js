@@ -1,3 +1,4 @@
+/* global __APP_VERSION__ */
 import QRCode from 'qrcode';
 import {
   debounce,
@@ -1204,6 +1205,41 @@ const ThemeManager = (() => {
 })();
 
 // ============================================================================
+// Version Manager
+// ============================================================================
+const VersionManager = (() => {
+  const VERSION_KEY = 'appVersion';
+  const CURRENT_VERSION = typeof __APP_VERSION__ !== 'undefined' ? __APP_VERSION__ : 'dev';
+
+  async function init () {
+    const versionEl = document.getElementById('app-version');
+    const noticeEl = document.getElementById('update-notice');
+
+    if (versionEl) {
+      versionEl.textContent = `v${CURRENT_VERSION}`;
+    }
+
+    const previous = localStorage.getItem(VERSION_KEY);
+    if (previous && previous !== CURRENT_VERSION) {
+      UIController.showNotification(`Updated to version ${CURRENT_VERSION}`, 'success');
+    }
+    localStorage.setItem(VERSION_KEY, CURRENT_VERSION);
+
+    try {
+      const res = await fetch('version.json', { cache: 'no-store' });
+      const data = await res.json();
+      if (noticeEl) {
+        noticeEl.style.display = data.version !== CURRENT_VERSION ? 'inline' : 'none';
+      }
+    } catch {
+      // ignore fetch errors (likely offline)
+    }
+  }
+
+  return { init };
+})();
+
+// ============================================================================
 // Application Initialization
 // ============================================================================
 
@@ -1220,9 +1256,16 @@ async function initializeApp () {
   ProfileManager.init();
   ModalManager.init();
   HelpManager.init();
+  VersionManager.init();
 
   // Register service worker (handled by Vite PWA plugin)
   // Custom registration logic can be added here if needed
+
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      VersionManager.init();
+    });
+  }
 }
 
 // Initialize app when DOM is ready

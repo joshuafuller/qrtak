@@ -1124,6 +1124,16 @@ a:hover {
   font-size: var(--font-size-sm);
 }
 
+[data-theme="dark"] .footer {
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+}
+
+.update-notice {
+  color: var(--color-warning);
+  margin-left: var(--spacing-sm);
+}
+
 /* ==========================================================================
    Utility Classes
    ========================================================================== */
