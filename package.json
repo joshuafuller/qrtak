@@ -42,7 +42,7 @@
     "jest": "^30.0.0",
     "jest-environment-jsdom": "^30.0.4",
     "vite": "^7.0.4",
-    "vite-plugin-pwa": "^1.0.1"
+    "vite-plugin-pwa": "^1.0.2"
   },
   "dependencies": {
     "qrcode": "^1.5.3"
