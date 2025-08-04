@@ -1,6 +1,6 @@
 # Multi-stage build optimized for caching and speed
 # Stage 1: Dependencies (cached separately from source)
-FROM node:20-alpine AS dependencies
+FROM node:24-alpine AS dependencies
 
 WORKDIR /app
 
@@ -13,7 +13,7 @@ RUN rm -rf node_modules package-lock.json && \
     npm install --omit=dev
 
 # Stage 2: Build dependencies (includes dev deps)
-FROM node:20-alpine AS build-dependencies
+FROM node:24-alpine AS build-dependencies
 
 WORKDIR /app
 
@@ -28,7 +28,7 @@ RUN rm -rf node_modules package-lock.json && \
     npm cache clean --force
 
 # Stage 3: Builder (source code and build)
-FROM node:20-alpine AS builder
+FROM node:24-alpine AS builder
 
 # Build arguments
 ARG VERSION=dev
