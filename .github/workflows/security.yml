@@ -106,7 +106,7 @@ jobs:
 
       # Trivy Scan
       - name: Run Trivy
-        uses: aquasecurity/trivy-action@6e7b7d1fd3e4fef0c5fa8cce1229c54b2c9bd0d8 # v0.24.0
+        uses: aquasecurity/trivy-action@dc5a429b52fcf669ce959baa2c2dd26090d2a6c4 # v0.32.0
         with:
           image-ref: qrtak:scan
           format: 'sarif'
