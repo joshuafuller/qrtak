@@ -39,7 +39,7 @@
     "eslint": "^9.31.0",
     "eslint-plugin-security": "^3.0.1",
     "fast-xml-parser": "^5.2.5",
-    "jest": "^30.0.0",
+    "jest": "^30.0.5",
     "jest-environment-jsdom": "^30.0.4",
     "vite": "^7.0.4",
     "vite-plugin-pwa": "^1.0.1"
