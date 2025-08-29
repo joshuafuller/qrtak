@@ -51,7 +51,7 @@ COPY . .
 RUN npm run build
 
 # Stage 4: Production base (rarely changes)
-FROM nginx:1.27-alpine AS production-base
+FROM nginx:1.29.1-alpine AS production-base
 
 # Install security updates and tools
 # This layer is cached unless base image updates

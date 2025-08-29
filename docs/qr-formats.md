@@ -111,7 +111,7 @@ iTAK does not use the `tak://` URI scheme for enrollment. Instead, it supports a
 ---
 
 ## 4. References
-- [ATAK 5.2 Change Log - QR Code Support](https://wiki.tak.gov/display/DEV/ATAK+Change+Log+18+July+2024+Version+5.2) - Official QR code specification
+- [ATAK Scheme Handling aka "tak://"](https://wiki.tak.gov/spaces/DEV/pages/125370826/ATAK+Scheme+Handling+aka+tak)
 - [ATAK Community Wiki](https://github.com/deptofdefense/AndroidTacticalAssaultKit-CIV/wiki)
 - [myTeckNet QR Code Registrations with TAK](https://mytecknet.com/tak-qr-codes/)
 - [ASCII Encoding Reference](https://www.w3schools.com/tags/ref_urlencode.ASP)
