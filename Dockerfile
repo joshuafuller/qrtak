@@ -95,6 +95,11 @@ COPY docs /usr/share/nginx/html/docs
 # Copy built application (changes most frequently)
 COPY --from=builder /app/dist /usr/share/nginx/html
 
+# Create writable packages directory and set ownership
+RUN mkdir -p /usr/share/nginx/html/packages && \
+    chown -R nginx:nginx /usr/share/nginx/html/packages && \
+    chmod -R 775 /usr/share/nginx/html/packages
+
 # Create version file
 RUN echo "{\"version\":\"$VERSION\",\"build_date\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"}" > /usr/share/nginx/html/version.json && \
     # Set proper permissions
