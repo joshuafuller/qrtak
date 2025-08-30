@@ -1081,7 +1081,7 @@ const ProfileManager = (function () {
         tokenInput.value = atakData.token || '';
       }
 
-      QRGenerator.updateATAKQR();
+      QRGenerator.updateATAKQRCore();
       loadedTabs.push(CONFIG.TABS.ATAK);
     }
 
@@ -1104,7 +1104,7 @@ const ProfileManager = (function () {
         protocolInput.value = itakData.protocol || CONFIG.PROTOCOLS.HTTPS;
       }
 
-      QRGenerator.updateiTAKQR();
+      QRGenerator.updateiTAKQRCore();
       loadedTabs.push(CONFIG.TABS.ITAK);
     }
 
@@ -1114,7 +1114,7 @@ const ProfileManager = (function () {
         urlInput.value = importData.url || '';
       }
 
-      QRGenerator.updateImportQR();
+      QRGenerator.updateImportQRCore();
       loadedTabs.push(CONFIG.TABS.IMPORT);
     }
 
