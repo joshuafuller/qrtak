@@ -146,6 +146,9 @@ describe('populateATAKFromiTAK', () => {
   });
 });
 
+// NOTE: These tests have been disabled as we've merged ATAK and iTAK tabs into a unified TAK Configuration tab
+// The transfer functions are no longer needed since both modes share the same fields now
+/*
 describe('transferDataFromATAKToiTAK', () => {
   beforeEach(() => {
     document.body.innerHTML = `
@@ -199,3 +202,4 @@ describe('transferDataFromiTAKToATAK', () => {
     expect(document.getElementById('atak-host').value).toBe('existing.com');
   });
 });
+*/
