@@ -48,7 +48,7 @@ jobs:
 
       # Secret Detection
       - name: TruffleHog Secret Scan
-        uses: trufflesecurity/trufflehog@a3e60d93ff6c5ac4cfdb2b5f87bffcc59db72c77 # v3.90.5
+        uses: trufflesecurity/trufflehog@0f58ae7c5036094a1e3e750d18772af92821b503 # v3.90.5
         with:
           base: "${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before || github.event.repository.default_branch }}"
           head: "${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}"
@@ -106,7 +106,7 @@ jobs:
 
       # Trivy Scan
       - name: Run Trivy
-        uses: aquasecurity/trivy-action@207fdf7c1a0076bc1819cf984ee91cf7d3c0e08f # v0.32.0
+        uses: aquasecurity/trivy-action@dc5a429b52fcf669ce959baa2c2dd26090d2a6c4 # v0.32.0
         with:
           image-ref: qrtak:scan
           format: 'sarif'
@@ -123,7 +123,7 @@ jobs:
 
       # Grype Scan
       - name: Run Grype
-        uses: anchore/scan-action@2c87c4b93e69c87bc2e68b12beeb63f00c66ca09 # v6.5.1
+        uses: anchore/scan-action@1638637db639e0ade3258b51db49a9a137574c3e # v6.5.1
         id: grype
         with:
           image: qrtak:scan
