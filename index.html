@@ -85,8 +85,7 @@
             <div class="container">
                 <!-- Tab Navigation -->
                 <div class="tabs" role="tablist" aria-label="Configuration options">
-                    <button class="tab-btn active" data-tab="atak" role="tab" aria-selected="true" aria-controls="atak-tab">ATAK Enroll</button>
-                    <button class="tab-btn" data-tab="itak" role="tab" aria-selected="false" aria-controls="itak-tab">iTAK Config</button>
+                    <button class="tab-btn active" data-tab="tak-config" role="tab" aria-selected="true" aria-controls="tak-config-tab">TAK Config</button>
                     <button class="tab-btn" data-tab="import" role="tab" aria-selected="false" aria-controls="import-tab">URL Import</button>
                     <button class="tab-btn" data-tab="packages" role="tab" aria-selected="false" aria-controls="packages-tab">Data Package Builder</button>
                     <button class="tab-btn" data-tab="preferences" role="tab" aria-selected="false" aria-controls="preferences-tab">Preferences</button>
@@ -96,104 +95,130 @@
 
                 <!-- Tab Content -->
                 <div class="tab-content">
-                    <!-- ATAK Enroll Tab -->
-                    <div class="tab-pane active" id="atak-tab" role="tabpanel" aria-labelledby="atak-btn">
+                    <!-- Unified TAK Configuration Tab -->
+                    <div class="tab-pane active" id="tak-config-tab" role="tabpanel" aria-labelledby="tak-config-btn">
                         <div class="form-section">
-                            <h2>ATAK Enrollment Configuration</h2>
-                            <p class="form-description">Configure ATAK client enrollment for Android devices</p>
-                            <div id="atak-data-status" class="data-status" style="display: none;">
-                                <span class="status-icon">ℹ️</span>
-                                <span class="status-text">Server details shared with iTAK tab</span>
+                            <h2>TAK Configuration</h2>
+                            <p class="form-description">Configure TAK clients for rapid deployment</p>
+                            
+                            <!-- Platform Toggle -->
+                            <div class="tak-mode-toggle">
+                                <input type="radio" id="mode-atak" name="tak-mode" value="atak" checked>
+                                <label for="mode-atak">ATAK</label>
+                                <input type="radio" id="mode-itak" name="tak-mode" value="itak">
+                                <label for="mode-itak">iTAK</label>
+                                <div class="slider"></div>
                             </div>
-                            <form id="atak-form" class="config-form">
-                                <div class="form-group">
-                                    <label for="atak-host">Server Hostname/IP:</label>
-                                    <input type="text" id="atak-host" name="host" placeholder="tak.example.com or 192.168.1.100" required>
-                                    <div class="help-text">Enter your TAK server's hostname or IP address (without https://)</div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="atak-username">Username:</label>
-                                    <input type="text" id="atak-username" name="username" placeholder="user123" required>
-                                    <div class="help-text">Your TAK server username</div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="atak-token">Token/Password:</label>
-                                    <input type="password" id="atak-token" name="token" placeholder="your-token" required>
-                                    <div class="warning">
-                                        ⚠️ Warning: Password will be stored in plaintext in the QR code. Use only in controlled environments!
+                            
+                            <div id="platform-description" class="platform-info">
+                                <span class="platform-icon">🤖</span>
+                                <span class="platform-text">Configuring for Android devices (ATAK)</span>
+                            </div>
+                            <form id="tak-config-form" class="config-form">
+                                <!-- Essential Configuration -->
+                                <div class="essential-fields">
+                                    <h3 class="section-title">Essential Configuration</h3>
+                                    
+                                    <!-- Server Hostname (always visible) -->
+                                    <div class="form-group">
+                                        <label for="tak-host">Server Hostname/IP:</label>
+                                        <input type="text" id="tak-host" name="host" placeholder="tak.example.com or 192.168.1.100" required>
+                                        <div class="help-text">Enter your TAK server's hostname or IP address</div>
+                                    </div>
+                                    
+                                    <!-- Platform-Specific Essential Fields -->
+                                    <div class="platform-fields">
+                                        <!-- ATAK essentials -->
+                                        <div class="atak-fields" data-platform="atak">
+                                            <div class="form-group">
+                                                <label for="tak-username">Username:</label>
+                                                <input type="text" id="tak-username" name="username" placeholder="user123">
+                                                <div class="help-text">Your TAK server username</div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="tak-token">Password/Token:</label>
+                                                <input type="password" id="tak-token" name="token" placeholder="your-password">
+                                                <div class="warning">
+                                                    ⚠️ Warning: Password will be stored in plaintext in the QR code. Use only in controlled environments!
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- iTAK essentials -->
+                                        <div class="itak-fields" data-platform="itak" style="display: none;">
+                                            <div class="form-group">
+                                                <label for="tak-description">Server Description:</label>
+                                                <input type="text" id="tak-description" name="description" placeholder="My TAK Server" required>
+                                                <div class="help-text">A friendly name for this server configuration</div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="form-group">
-                                    <label for="atak-ask-creds" style="display:flex;align-items:center;gap:.5rem;">
-                                        <input type="checkbox" id="atak-ask-creds"> Prompt for credentials on device (host-only enroll)
-                                    </label>
-                                    <div class="help-text">Builds tak://com.atakmap.app/enroll with only host. ATAK 5.1+ may open and allow manual credential entry.</div>
+                                
+                                <!-- Advanced Settings -->
+                                <details class="advanced-settings">
+                                    <summary class="advanced-toggle">
+                                        <span class="toggle-icon">▶</span>
+                                        Advanced Settings
+                                    </summary>
+                                    <div class="advanced-content">
+                                        <div class="form-row">
+                                            <div class="form-group">
+                                                <label for="tak-port">Port:</label>
+                                                <input type="number" id="tak-port" name="port" placeholder="8089" value="8089">
+                                                <div class="help-text">Default: 8089</div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="tak-protocol">Protocol:</label>
+                                                <select id="tak-protocol" name="protocol">
+                                                    <option value="https">HTTPS (Secure)</option>
+                                                    <option value="http">HTTP</option>
+                                                </select>
+                                                <div class="help-text">Default: HTTPS</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </details>
+                                
+                                <!-- Options Section -->
+                                <div class="options-section">
+                                    <!-- ATAK options -->
+                                    <div class="atak-fields" data-platform="atak">
+                                        <h3 class="section-title">Options</h3>
+                                        <div class="form-group checkbox-group">
+                                            <label class="checkbox-label">
+                                                <input type="checkbox" id="tak-ask-creds">
+                                                <span>Prompt for credentials on device (host-only enroll)</span>
+                                            </label>
+                                            <div class="help-text">Creates a host-only QR code. ATAK 5.1+ will prompt for username and password after scanning.</div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- iTAK info -->
+                                    <div class="itak-fields" data-platform="itak" style="display: none;">
+                                        <div class="info-box">
+                                            <span class="info-icon">ℹ️</span>
+                                            <div>
+                                                <strong>Authentication:</strong> iTAK will prompt for username and password after scanning the QR code. The QR only contains server connection information.
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </form>
                         </div>
                         <div class="qr-section">
                             <h3>Generated QR Code</h3>
-                            <p class="qr-description">Scan this QR code with ATAK to automatically configure the connection</p>
-                            <div id="atak-qr" class="qr-container">
+                            <p class="qr-description" id="qr-description">Scan this QR code with ATAK to automatically configure the connection</p>
+                            <div id="tak-qr" class="qr-container">
                                 <div class="qr-placeholder">Enter configuration details above</div>
                             </div>
                             <div class="qr-actions">
-                                <button id="atak-download" class="btn btn-primary" disabled>Download PNG</button>
-                                <button id="atak-copy" class="btn btn-secondary" disabled>Copy URI</button>
+                                <button id="tak-download" class="btn btn-primary" disabled>Download PNG</button>
+                                <button id="tak-copy" class="btn btn-secondary" disabled>Copy URI</button>
                             </div>
                         </div>
                     </div>
 
-                    <!-- iTAK Config Tab -->
-                    <div class="tab-pane" id="itak-tab" role="tabpanel" aria-labelledby="itak-btn">
-                        <div class="form-section">
-                            <h2>iTAK Configuration</h2>
-                            <p class="form-description">Configure iTAK client enrollment for iOS devices. Credentials are entered after scanning the QR code.</p>
-                            <div style="background-color: #e3f2fd; color: #1e293b; border-left: 4px solid #1e40af; padding: 1rem; border-radius: 8px; margin: 1rem 0;">
-                                <span style="font-size: 1.2em;">ℹ️</span> <strong style="color: #1e293b;">Note:</strong> <span style="color: #1e293b;">iTAK will prompt for username/password after scanning. The QR only contains server connection info.</span>
-                            </div>
-                            <div id="itak-data-status" class="data-status" style="display: none;">
-                                <span class="status-icon">ℹ️</span>
-                                <span class="status-text">Server details shared with ATAK tab</span>
-                            </div>
-                            <form id="itak-form" class="config-form">
-                                <div class="form-group">
-                                    <label for="itak-description">Server Description:</label>
-                                    <input type="text" id="itak-description" name="description" placeholder="My TAK Server" required>
-                                    <div class="help-text">A friendly name for this server configuration</div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="itak-url">Server URL:</label>
-                                    <input type="url" id="itak-url" name="url" placeholder="https://tak.example.com or tak.example.com" required>
-                                    <div class="help-text">Your TAK server's URL (with or without https://)</div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="itak-port">Port:</label>
-                                    <input type="number" id="itak-port" name="port" placeholder="8089" value="8089" required>
-                                    <div class="help-text">TAK server port (default: 8089)</div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="itak-protocol">Protocol:</label>
-                                    <select id="itak-protocol" name="protocol" required>
-                                        <option value="https">HTTPS (Recommended)</option>
-                                        <option value="http">HTTP</option>
-                                    </select>
-                                    <div class="help-text">Use HTTPS for secure connections</div>
-                                </div>
-                            </form>
-                        </div>
-                        <div class="qr-section">
-                            <h3>Generated QR Code</h3>
-                            <p class="qr-description">Scan this QR code with iTAK to automatically configure the connection</p>
-                            <div id="itak-qr" class="qr-container">
-                                <div class="qr-placeholder">Enter configuration details above</div>
-                            </div>
-                            <div class="qr-actions">
-                                <button id="itak-download" class="btn btn-primary" disabled>Download PNG</button>
-                                <button id="itak-copy" class="btn btn-secondary" disabled>Copy URI</button>
-                            </div>
-                        </div>
-                    </div>
 
                     <!-- URL Import Tab -->
                     <div class="tab-pane" id="import-tab" role="tabpanel" aria-labelledby="import-btn">

@@ -747,6 +747,195 @@ a:hover {
   outline-offset: -2px;
 }
 
+/* ============================================================================
+   TAK Mode Toggle Styles
+   ============================================================================ */
+
+.tak-mode-toggle {
+  position: relative;
+  display: inline-flex;
+  background: var(--color-background-secondary);
+  border-radius: 24px;
+  padding: 4px;
+  margin: var(--spacing-lg) 0;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.tak-mode-toggle input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.tak-mode-toggle label {
+  padding: 8px 24px;
+  cursor: pointer;
+  transition: color 0.3s ease;
+  z-index: 2;
+  position: relative;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  user-select: none;
+}
+
+.tak-mode-toggle .slider {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  height: calc(100% - 8px);
+  width: calc(50% - 4px);
+  background: var(--color-primary);
+  border-radius: 20px;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.tak-mode-toggle input#mode-itak:checked ~ .slider {
+  transform: translateX(100%);
+}
+
+.tak-mode-toggle input:checked + label {
+  color: white;
+}
+
+/* Platform Info Box */
+.platform-info {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
+  background: var(--color-background-secondary);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--spacing-lg);
+}
+
+.platform-icon {
+  font-size: 1.5rem;
+}
+
+.platform-text {
+  color: var(--color-text-primary);
+  font-weight: 500;
+}
+
+/* Section Titles */
+.section-title {
+  font-size: var(--font-size-md);
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: var(--spacing-lg) 0 var(--spacing-md) 0;
+  padding-bottom: var(--spacing-sm);
+  border-bottom: 1px solid var(--color-border);
+}
+
+/* Form Row for side-by-side fields */
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-md);
+}
+
+@media (max-width: 640px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Checkbox Group Fix */
+.checkbox-group {
+  margin: var(--spacing-md) 0;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-sm);
+  cursor: pointer;
+  font-weight: 500;
+  color: var(--color-text-primary);
+}
+
+.checkbox-label input[type="checkbox"] {
+  margin-top: 2px;
+  cursor: pointer;
+  width: auto;
+  flex-shrink: 0;
+}
+
+.checkbox-label span {
+  flex: 1;
+  line-height: 1.5;
+}
+
+.checkbox-group .help-text {
+  margin-left: calc(1rem + var(--spacing-sm));
+  margin-top: var(--spacing-xs);
+}
+
+/* Info Box for iTAK */
+.info-box {
+  display: flex;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
+  background: #e3f2fd;
+  color: #1e293b;
+  border-left: 4px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  margin: var(--spacing-lg) 0;
+}
+
+.info-box .info-icon {
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+[data-theme="dark"] .info-box {
+  background: rgba(30, 64, 175, 0.1);
+  color: var(--color-text-primary);
+}
+
+/* Advanced Settings Collapsible */
+.advanced-settings {
+  margin: var(--spacing-lg) 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-background-secondary);
+}
+
+.advanced-toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
+  cursor: pointer;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  user-select: none;
+  list-style: none;
+}
+
+.advanced-toggle:hover {
+  background: var(--color-background);
+}
+
+.advanced-toggle .toggle-icon {
+  transition: transform 0.3s ease;
+  font-size: 0.8rem;
+}
+
+details[open] .toggle-icon {
+  transform: rotate(90deg);
+}
+
+.advanced-content {
+  padding: 0 var(--spacing-md) var(--spacing-md) var(--spacing-md);
+}
+
+/* Options Section */
+.options-section {
+  margin-top: var(--spacing-lg);
+}
+
 .profile-item h4 {
   margin-bottom: var(--spacing-xs);
   color: var(--color-primary);
