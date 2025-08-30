@@ -33,9 +33,6 @@ jobs:
           - platform: linux/arm64
             runner: ubuntu-latest
             arch: arm64
-          - platform: linux/arm/v7
-            runner: ubuntu-latest
-            arch: armv7
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -74,7 +71,7 @@ jobs:
           cache-to: |
             type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:buildcache-${{ matrix.arch }},mode=max
           build-args: |
-            VERSION=${{ github.event.release.tag_name }}
+            VERSION=${{ github.event.release.tag_name || inputs.version }}
             BUILD_DATE=${{ steps.meta.outputs.created }}
             VCS_REF=${{ github.sha }}
 
@@ -120,11 +117,13 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            type=raw,value=latest,priority=1000
-            type=raw,value=v${{ inputs.version }}
-            type=semver,pattern={{version}},value=v${{ inputs.version }}
-            type=semver,pattern={{major}}.{{minor}},value=v${{ inputs.version }}
-            type=semver,pattern={{major}},value=v${{ inputs.version }}
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=ref,event=tag
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+            type=raw,value={{tag}},enable=${{ github.event_name == 'workflow_dispatch' }}
+            type=raw,value=v${{ inputs.version }},enable=${{ github.event_name == 'workflow_dispatch' }}
           labels: |
             org.opencontainers.image.title=qrtak
             org.opencontainers.image.description=Generate TAK client configuration QR codes instantly
@@ -149,13 +148,13 @@ jobs:
       - name: Generate SBOM
         uses: anchore/sbom-action@v0
         with:
-          image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:v${{ inputs.version }}
+          image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.event.release.tag_name || format('v{0}', inputs.version) }}
           format: spdx-json
           output-file: sbom.spdx.json
 
       - name: Upload SBOM
         uses: actions/upload-artifact@v4
         with:
-          name: sbom-v${{ inputs.version }}
+          name: sbom-${{ github.event.release.tag_name || format('v{0}', inputs.version) }}
           path: sbom.spdx.json
           retention-days: 90
