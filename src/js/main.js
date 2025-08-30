@@ -422,18 +422,30 @@ const TAKConfigManager = (function () {
     const qrDescription = document.getElementById('qr-description');
 
     if (mode === 'atak') {
-      if (platformIcon) platformIcon.textContent = '🤖';
-      if (platformText) platformText.textContent = 'Configuring for Android devices (ATAK)';
-      if (qrDescription) qrDescription.textContent = 'Scan this QR code with ATAK to automatically configure the connection';
-      
+      if (platformIcon) {
+        platformIcon.textContent = '🤖';
+      }
+      if (platformText) {
+        platformText.textContent = 'Configuring for Android devices (ATAK)';
+      }
+      if (qrDescription) {
+        qrDescription.textContent = 'Scan this QR code with ATAK to automatically configure the connection';
+      }
+
       // Show ATAK fields, hide iTAK fields
       document.querySelectorAll('.atak-fields').forEach(el => el.style.display = 'block');
       document.querySelectorAll('.itak-fields').forEach(el => el.style.display = 'none');
     } else {
-      if (platformIcon) platformIcon.textContent = '📱';
-      if (platformText) platformText.textContent = 'Configuring for iOS devices (iTAK)';
-      if (qrDescription) qrDescription.textContent = 'Scan this QR code with iTAK to automatically configure the connection';
-      
+      if (platformIcon) {
+        platformIcon.textContent = '📱';
+      }
+      if (platformText) {
+        platformText.textContent = 'Configuring for iOS devices (iTAK)';
+      }
+      if (qrDescription) {
+        qrDescription.textContent = 'Scan this QR code with iTAK to automatically configure the connection';
+      }
+
       // Show iTAK fields, hide ATAK fields
       document.querySelectorAll('.itak-fields').forEach(el => el.style.display = 'block');
       document.querySelectorAll('.atak-fields').forEach(el => el.style.display = 'none');
@@ -633,15 +645,21 @@ const TAKConfigManager = (function () {
     // Set common fields
     if (data.host) {
       const hostInput = document.getElementById('tak-host');
-      if (hostInput) hostInput.value = data.host;
+      if (hostInput) {
+        hostInput.value = data.host;
+      }
     }
     if (data.port) {
       const portInput = document.getElementById('tak-port');
-      if (portInput) portInput.value = data.port;
+      if (portInput) {
+        portInput.value = data.port;
+      }
     }
     if (data.protocol) {
       const protocolInput = document.getElementById('tak-protocol');
-      if (protocolInput) protocolInput.value = data.protocol;
+      if (protocolInput) {
+        protocolInput.value = data.protocol;
+      }
     }
 
     // Set mode-specific fields
@@ -657,21 +675,29 @@ const TAKConfigManager = (function () {
     // ATAK fields
     if (data.username) {
       const usernameInput = document.getElementById('tak-username');
-      if (usernameInput) usernameInput.value = data.username;
+      if (usernameInput) {
+        usernameInput.value = data.username;
+      }
     }
     if (data.token) {
       const tokenInput = document.getElementById('tak-token');
-      if (tokenInput) tokenInput.value = data.token;
+      if (tokenInput) {
+        tokenInput.value = data.token;
+      }
     }
     if (data.askCreds !== undefined) {
       const askCredsInput = document.getElementById('tak-ask-creds');
-      if (askCredsInput) askCredsInput.checked = data.askCreds;
+      if (askCredsInput) {
+        askCredsInput.checked = data.askCreds;
+      }
     }
 
     // iTAK fields
     if (data.description) {
       const descriptionInput = document.getElementById('tak-description');
-      if (descriptionInput) descriptionInput.value = data.description;
+      if (descriptionInput) {
+        descriptionInput.value = data.description;
+      }
     }
 
     // Update QR
@@ -1274,7 +1300,7 @@ const ProfileManager = (function () {
    */
   function getCurrentFormData () {
     const currentTab = TabManager.getCurrentTab();
-    
+
     // Always try to get data from the unified TAK config if it has data
     const takData = TAKConfigManager.getCurrentData();
     if (takData && takData.host) {
@@ -1299,7 +1325,7 @@ const ProfileManager = (function () {
         import: {}
       };
     }
-    
+
     // Handle legacy tabs (if they still exist)
     const tabForData = [CONFIG.TABS.ATAK, CONFIG.TABS.ITAK, CONFIG.TABS.IMPORT].includes(currentTab) ?
       currentTab :
@@ -1409,9 +1435,8 @@ const ProfileManager = (function () {
     if (profile.takConfig) {
       TAKConfigManager.loadData(profile.takConfig);
       loadedTabs.push(CONFIG.TABS.TAK_CONFIG);
-    }
-    // Load data into the unified TAK configuration (backward compatibility)
-    else if (atakData && (atakData.host || atakData.username || atakData.token)) {
+    } else if (atakData && (atakData.host || atakData.username || atakData.token)) {
+      // Load data into the unified TAK configuration (backward compatibility)
       // Load ATAK data into unified form
       TAKConfigManager.loadData({
         mode: 'atak',
@@ -2207,5 +2232,6 @@ window.showNotification = UIController.showNotification;
 window.loadProfile = ProfileManager.loadProfile;
 window.deleteProfile = ProfileManager.deleteProfile;
 window.ProfileManager = ProfileManager;
+window.PackageBuilder = PackageBuilder;
 window.showDataStatus = UIController.showDataStatus;
 window.switchTab = TabManager.switchTab;
