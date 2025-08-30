@@ -897,12 +897,12 @@ const PackageBuilder = (function () {
   function buildConfigPref ({ deployment, connectString, caPass, clientPass, callsign, team, role, client }) {
     const isSoft = deployment === 'soft-cert';
     const isITAK = client === 'itak';
-    const certPathPrefix = 'cert'; // per docs, iTAK still references cert/
+    const certPathPrefix = isITAK ? '' : 'certs'; // iTAK expects files in root, ATAK uses certs folder
 
     const extraSoftEntries = isSoft ? `
     <entry key="caPassword" class="class java.lang.String">${sanitizeInput(caPass)}</entry>
     <entry key="clientPassword" class="class java.lang.String">${sanitizeInput(clientPass)}</entry>
-    <entry key="certificateLocation" class="class java.lang.String">${certPathPrefix}/clientCert.p12</entry>` : `
+    <entry key="certificateLocation" class="class java.lang.String">${certPathPrefix ? certPathPrefix + '/' : ''}clientCert.p12</entry>` : `
     <entry key="caPassword0" class="class java.lang.String">${sanitizeInput(caPass)}</entry>
     <entry key="enrollForCertificateWithTrust0" class="class java.lang.Boolean">true</entry>
     <entry key="useAuth0" class="class java.lang.Boolean">true</entry>
@@ -920,11 +920,11 @@ const PackageBuilder = (function () {
     <entry key="description0" class="class java.lang.String">TAK Server</entry>
     <entry key="enabled0" class="class java.lang.Boolean">true</entry>
     <entry key="connectString0" class="class java.lang.String">${sanitizeInput(connectString)}</entry>
-    ${isSoft ? '' : `<entry key="caLocation0" class="class java.lang.String">${certPathPrefix}/caCert.p12</entry>`}
+    ${isSoft ? '' : `<entry key="caLocation0" class="class java.lang.String">${certPathPrefix ? certPathPrefix + '/' : ''}caCert.p12</entry>`}
   </preference>
   <preference version="1" name="com.atakmap.app_preferences">
     <entry key="displayServerConnectionWidget" class="class java.lang.Boolean">true</entry>
-    <entry key="caLocation" class="class java.lang.String">${certPathPrefix}/caCert.p12</entry>
+    <entry key="caLocation" class="class java.lang.String">${certPathPrefix ? certPathPrefix + '/' : ''}caCert.p12</entry>
     ${extraSoftEntries}
     ${optionalUser}
   </preference>
