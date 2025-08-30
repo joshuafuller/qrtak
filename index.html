@@ -22,13 +22,18 @@
     <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
     <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
     
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
     <!-- Styles & Scripts -->
     
     <!-- PWA Manifest -->
     <link rel="manifest" href="/qrtak/assets/manifest-7jrB9ikW.webmanifest">
     <script id="vite-plugin-pwa:register-sw" src="registerSW.js"></script>
-  <script type="module" crossorigin src="/qrtak/assets/index-D_GgyQn8.js"></script>
-  <link rel="stylesheet" crossorigin href="/qrtak/assets/index-CrEtM9LM.css">
+  <script type="module" crossorigin src="/qrtak/assets/index-C6HdJYif.js"></script>
+  <link rel="stylesheet" crossorigin href="/qrtak/assets/index-ClK1UcmG.css">
 <link rel="manifest" href="/qrtak/manifest.webmanifest"><script id="vite-plugin-pwa:register-sw" src="/qrtak/registerSW.js"></script></head>
 <body>
     <a href="#main-content" class="sr-only skip-link">Skip to main content</a>
@@ -83,6 +88,8 @@
                     <button class="tab-btn active" data-tab="atak" role="tab" aria-selected="true" aria-controls="atak-tab">ATAK Enroll</button>
                     <button class="tab-btn" data-tab="itak" role="tab" aria-selected="false" aria-controls="itak-tab">iTAK Config</button>
                     <button class="tab-btn" data-tab="import" role="tab" aria-selected="false" aria-controls="import-tab">URL Import</button>
+                    <button class="tab-btn" data-tab="packages" role="tab" aria-selected="false" aria-controls="packages-tab">Data Package Builder</button>
+                    <button class="tab-btn" data-tab="preferences" role="tab" aria-selected="false" aria-controls="preferences-tab">Preferences</button>
                     <button class="tab-btn" data-tab="profiles" role="tab" aria-selected="false" aria-controls="profiles-tab">Profiles</button>
                     <button class="tab-btn" data-tab="help" role="tab" aria-selected="false" aria-controls="help-tab">Help</button>
                 </div>
@@ -115,6 +122,12 @@
                                     <div class="warning">
                                         ⚠️ Warning: Password will be stored in plaintext in the QR code. Use only in controlled environments!
                                     </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="atak-ask-creds" style="display:flex;align-items:center;gap:.5rem;">
+                                        <input type="checkbox" id="atak-ask-creds"> Prompt for credentials on device (host-only enroll)
+                                    </label>
+                                    <div class="help-text">Builds tak://com.atakmap.app/enroll with only host. ATAK 5.1+ may open and allow manual credential entry.</div>
                                 </div>
                             </form>
                         </div>
@@ -208,6 +221,156 @@
                         </div>
                     </div>
 
+                    <!-- Data Package Builder Tab -->
+                    <div class="tab-pane" id="packages-tab" role="tabpanel" aria-labelledby="packages-btn">
+                        <div class="form-section">
+                            <h2>Data Package Builder</h2>
+                            <p class="form-description">Create ATAK/WinTAK/iTAK data packages with config.pref, MANIFEST.xml, and optional files</p>
+
+                            <form id="package-form" class="config-form">
+                                <div class="form-group">
+                                    <label for="package-client">Target Client:</label>
+                                    <select id="package-client" name="client" required>
+                                        <option value="atak">ATAK / WinTAK</option>
+                                        <option value="itak">iTAK</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="package-deployment">Deployment Type:</label>
+                                    <select id="package-deployment" name="deployment" required>
+                                        <option value="soft-cert">Soft-Certificate</option>
+                                        <option value="auto-enroll">Certificate Auto-Enrollment</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="package-name">Package Name:</label>
+                                    <input id="package-name" type="text" placeholder="TAK_Server.zip" value="TAK_Server.zip" required />
+                                    <div class="help-text">This will be used for the MANIFEST name and the downloaded ZIP filename</div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="package-host">Server Host:</label>
+                                    <input id="package-host" type="text" placeholder="tak.example.com" required />
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="package-port">Port:</label>
+                                    <input id="package-port" type="number" placeholder="8089" value="8089" required />
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="package-protocol">Protocol:</label>
+                                    <select id="package-protocol" required>
+                                        <option value="https">HTTPS (ssl)</option>
+                                        <option value="http">HTTP (tcp)</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="package-ca-pass">CA Password:</label>
+                                    <input id="package-ca-pass" type="password" placeholder="Password for CA cert" />
+                                </div>
+
+                                <div class="form-group" id="client-pass-group">
+                                    <label for="package-client-pass">Client Password (soft-cert only):</label>
+                                    <input id="package-client-pass" type="password" placeholder="Password for client cert" />
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="package-callsign">Callsign (optional):</label>
+                                    <input id="package-callsign" type="text" placeholder="CALLSIGN" />
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="package-team">Team (optional):</label>
+                                    <input id="package-team" type="text" placeholder="Blue" />
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="package-role">Role (optional):</label>
+                                    <input id="package-role" type="text" placeholder="Team Member" />
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Certificates:</label>
+                                    <input id="pkg-ca" type="file" accept=".p12" />
+                                    <input id="pkg-client" type="file" accept=".p12" />
+                                    <div class="help-text">Provide CA cert (.p12) and client cert (.p12) for soft-cert packages</div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Additional Files (optional):</label>
+                                    <div id="package-dropzone" class="dropzone" tabindex="0" aria-label="Drop files here">
+                                        <div class="dropzone-text">Drag & drop files here, or click to select</div>
+                                        <input id="pkg-extra" type="file" multiple style="display:none" />
+                                    </div>
+                                    <div id="package-files-list" class="help-text">No files selected</div>
+                                </div>
+
+                                <div class="qr-actions">
+                                    <button type="button" id="package-build" class="btn btn-primary">Build ZIP</button>
+                                    <button type="button" id="package-reset" class="btn btn-secondary">Reset</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Preferences Tab -->
+                    <div class="tab-pane" id="preferences-tab" role="tabpanel" aria-labelledby="preferences-btn">
+                        <div class="form-section">
+                            <h2>Preference URI Builder</h2>
+                            <p class="form-description">Build a tak://com.atakmap.app/preference URI with one or more key/type/value entries</p>
+
+                             <div class="config-form" style="margin-bottom: var(--spacing-lg);">
+                                    <div class="form-group" style="display:grid;grid-template-columns: 1fr 1fr 2fr auto;gap:var(--spacing-md);align-items:end;position:relative;">
+                                     <div>
+                                         <label for="pref-version">ATAK Version</label>
+                                         <select id="pref-version">
+                                                <option value="5.5">5.5</option>
+                                                <option value="5.4">5.4</option>
+                                                <option value="5.2">5.2</option>
+                                                <option value="5.0">5.0</option>
+                                                <option value="4.8">4.8</option>
+                                         </select>
+                                     </div>
+                                     <div>
+                                         <label for="pref-search">Search Known Preferences</label>
+                                         <input id="pref-search" list="pref-datalist" type="text" placeholder="Type to search (label or key)" />
+                                         <datalist id="pref-datalist"></datalist>
+                                            <div id="pref-suggestions" style="position:absolute; z-index: 10; background: var(--color-surface, #fff); border: 1px solid var(--color-border, #ccc); border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,.12); max-height: 280px; overflow-y: auto; width: calc(100% - 2rem); display: none;"></div>
+                                     </div>
+                                     <div>
+                                         <label for="pref-search-help">Hint</label>
+                                         <div id="pref-search-help" class="help-text">Select a known preference to prefill the Key field below</div>
+                                     </div>
+                                        <div style="display:flex; gap:.5rem;">
+                                            <button id="pref-add-known" class="btn btn-secondary" type="button">Add Selected</button>
+                                            <button id="pref-browse" class="btn btn-secondary" type="button">Browse All</button>
+                                        </div>
+                                 </div>
+                             </div>
+
+                            <div class="config-form" id="pref-form">
+                                <div id="pref-rows"></div>
+                                <div>
+                                    <button id="pref-add" class="btn btn-secondary" type="button">Add Preference</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="qr-section">
+                            <h3>Generated QR Code</h3>
+                            <p class="qr-description">Scan in ATAK to apply preferences</p>
+                            <div id="preferences-qr" class="qr-container">
+                                <div class="qr-placeholder">Add at least one preference</div>
+                            </div>
+                            <div class="qr-actions">
+                                <button id="preferences-download" class="btn btn-primary" disabled>Download PNG</button>
+                                <button id="preferences-copy" class="btn btn-secondary" disabled>Copy URI</button>
+                            </div>
+                        </div>
+                    </div>
 
                     <!-- Profiles Tab -->
                     <div class="tab-pane" id="profiles-tab" role="tabpanel" aria-labelledby="profiles-btn">
