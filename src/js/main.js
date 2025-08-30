@@ -803,12 +803,27 @@ const PackageBuilder = (function () {
       const caFile = document.getElementById('pkg-ca').files?.[0] || null;
       const clientFile = document.getElementById('pkg-client').files?.[0] || null;
 
+      // Validate required fields
+      if (!host) {
+        UIController.showNotification('Please enter a server hostname', 'error');
+        return;
+      }
       if (!isValidHostname(host)) {
         UIController.showNotification(ERROR_MESSAGES.INVALID_HOSTNAME, 'error');
         return;
       }
       if (!isValidPort(port)) {
         UIController.showNotification(ERROR_MESSAGES.INVALID_PORT, 'error');
+        return;
+      }
+      
+      // Validate certificate files
+      if (!caFile) {
+        UIController.showNotification('Please select a CA certificate file', 'error');
+        return;
+      }
+      if (deployment === 'soft-cert' && !clientFile) {
+        UIController.showNotification('Please select a client certificate file for soft-cert deployment', 'error');
         return;
       }
 
@@ -862,52 +877,16 @@ const PackageBuilder = (function () {
 
       const blob = await zip.generateAsync({ type: 'blob' });
 
-      // Compute server URL base (protocol + host + optional base path)
-      const baseUrl = `${window.location.protocol}//${window.location.host}`;
-      const packageId = (window.crypto.randomUUID && window.crypto.randomUUID()) || `${Date.now()}`;
-      const fileName = (name || 'TAK_Server.zip').replace(/[^a-zA-Z0-9._-]/g, '_');
-      const serverPath = `/packages/${packageId}-${fileName}`;
-      const uploadUrl = `${baseUrl}${serverPath}`;
-
-      // Try to upload to server via PUT (requires nginx DAV)
-      let uploaded = false;
-      try {
-        const res = await fetch(uploadUrl, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/zip' },
-          body: blob
-        });
-        uploaded = res.ok;
-      } catch {
-        uploaded = false;
-      }
-
-      if (uploaded) {
-        // Build URL Import QR to hosted package
-        const importUri = `tak://com.atakmap.app/import?url=${encodeURIComponent(uploadUrl)}`;
-        await QRGenerator.updateImportQRCore(); // ensure any existing listeners run
-        const importContainer = document.getElementById('import-qr');
-        if (importContainer) {
-          // Directly render QR for the hosted package
-          await (async () => {
-            const canvas = await QRCode.toCanvas(importUri, { width: CONFIG.QR_SIZE, margin: CONFIG.QR_MARGIN });
-            const old = importContainer.querySelector('canvas');
-            if (old) {
-              old.remove();
-            }
-            importContainer.appendChild(canvas);
-          })();
-        }
-        UIController.showNotification('Package uploaded! Import QR updated to hosted URL', 'success');
-      } else {
-        // Fallback: download locally
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = name || 'TAK_Server.zip';
-        a.click();
-        URL.revokeObjectURL(a.href);
-        UIController.showNotification('Package built (downloaded locally). Hosting unavailable.', 'warning');
-      }
+      // Download the package
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = name || 'TAK_Server.zip';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(a.href);
+      
+      UIController.showNotification(`Package "${name || 'TAK_Server.zip'}" downloaded successfully!`, 'success');
     } catch (e) {
       // eslint-disable-next-line no-console
       console.error(e);
