@@ -5,6 +5,15 @@
 
 * address high priority security findings ([1fd8861](https://github.com/joshuafuller/qrtak/commit/1fd88611aa2f89dbcd7ad497095752df5a14cbf9))
 
+## [3.1.1](https://github.com/joshuafuller/qrtak/compare/qrtak-v3.1.0...qrtak-v3.1.1) (2025-08-30)
+
+
+### Bug Fixes
+
+* correct GitHub Actions SHA references ([92db883](https://github.com/joshuafuller/qrtak/commit/92db883579a5c178abaa54e0c74f855fe25f4218))
+* Dockerfile to reduce vulnerabilities ([b2d48d7](https://github.com/joshuafuller/qrtak/commit/b2d48d7fc3c7c7515f3fcd56713dd6494ca31b4a))
+* regenerate clean package-lock.json ([58b6b3b](https://github.com/joshuafuller/qrtak/commit/58b6b3bf498e08371f3ac5b747cab176a738aec0))
+
 ## [3.1.0](https://github.com/joshuafuller/qrtak/compare/qrtak-v3.0.2...qrtak-v3.1.0) (2025-07-26)
 
 
