@@ -30,5 +30,6 @@
   "pull-request-title-pattern": "chore: release ${version}",
   "pull-request-header": "🚀 Release PR",
   "separate-pull-requests": false,
-  "group-pull-request-title-pattern": "chore: release ${version}"
+  "group-pull-request-title-pattern": "chore: release ${version}",
+  "always-update": true
 }

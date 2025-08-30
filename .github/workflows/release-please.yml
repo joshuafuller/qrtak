@@ -9,6 +9,8 @@ permissions:
   contents: write
   pull-requests: write
   issues: write
+  id-token: write  # Required for artifact attestations
+  attestations: write  # Required for artifact attestations
 
 jobs:
   release-please:
@@ -53,13 +55,11 @@ jobs:
         if: ${{ steps.release.outputs.release_created }}
         run: tar czf qrtak-dist.tgz dist
 
-      - name: Install cosign
+      - name: Generate artifact attestation
         if: ${{ steps.release.outputs.release_created }}
-        uses: sigstore/cosign-installer@d58896d6a1865668819e1d91763c7751a165e159 # v3.9.2
-
-      - name: Sign artifact
-        if: ${{ steps.release.outputs.release_created }}
-        run: cosign sign-blob --yes --output-signature qrtak-dist.tgz.sig qrtak-dist.tgz
+        uses: actions/attest-build-provenance@v3
+        with:
+          subject-path: '${{ github.workspace }}/qrtak-dist.tgz'
 
       - name: Upload release assets
         if: ${{ steps.release.outputs.release_created }}
@@ -68,26 +68,8 @@ jobs:
         run: |
           gh release upload ${{ steps.release.outputs.tag_name }} \
             qrtak-dist.tgz \
-            qrtak-dist.tgz.sig \
             --clobber
 
-  # Trigger Docker build if release was created
-  docker:
-    name: Trigger Docker Build
-    needs: release-please
-    if: needs.release-please.outputs.release_created == 'true'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Trigger Docker workflow
-        uses: actions/github-script@v7
-        with:
-          script: |
-            await github.rest.actions.createWorkflowDispatch({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              workflow_id: 'release-docker.yml',
-              ref: 'main',
-              inputs: {
-                version: '${{ needs.release-please.outputs.version }}'
-              }
-            });
+  # Note: Docker build must be triggered manually after release
+  # Run: gh workflow run release-docker.yml -f version=X.X.X
+  # This is due to GitHub security restrictions preventing GITHUB_TOKEN from triggering other workflows
