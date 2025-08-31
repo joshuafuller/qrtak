@@ -5,6 +5,24 @@
 
 * address high priority security findings ([1fd8861](https://github.com/joshuafuller/qrtak/commit/1fd88611aa2f89dbcd7ad497095752df5a14cbf9))
 
+## [4.0.0](https://github.com/joshuafuller/qrtak/compare/qrtak-v3.1.1...qrtak-v4.0.0) (2025-08-31)
+
+
+### ⚠ BREAKING CHANGES
+
+* None - maintains backward compatibility
+
+### Features
+
+* Unified TAK configuration with enhanced UX and comprehensive testing ([1f780a6](https://github.com/joshuafuller/qrtak/commit/1f780a645616d1b8c89c23b14f87c7206df06fd1))
+
+
+### Bug Fixes
+
+* CI triggers and release workflow improvements ([a97bd58](https://github.com/joshuafuller/qrtak/commit/a97bd58cee8c6952c9ba0e33bfb9c3ff79e27573))
+* remove ARMv7 from Docker builds ([aa67581](https://github.com/joshuafuller/qrtak/commit/aa675816b95356b89e9429e1a359455522c6589d))
+* resolve profile loading issue with QR generation ([#79](https://github.com/joshuafuller/qrtak/issues/79)) ([b3e394b](https://github.com/joshuafuller/qrtak/commit/b3e394b3a09cb1c057af64028f0bd1729034a887)), closes [#45](https://github.com/joshuafuller/qrtak/issues/45)
+
 ## [3.1.1](https://github.com/joshuafuller/qrtak/compare/qrtak-v3.1.0...qrtak-v3.1.1) (2025-08-30)
 
 
