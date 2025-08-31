@@ -1,11 +1,4 @@
-## [1.4.7](https://github.com/joshuafuller/qrtak/compare/v1.4.6...v1.4.7) (2025-07-20)
-
-
-### Bug Fixes
-
-* address high priority security findings ([1fd8861](https://github.com/joshuafuller/qrtak/commit/1fd88611aa2f89dbcd7ad497095752df5a14cbf9))
-
-## [1.5.1](https://github.com/joshuafuller/qrtak/compare/qrtak-v1.5.0...qrtak-v1.5.1) (2025-08-31)
+## [1.5.1](https://github.com/joshuafuller/qrtak/compare/v1.5.0...v1.5.1) (2025-08-31)
 
 
 ### Bug Fixes
@@ -14,12 +7,8 @@
 * remove OpenSSF Scorecard workflow and references ([#93](https://github.com/joshuafuller/qrtak/issues/93)) ([d20d6af](https://github.com/joshuafuller/qrtak/commit/d20d6af281d05c8214b804d0f898a24d81c2543c))
 * sync package-lock.json version with package.json ([ad41874](https://github.com/joshuafuller/qrtak/commit/ad41874628cf9ad005744701e5c78cdb4aa4e11b))
 
-## [4.0.0](https://github.com/joshuafuller/qrtak/compare/qrtak-v3.1.1...qrtak-v4.0.0) (2025-08-31)
+## [1.5.0](https://github.com/joshuafuller/qrtak/compare/v1.4.12...v1.5.0) (2025-08-31)
 
-
-### ⚠ BREAKING CHANGES
-
-* None - maintains backward compatibility
 
 ### Features
 
@@ -28,11 +17,14 @@
 
 ### Bug Fixes
 
+* correct version to 1.5.0 - we are still on v1.x ([8b32907](https://github.com/joshuafuller/qrtak/commit/8b32907c6a87b8c69c66dc56b09f77c88b00f78f))
+* correct version to 3.2.0 after incorrect major bump ([391ced8](https://github.com/joshuafuller/qrtak/commit/391ced8c93fa96f89c887c99797f088e60e03c1c))
+* reset version to 1.0.0 and add auto-merge for Release Please ([cf6cdc5](https://github.com/joshuafuller/qrtak/commit/cf6cdc5ad0c8c91e1b2b8f0e3a977e0ff0c0bb09))
 * CI triggers and release workflow improvements ([a97bd58](https://github.com/joshuafuller/qrtak/commit/a97bd58cee8c6952c9ba0e33bfb9c3ff79e27573))
 * remove ARMv7 from Docker builds ([aa67581](https://github.com/joshuafuller/qrtak/commit/aa675816b95356b89e9429e1a359455522c6589d))
 * resolve profile loading issue with QR generation ([#79](https://github.com/joshuafuller/qrtak/issues/79)) ([b3e394b](https://github.com/joshuafuller/qrtak/commit/b3e394b3a09cb1c057af64028f0bd1729034a887)), closes [#45](https://github.com/joshuafuller/qrtak/issues/45)
 
-## [3.1.1](https://github.com/joshuafuller/qrtak/compare/qrtak-v3.1.0...qrtak-v3.1.1) (2025-08-30)
+## [1.4.12](https://github.com/joshuafuller/qrtak/compare/v1.4.11...v1.4.12) (2025-08-30)
 
 
 ### Bug Fixes
@@ -41,28 +33,28 @@
 * Dockerfile to reduce vulnerabilities ([b2d48d7](https://github.com/joshuafuller/qrtak/commit/b2d48d7fc3c7c7515f3fcd56713dd6494ca31b4a))
 * regenerate clean package-lock.json ([58b6b3b](https://github.com/joshuafuller/qrtak/commit/58b6b3bf498e08371f3ac5b747cab176a738aec0))
 
-## [3.1.0](https://github.com/joshuafuller/qrtak/compare/qrtak-v3.0.2...qrtak-v3.1.0) (2025-07-26)
+## [1.4.11](https://github.com/joshuafuller/qrtak/compare/v1.4.10...v1.4.11) (2025-07-26)
 
 
 ### Features
 
 * allow profiles to save all tabs ([#46](https://github.com/joshuafuller/qrtak/issues/46)) ([35d0ba2](https://github.com/joshuafuller/qrtak/commit/35d0ba278e5669c396d829470f126c73e950c316))
 
-## [3.0.2](https://github.com/joshuafuller/qrtak/compare/qrtak-v3.0.1...qrtak-v3.0.2) (2025-07-26)
+## [1.4.10](https://github.com/joshuafuller/qrtak/compare/v1.4.9...v1.4.10) (2025-07-26)
 
 
 ### Bug Fixes
 
 * **ci:** move renovate config ([#38](https://github.com/joshuafuller/qrtak/issues/38)) ([e66d14d](https://github.com/joshuafuller/qrtak/commit/e66d14db027810074630545abe1b5afea17f0fa5))
 
-## [3.0.1](https://github.com/joshuafuller/qrtak/compare/qrtak-v3.0.0...qrtak-v3.0.1) (2025-07-21)
+## [1.4.9](https://github.com/joshuafuller/qrtak/compare/v1.4.8...v1.4.9) (2025-07-21)
 
 
 ### Bug Fixes
 
 * **ci:** checkout before running renovate ([#35](https://github.com/joshuafuller/qrtak/issues/35)) ([4199f92](https://github.com/joshuafuller/qrtak/commit/4199f925daab8e8af910618a45ff791a3b5d26da))
 
-## [3.0.0](https://github.com/joshuafuller/qrtak/compare/qrtak-v2.0.0...qrtak-v3.0.0) (2025-07-20)
+## [1.4.8](https://github.com/joshuafuller/qrtak/compare/v1.4.7...v1.4.8) (2025-07-20)
 
 
 ### ⚠ BREAKING CHANGES
@@ -168,6 +160,13 @@
 * simplify Snyk integration in security workflow ([ab241f9](https://github.com/joshuafuller/qrtak/commit/ab241f949dc6eaa78c8c575a52817a3c400f405e))
 * streamline README layout and update shield presentation ([515b548](https://github.com/joshuafuller/qrtak/commit/515b5489575fbeef00c3e1cf0b4e515fff0580a5))
 
+## [1.4.7](https://github.com/joshuafuller/qrtak/compare/v1.4.6...v1.4.7) (2025-07-20)
+
+
+### Bug Fixes
+
+* address high priority security findings ([1fd8861](https://github.com/joshuafuller/qrtak/commit/1fd88611aa2f89dbcd7ad497095752df5a14cbf9))
+
 ## [1.4.6](https://github.com/joshuafuller/qrtak/compare/v1.4.5...v1.4.6) (2025-07-20)
 
 
@@ -210,7 +209,7 @@
 
 * resolve npm permission errors and SARIF file path issues ([4cd59e8](https://github.com/joshuafuller/qrtak/commit/4cd59e8d7c53675e8b310ae4c67b9b3a53139348))
 
-# [1.4.0](https://github.com/joshuafuller/qrtak/compare/v1.3.2...v1.4.0) (2025-07-20)
+## [1.4.0](https://github.com/joshuafuller/qrtak/compare/v1.3.2...v1.4.0) (2025-07-20)
 
 
 ### Features
@@ -231,7 +230,7 @@
 
 * optimize Docker build performance with parallel architecture builds ([f3a39ce](https://github.com/joshuafuller/qrtak/commit/f3a39ce1b69c576de0fff168fb22ac1dc36e3eae))
 
-# [1.3.0](https://github.com/joshuafuller/qrtak/compare/v1.2.4...v1.3.0) (2025-07-20)
+## [1.3.0](https://github.com/joshuafuller/qrtak/compare/v1.2.4...v1.3.0) (2025-07-20)
 
 
 ### Features
@@ -266,7 +265,7 @@
 
 * add Docker image labels for package description ([419e299](https://github.com/joshuafuller/qrtak/commit/419e2994c2b0f17f1eb8cc5995a0eec2ec3dddbc))
 
-# [1.2.0](https://github.com/joshuafuller/qrtak/compare/v1.1.1...v1.2.0) (2025-07-20)
+## [1.2.0](https://github.com/joshuafuller/qrtak/compare/v1.1.1...v1.2.0) (2025-07-20)
 
 
 ### Features
@@ -280,7 +279,7 @@
 
 * resolve Rollup native module issues for ARM builds ([642f4eb](https://github.com/joshuafuller/qrtak/commit/642f4eb0d0d5d8f1f1fd49aedc934947c2fc75d5))
 
-# [1.1.0](https://github.com/joshuafuller/qrtak/compare/v1.0.5...v1.1.0) (2025-07-20)
+## [1.1.0](https://github.com/joshuafuller/qrtak/compare/v1.0.5...v1.1.0) (2025-07-20)
 
 
 ### Bug Fixes
@@ -327,7 +326,7 @@
 
 * temporarily disable ARM64 builds to fix CI/CD failures ([990e160](https://github.com/joshuafuller/qrtak/commit/990e1600f84ad77c44ca886314f03f38bcfa01fa))
 
-# [1.0.0](https://github.com/joshuafuller/qrtak/compare/v0.0.0...v1.0.0) (2025-07-20)
+## [1.0.0](https://github.com/joshuafuller/qrtak/compare/v0.0.0...v1.0.0) (2025-07-20)
 
 
 ### Bug Fixes
