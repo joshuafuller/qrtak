@@ -5,14 +5,7 @@
     ".": {
       "package-name": "qrtak",
       "changelog-path": "CHANGELOG.md",
-      "include-v-in-tag": true,
-      "extra-files": [
-        {
-          "type": "json",
-          "path": "package.json",
-          "jsonpath": "$.version"
-        }
-      ]
+      "include-v-in-tag": true
     }
   },
   "changelog-sections": [
