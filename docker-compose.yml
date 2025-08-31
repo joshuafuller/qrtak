@@ -2,9 +2,9 @@ version: '3.8'
 
 services:
   qrtak:
-    image: ghcr.io/joshuafuller/qrtak:latest
+    # image: ghcr.io/joshuafuller/qrtak:latest
     # Uncomment to build locally instead:
-    # build: .
+    build: .
     ports:
       - "8080:80"
     restart: unless-stopped
