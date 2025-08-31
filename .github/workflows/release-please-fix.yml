@@ -1,0 +1,46 @@
+name: Fix Release Please PR
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+    branches: [main]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  fix-lockfile:
+    if: github.event.pull_request.user.login == 'github-actions[bot]' && contains(github.event.pull_request.labels.*.name, 'autorelease:pending')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout PR
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          ref: ${{ github.event.pull_request.head.ref }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Update package-lock.json
+        run: |
+          # Update package-lock.json to match package.json version
+          npm install --package-lock-only
+          
+          # Check if there are changes
+          if git diff --exit-code package-lock.json; then
+            echo "No changes needed"
+            exit 0
+          fi
+
+      - name: Commit changes
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add package-lock.json
+          git commit -m "chore: sync package-lock.json with package.json version"
+          git push
