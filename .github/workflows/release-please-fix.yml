@@ -2,7 +2,7 @@ name: Fix Release Please PR
 
 on:
   pull_request:
-    types: [opened, synchronize]
+    types: [opened, synchronize, labeled]
     branches: [main]
 
 permissions:
