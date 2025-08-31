@@ -7,6 +7,14 @@
 * remove OpenSSF Scorecard workflow and references ([#93](https://github.com/joshuafuller/qrtak/issues/93)) ([d20d6af](https://github.com/joshuafuller/qrtak/commit/d20d6af281d05c8214b804d0f898a24d81c2543c))
 * sync package-lock.json version with package.json ([ad41874](https://github.com/joshuafuller/qrtak/commit/ad41874628cf9ad005744701e5c78cdb4aa4e11b))
 
+## [1.5.3](https://github.com/joshuafuller/qrtak/compare/qrtak-v1.5.2...qrtak-v1.5.3) (2025-08-31)
+
+
+### Bug Fixes
+
+* handle both github-actions and github-actions[bot] in auto-merge workflow ([44fa9b8](https://github.com/joshuafuller/qrtak/commit/44fa9b8cc1c5d81005fc88656937225b2e39c397))
+* update auto-merge workflow to use merge instead of squash ([bb5dfef](https://github.com/joshuafuller/qrtak/commit/bb5dfef13c83cf670a73ea56200895b45f98b772))
+
 ## [1.5.2](https://github.com/joshuafuller/qrtak/compare/qrtak-v1.5.1...qrtak-v1.5.2) (2025-08-31)
 
 
