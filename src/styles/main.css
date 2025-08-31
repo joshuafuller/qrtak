@@ -809,9 +809,9 @@ a:hover {
 }
 
 .tab-btn.active {
-  background: var(--color-accent);
+  background: var(--color-primary);
   color: var(--color-text-inverse);
-  border-color: var(--color-accent);
+  border-color: var(--color-primary);
   box-shadow: var(--shadow-md);
   transform: translateY(-2px);
 }
@@ -1843,18 +1843,18 @@ a:hover {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-accent-dark) 100%);
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
   color: var(--color-text-inverse);
-  border-color: var(--color-accent-dark);
-  box-shadow: 0 4px 12px rgba(4, 120, 87, 0.25);
+  border-color: var(--color-primary-dark);
+  box-shadow: 0 4px 12px rgba(30, 58, 138, 0.25);
   font-weight: var(--font-weight-bold);
 }
 
 .btn-primary:hover:not(:disabled) {
-  background: linear-gradient(135deg, var(--color-accent-light) 0%, var(--color-accent) 100%);
-  border-color: var(--color-accent);
+  background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary) 100%);
+  border-color: var(--color-primary);
   transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(4, 120, 87, 0.35);
+  box-shadow: 0 8px 20px rgba(30, 58, 138, 0.35);
 }
 
 .btn-primary:focus {
