@@ -4,7 +4,7 @@
 
 [![License](https://img.shields.io/badge/license-MIT-brightgreen)](LICENSE) [![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](https://github.com/joshuafuller/qrtak/actions) [![Deploy Status](https://img.shields.io/badge/deploy-success-brightgreen)](https://joshuafuller.github.io/qrtak/) [![Docker Version](https://img.shields.io/github/v/release/joshuafuller/qrtak?label=docker&color=brightgreen)](https://github.com/joshuafuller/qrtak/pkgs/container/qrtak) [![Node.js](https://img.shields.io/badge/Node.js-20.x-brightgreen)](https://nodejs.org/) [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/joshuafuller/qrtak)
 
-[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/joshuafuller/qrtak/badge)](https://scorecard.dev/viewer/?uri=github.com/joshuafuller/qrtak) [![Known Vulnerabilities](https://snyk.io/test/github/joshuafuller/qrtak/badge.svg)](https://snyk.io/test/github/joshuafuller/qrtak) [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/10934/badge)](https://bestpractices.coreinfrastructure.org/projects/10934)
+[![Known Vulnerabilities](https://snyk.io/test/github/joshuafuller/qrtak/badge.svg)](https://snyk.io/test/github/joshuafuller/qrtak) [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/10934/badge)](https://bestpractices.coreinfrastructure.org/projects/10934)
 
 ---
 
@@ -218,7 +218,7 @@ QR TAK implements comprehensive security scanning and best practices:
 - **📦 Dependency Security**: npm audit, Snyk, OWASP, and OSV Scanner check for vulnerabilities
 - **🐳 Container Security**: Trivy and Hadolint scan Docker images
 - **🔍 Secret Detection**: TruffleHog prevents exposed credentials
-- **📊 Supply Chain**: SBOM generation and OSSF Scorecard evaluation
+- **📊 Supply Chain**: SBOM generation for container images
 
 #### Security Features
 - **Client-Side Only**: All processing happens in your browser - no data transmitted
