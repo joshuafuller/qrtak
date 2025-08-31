@@ -67,15 +67,14 @@ jobs:
       - name: npm audit
         run: npm audit --production --audit-level=moderate || true
 
-      # TEMPORARILY DISABLED - SNYK causing issues with Release Please
-      # - name: Snyk Security Scan
-      #   if: github.actor != 'dependabot[bot]'
-      #   uses: snyk/actions/node@b98d498629f1c368650224d6d212bf7dfa89e4bf # v0.4.0
-      #   continue-on-error: true
-      #   env:
-      #     SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-      #   with:
-      #     args: --severity-threshold=high
+      - name: Snyk Security Scan
+        if: github.actor != 'dependabot[bot]'
+        uses: snyk/actions/node@b98d498629f1c368650224d6d212bf7dfa89e4bf # v0.4.0
+        continue-on-error: true
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: --severity-threshold=high
 
       - name: OSV Scanner
         run: |
