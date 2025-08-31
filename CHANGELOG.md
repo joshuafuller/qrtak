@@ -7,6 +7,17 @@
 * remove OpenSSF Scorecard workflow and references ([#93](https://github.com/joshuafuller/qrtak/issues/93)) ([d20d6af](https://github.com/joshuafuller/qrtak/commit/d20d6af281d05c8214b804d0f898a24d81c2543c))
 * sync package-lock.json version with package.json ([ad41874](https://github.com/joshuafuller/qrtak/commit/ad41874628cf9ad005744701e5c78cdb4aa4e11b))
 
+## [1.5.2](https://github.com/joshuafuller/qrtak/compare/qrtak-v1.5.1...qrtak-v1.5.2) (2025-08-31)
+
+
+### Bug Fixes
+
+* add workflow to sync package-lock.json in Release Please PRs ([d98258c](https://github.com/joshuafuller/qrtak/commit/d98258c60dd6c00cfe811eadc5d584cb6528b616))
+* configure Release Please for automatic releases ([2b5b40f](https://github.com/joshuafuller/qrtak/commit/2b5b40f3d0c6a88b7164c093d1fce3db3ea6b068))
+* ensure package-lock.json is properly updated by Release Please ([17bde6d](https://github.com/joshuafuller/qrtak/commit/17bde6d599df7ba0ffed2e0cdc472fdfff263449))
+* standardize primary color usage for tabs and buttons ([#95](https://github.com/joshuafuller/qrtak/issues/95)) ([f7e87ec](https://github.com/joshuafuller/qrtak/commit/f7e87ec98b6bc57654467ebecf7c82fe95341e55))
+* update Release Please fix workflow trigger ([5e6886b](https://github.com/joshuafuller/qrtak/commit/5e6886bbbf39005c7f590198cbf69003bc54c940))
+
 ## [1.5.0](https://github.com/joshuafuller/qrtak/compare/v1.4.12...v1.5.0) (2025-08-31)
 
 
