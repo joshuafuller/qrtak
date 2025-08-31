@@ -5,6 +5,15 @@
 
 * address high priority security findings ([1fd8861](https://github.com/joshuafuller/qrtak/commit/1fd88611aa2f89dbcd7ad497095752df5a14cbf9))
 
+## [1.5.1](https://github.com/joshuafuller/qrtak/compare/qrtak-v1.5.0...qrtak-v1.5.1) (2025-08-31)
+
+
+### Bug Fixes
+
+* add preference JSON files to public directory for deployment ([80f3b8d](https://github.com/joshuafuller/qrtak/commit/80f3b8df1dbee846860d0918f5294dbe7f7709d8))
+* remove OpenSSF Scorecard workflow and references ([#93](https://github.com/joshuafuller/qrtak/issues/93)) ([d20d6af](https://github.com/joshuafuller/qrtak/commit/d20d6af281d05c8214b804d0f898a24d81c2543c))
+* sync package-lock.json version with package.json ([ad41874](https://github.com/joshuafuller/qrtak/commit/ad41874628cf9ad005744701e5c78cdb4aa4e11b))
+
 ## [4.0.0](https://github.com/joshuafuller/qrtak/compare/qrtak-v3.1.1...qrtak-v4.0.0) (2025-08-31)
 
 
