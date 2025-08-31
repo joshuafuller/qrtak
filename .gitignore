@@ -135,3 +135,8 @@ pnpm-lock.yaml
 # Secrets
 .secrets
 .playwright-mcp/
+
+# Test files
+test-ca.p12
+test-client.p12
+*.test.p12
