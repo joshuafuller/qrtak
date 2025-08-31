@@ -9,12 +9,12 @@
     <meta name="keywords" content="TAK, ATAK, iTAK, QR code, configuration, deployment">
     <meta name="author" content="TAK Onboarding Platform">
     
-    <!-- PWA & Mobile -->
-    <meta name="theme-color" content="#1e40af">
+    <!-- PWA & Mobile - Updated Tactical Theme -->
+    <meta name="theme-color" content="#2d4a3e">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="apple-mobile-web-app-title" content="TAK QR">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="TAK Onboard">
     
     <!-- Icons -->
     <link rel="icon" type="image/x-icon" href="favicon.ico">
@@ -62,7 +62,7 @@
                                 <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
                                 <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
                             </svg>
-                            <svg class="theme-icon theme-icon-dark" viewBox="0 0 24 24" fill="currentColor">
+                            <svg class="theme-icon theme-icon-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
                             </svg>
                         </button>
@@ -71,10 +71,6 @@
                                 <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
                             </svg>
                         </a>
-                        <button id="help-button" class="help-btn" title="Help (F1)">
-                            <span class="help-icon">❓</span>
-                            <span class="help-text">Help</span>
-                        </button>
                     </div>
                 </div>
             </div>
@@ -97,124 +93,155 @@
                 <div class="tab-content">
                     <!-- Unified TAK Configuration Tab -->
                     <div class="tab-pane active" id="tak-config-tab" role="tabpanel" aria-labelledby="tak-config-btn">
-                        <div class="form-section">
-                            <h2>TAK Configuration</h2>
-                            <p class="form-description">Configure TAK clients for rapid deployment</p>
-                            
-                            <!-- Platform Toggle -->
-                            <div class="tak-mode-toggle">
-                                <input type="radio" id="mode-atak" name="tak-mode" value="atak" checked>
-                                <label for="mode-atak">ATAK</label>
-                                <input type="radio" id="mode-itak" name="tak-mode" value="itak">
-                                <label for="mode-itak">iTAK</label>
-                                <div class="slider"></div>
-                            </div>
-                            
-                            <div id="platform-description" class="platform-info">
-                                <span class="platform-icon">🤖</span>
-                                <span class="platform-text">Configuring for Android devices (ATAK)</span>
-                            </div>
-                            <form id="tak-config-form" class="config-form">
-                                <!-- Essential Configuration -->
-                                <div class="essential-fields">
-                                    <h3 class="section-title">Essential Configuration</h3>
+                        <div class="tak-config-container">
+                            <!-- Configuration Form -->
+                            <div class="config-panel">
+                                <div class="config-header">
+                                    <h2>TAK Configuration</h2>
+                                    <p class="config-description">Configure TAK clients for rapid deployment</p>
                                     
-                                    <!-- Server Hostname (always visible) -->
-                                    <div class="form-group">
-                                        <label for="tak-host">Server Hostname/IP:</label>
-                                        <input type="text" id="tak-host" name="host" placeholder="tak.example.com or 192.168.1.100" required>
-                                        <div class="help-text">Enter your TAK server's hostname or IP address</div>
+                                    <!-- Platform Toggle -->
+                                    <div class="platform-selector">
+                                        <div class="tak-mode-toggle">
+                                            <input type="radio" id="mode-atak" name="tak-mode" value="atak" checked>
+                                            <label for="mode-atak">
+                                                <span class="platform-icon">🤖</span>
+                                                ATAK
+                                            </label>
+                                            <input type="radio" id="mode-itak" name="tak-mode" value="itak">
+                                            <label for="mode-itak">
+                                                <span class="platform-icon">📱</span>
+                                                iTAK
+                                            </label>
+                                            <div class="slider"></div>
+                                        </div>
+                                        <div id="platform-description" class="platform-info">
+                                            <span class="platform-text">Configuring for Android devices (ATAK)</span>
+                                        </div>
                                     </div>
-                                    
-                                    <!-- Platform-Specific Essential Fields -->
-                                    <div class="platform-fields">
-                                        <!-- ATAK essentials -->
-                                        <div class="atak-fields" data-platform="atak">
-                                            <div class="form-group">
-                                                <label for="tak-username">Username:</label>
-                                                <input type="text" id="tak-username" name="username" placeholder="user123">
-                                                <div class="help-text">Your TAK server username</div>
+                                </div>
+
+                                <form id="tak-config-form" class="tak-form">
+                                    <!-- Connection Settings -->
+                                    <div class="form-section-compact">
+                                        <h3 class="section-label">
+                                            <span class="section-icon">🔗</span>
+                                            Connection
+                                        </h3>
+                                        
+                                        <div class="form-group">
+                                            <label for="tak-host">Server Hostname/IP</label>
+                                            <input type="text" id="tak-host" name="host" placeholder="tak.example.com or 192.168.1.100" required>
+                                            <div class="help-text">Enter the TAK server address for enrollment</div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Authentication Settings -->
+                                    <div class="form-section-compact">
+                                        <h3 class="section-label">
+                                            <span class="section-icon">🔐</span>
+                                            Authentication
+                                        </h3>
+                                        
+                                        <!-- ATAK Authentication Fields -->
+                                        <div class="platform-fields atak-fields" data-platform="atak">
+                                            <div class="form-grid">
+                                                <div class="form-group">
+                                                    <label for="tak-username">Username</label>
+                                                    <input type="text" id="tak-username" name="username" placeholder="user123">
+                                                </div>
+                                                
+                                                <div class="form-group">
+                                                    <label for="tak-token">Password/Token</label>
+                                                    <input type="password" id="tak-token" name="token" placeholder="your-password">
+                                                </div>
                                             </div>
-                                            <div class="form-group">
-                                                <label for="tak-token">Password/Token:</label>
-                                                <input type="password" id="tak-token" name="token" placeholder="your-password">
-                                                <div class="warning">
-                                                    ⚠️ Warning: Password will be stored in plaintext in the QR code. Use only in controlled environments!
+                                            
+                                            <div class="security-notice">
+                                                <span class="notice-icon">⚠️</span>
+                                                <div class="notice-content">
+                                                    <strong>Security Notice:</strong> Passwords are stored in plaintext in QR codes. 
+                                                    Use only in controlled environments.
                                                 </div>
                                             </div>
                                         </div>
                                         
-                                        <!-- iTAK essentials -->
-                                        <div class="itak-fields" data-platform="itak" style="display: none;">
-                                            <div class="form-group">
-                                                <label for="tak-description">Server Description:</label>
-                                                <input type="text" id="tak-description" name="description" placeholder="My TAK Server" required>
-                                                <div class="help-text">A friendly name for this server configuration</div>
+                                        <!-- iTAK Authentication Fields -->
+                                        <div class="platform-fields itak-fields" data-platform="itak" style="display: none;">
+                                            <div class="form-grid">
+                                                <div class="form-group form-group-full">
+                                                    <label for="tak-description">Server Description</label>
+                                                    <input type="text" id="tak-description" name="description" placeholder="My TAK Server" required>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="tak-port">Port</label>
+                                                    <input type="number" id="tak-port" name="port" placeholder="8089" value="8089" min="1" max="65535" required>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="tak-protocol">Protocol</label>
+                                                    <select id="tak-protocol" name="protocol" required>
+                                                        <option value="https">HTTPS (SSL/TLS)</option>
+                                                        <option value="http">HTTP (TCP)</option>
+                                                        <option value="quic">QUIC (UDP)</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="info-notice">
+                                                <span class="notice-icon">ℹ️</span>
+                                                <div class="notice-content">
+                                                    <strong>Authentication:</strong> iTAK will prompt for username and password after scanning the QR code. 
+                                                    The QR only contains server connection information.
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                
-                                <!-- Advanced Settings -->
-                                <details class="advanced-settings">
-                                    <summary class="advanced-toggle">
-                                        <span class="toggle-icon">▶</span>
-                                        Advanced Settings
-                                    </summary>
-                                    <div class="advanced-content">
-                                        <div class="form-row">
-                                            <div class="form-group">
-                                                <label for="tak-port">Port:</label>
-                                                <input type="number" id="tak-port" name="port" placeholder="8089" value="8089">
-                                                <div class="help-text">Default: 8089</div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="tak-protocol">Protocol:</label>
-                                                <select id="tak-protocol" name="protocol">
-                                                    <option value="https">HTTPS (Secure)</option>
-                                                    <option value="http">HTTP</option>
-                                                </select>
-                                                <div class="help-text">Default: HTTPS</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </details>
-                                
-                                <!-- Options Section -->
-                                <div class="options-section">
-                                    <!-- ATAK options -->
-                                    <div class="atak-fields" data-platform="atak">
-                                        <h3 class="section-title">Options</h3>
-                                        <div class="form-group checkbox-group">
-                                            <label class="checkbox-label">
-                                                <input type="checkbox" id="tak-ask-creds">
-                                                <span>Prompt for credentials on device (host-only enroll)</span>
-                                            </label>
-                                            <div class="help-text">Creates a host-only QR code. ATAK 5.1+ will prompt for username and password after scanning.</div>
-                                        </div>
-                                    </div>
-                                    
-                                    <!-- iTAK info -->
-                                    <div class="itak-fields" data-platform="itak" style="display: none;">
-                                        <div class="info-box">
-                                            <span class="info-icon">ℹ️</span>
-                                            <div>
-                                                <strong>Authentication:</strong> iTAK will prompt for username and password after scanning the QR code. The QR only contains server connection information.
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                        <div class="qr-section">
-                            <h3>Generated QR Code</h3>
-                            <p class="qr-description" id="qr-description">Scan this QR code with ATAK to automatically configure the connection</p>
-                            <div id="tak-qr" class="qr-container">
-                                <div class="qr-placeholder">Enter configuration details above</div>
+                                </form>
                             </div>
-                            <div class="qr-actions">
-                                <button id="tak-download" class="btn btn-primary" disabled>Download PNG</button>
-                                <button id="tak-copy" class="btn btn-secondary" disabled>Copy URI</button>
+
+                            <!-- QR Code Panel -->
+                            <div class="qr-panel">
+                                <div class="qr-header">
+                                    <h3>Generated QR Code</h3>
+                                    <p class="qr-description" id="qr-description">Scan this QR code with ATAK to automatically configure the connection</p>
+                                </div>
+                                
+                                <div id="tak-qr" class="qr-container">
+                                    <div class="qr-placeholder">
+                                        <div class="placeholder-icon">📱</div>
+                                        <div class="placeholder-text">Enter configuration details to generate QR code</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="qr-actions">
+                                    <button id="tak-download" class="btn btn-primary" disabled>
+                                        <span class="btn-icon">⬇️</span>
+                                        Download PNG
+                                    </button>
+                                    <button id="tak-copy" class="btn btn-secondary" disabled>
+                                        <span class="btn-icon">📋</span>
+                                        Copy URI
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- QR Enrollment Limitations Warning -->
+                        <div class="enrollment-warning">
+                            <div class="warning-content">
+                                <span class="warning-icon">⚠️</span>
+                                <div class="warning-body">
+                                    <strong class="warning-title">QR Enrollment Has Limitations</strong>
+                                    <div class="warning-details">
+                                        <p>If enrollment fails, ATAK shows: <strong class="error-message">"The TAK Server's identity could not be verified"</strong></p>
+                                        <p><strong>When it works:</strong> Certificates from trusted CAs (like Let's Encrypt) that are in Android's system trust store.</p>
+                                        <p><strong>When it fails:</strong> Self-signed certificates or untrusted CAs not in Android's trust store.</p>
+                                        <p><strong>Technical limitations:</strong> Only works on port 8089 with SSL (no QUIC support).</p>
+                                    </div>
+                                    <div class="warning-solution">
+                                        <strong>For self-signed certificates:</strong> Use the <a href="#packages-tab" onclick="window.switchTab('packages'); return false;" class="warning-link">Data Package Builder</a> tab instead - it lets you include your server's certificate so ATAK will trust it.
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -264,15 +291,18 @@
                                 <div class="form-group">
                                     <label for="package-deployment">Deployment Type:</label>
                                     <select id="package-deployment" name="deployment" required>
-                                        <option value="soft-cert">Soft-Certificate</option>
-                                        <option value="auto-enroll">Certificate Auto-Enrollment</option>
+                                        <option value="auto-enroll">Auto-Enrollment (Get certificate from server)</option>
+                                        <option value="soft-cert">Soft-Certificate (Include client certificate)</option>
                                     </select>
+                                    <div class="help-text" id="deployment-help">
+                                        <strong id="deployment-type-desc">Auto-Enrollment:</strong> <span id="deployment-desc">Package contains server info and CA certificate. Device will request its own certificate from server on first connection.</span>
+                                    </div>
                                 </div>
 
                                 <div class="form-group">
                                     <label for="package-name">Package Name:</label>
-                                    <input id="package-name" type="text" placeholder="TAK_Server.zip" value="TAK_Server.zip" required />
-                                    <div class="help-text">This will be used for the MANIFEST name and the downloaded ZIP filename</div>
+                                    <input id="package-name" type="text" placeholder="Auto-generated based on config" value="" required />
+                                    <div class="help-text">Auto-generated from server and client details. Leave empty for smart naming or specify custom name.</div>
                                 </div>
 
                                 <div class="form-group">
@@ -281,26 +311,36 @@
                                 </div>
 
                                 <div class="form-group">
+                                    <label for="package-protocol">Protocol:</label>
+                                    <select id="package-protocol" required>
+                                        <option value="https">HTTPS (SSL/TLS)</option>
+                                        <option value="http">HTTP (TCP)</option>
+                                        <option value="quic">QUIC (UDP)</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
                                     <label for="package-port">Port:</label>
                                     <input id="package-port" type="number" placeholder="8089" value="8089" required />
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="package-protocol">Protocol:</label>
-                                    <select id="package-protocol" required>
-                                        <option value="https">HTTPS (ssl)</option>
-                                        <option value="http">HTTP (tcp)</option>
-                                    </select>
+                                    <label for="package-username">Username (optional):</label>
+                                    <input id="package-username" type="text" placeholder="TAK server username" />
+                                    <div class="help-text">Username for server authentication (required for auto-enrollment, optional for soft-cert)</div>
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="package-ca-pass">CA Password:</label>
-                                    <input id="package-ca-pass" type="password" placeholder="Password for CA cert" />
+                                    <label for="package-password">Password (optional):</label>
+                                    <input id="package-password" type="password" placeholder="TAK server password" />
+                                    <div class="help-text">Password for server authentication</div>
                                 </div>
 
-                                <div class="form-group" id="client-pass-group">
-                                    <label for="package-client-pass">Client Password (soft-cert only):</label>
-                                    <input id="package-client-pass" type="password" placeholder="Password for client cert" />
+                                <div class="form-group">
+                                    <label>
+                                        <input id="package-cache-creds" type="checkbox" checked />
+                                        Cache credentials for automatic reconnection
+                                    </label>
                                 </div>
 
                                 <div class="form-group">
@@ -310,19 +350,58 @@
 
                                 <div class="form-group">
                                     <label for="package-team">Team (optional):</label>
-                                    <input id="package-team" type="text" placeholder="Blue" />
+                                    <select id="package-team">
+                                        <option value="">Select team color...</option>
+                                        <option value="Cyan">Cyan</option>
+                                        <option value="Yellow">Yellow</option>
+                                        <option value="Magenta">Magenta</option>
+                                        <option value="Red">Red</option>
+                                        <option value="Blue">Blue</option>
+                                        <option value="Green">Green</option>
+                                        <option value="Brown">Brown</option>
+                                        <option value="White">White</option>
+                                        <option value="Orange">Orange</option>
+                                        <option value="Purple">Purple</option>
+                                        <option value="Dark Blue">Dark Blue</option>
+                                        <option value="Teal">Teal</option>
+                                    </select>
                                 </div>
 
                                 <div class="form-group">
                                     <label for="package-role">Role (optional):</label>
-                                    <input id="package-role" type="text" placeholder="Team Member" />
+                                    <select id="package-role">
+                                        <option value="">Select role...</option>
+                                        <option value="Team Member">Team Member</option>
+                                        <option value="Team Lead">Team Lead</option>
+                                        <option value="HQ">HQ</option>
+                                        <option value="Sniper">Sniper</option>
+                                        <option value="Medic">Medic</option>
+                                        <option value="Forward Observer">Forward Observer</option>
+                                        <option value="RTO">RTO</option>
+                                        <option value="K9">K9</option>
+                                        <option value="Driver">Driver</option>
+                                        <option value="Pilot">Pilot</option>
+                                        <option value="ATC">ATC</option>
+                                        <option value="Observer">Observer</option>
+                                        <option value="Operations">Operations</option>
+                                        <option value="Logistics">Logistics</option>
+                                        <option value="Communications">Communications</option>
+                                        <option value="Intelligence">Intelligence</option>
+                                    </select>
                                 </div>
 
                                 <div class="form-group">
-                                    <label>Certificates:</label>
-                                    <input id="pkg-ca" type="file" accept=".p12" />
+                                    <label for="pkg-ca">CA Certificate:</label>
+                                    <input id="pkg-ca" type="file" accept=".p12" required />
+                                    <input id="package-ca-pass" type="password" placeholder="CA certificate password" required />
+                                    <div class="help-text">Root CA certificate (.p12) and its password - required for server trust</div>
+                                </div>
+
+                                <div class="form-group" id="client-cert-group">
+                                    <label for="pkg-client">Client Certificate:</label>
                                     <input id="pkg-client" type="file" accept=".p12" />
-                                    <div class="help-text">Provide CA cert (.p12) and client cert (.p12) for soft-cert packages</div>
+                                    <input id="package-client-pass" type="password" placeholder="Client certificate password" />
+                                    <div class="help-text">Pre-generated client certificate (.p12) and its password - only needed for soft-cert deployment</div>
                                 </div>
 
                                 <div class="form-group">
@@ -348,8 +427,8 @@
                             <h2>Preference URI Builder</h2>
                             <p class="form-description">Build a tak://com.atakmap.app/preference URI with one or more key/type/value entries</p>
 
-                             <div class="config-form" style="margin-bottom: var(--spacing-lg);">
-                                    <div class="form-group" style="display:grid;grid-template-columns: 1fr 1fr 2fr auto;gap:var(--spacing-md);align-items:end;position:relative;">
+                             <div class="preferences-search-section">
+                                 <div class="preferences-search-grid">
                                      <div>
                                          <label for="pref-version">ATAK Version</label>
                                          <select id="pref-version">
@@ -360,20 +439,20 @@
                                                 <option value="4.8">4.8</option>
                                          </select>
                                      </div>
-                                     <div>
+                                     <div class="pref-search-field">
                                          <label for="pref-search">Search Known Preferences</label>
-                                         <input id="pref-search" list="pref-datalist" type="text" placeholder="Type to search (label or key)" />
-                                         <datalist id="pref-datalist"></datalist>
-                                            <div id="pref-suggestions" style="position:absolute; z-index: 10; background: var(--color-surface, #fff); border: 1px solid var(--color-border, #ccc); border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,.12); max-height: 280px; overflow-y: auto; width: calc(100% - 2rem); display: none;"></div>
+                                         <input id="pref-search" type="text" placeholder="Type to search (label or key)" autocomplete="off" />
+                                         <div id="pref-suggestions"></div>
                                      </div>
-                                     <div>
-                                         <label for="pref-search-help">Hint</label>
-                                         <div id="pref-search-help" class="help-text">Select a known preference to prefill the Key field below</div>
+                                     <div class="preferences-controls">
+                                         <button id="pref-add-known" class="btn btn-secondary" type="button">Add Selected</button>
+                                         <button id="pref-browse" class="btn btn-secondary" type="button">Browse All</button>
                                      </div>
-                                        <div style="display:flex; gap:.5rem;">
-                                            <button id="pref-add-known" class="btn btn-secondary" type="button">Add Selected</button>
-                                            <button id="pref-browse" class="btn btn-secondary" type="button">Browse All</button>
-                                        </div>
+                                 </div>
+                                 <div class="pref-search-help-container">
+                                     <div class="help-text">
+                                         <strong>💡 Tip:</strong> Search and select a known preference above to auto-fill the key field, or manually add custom preferences below.
+                                     </div>
                                  </div>
                              </div>
 
@@ -388,7 +467,15 @@
                             <h3>Generated QR Code</h3>
                             <p class="qr-description">Scan in ATAK to apply preferences</p>
                             <div id="preferences-qr" class="qr-container">
-                                <div class="qr-placeholder">Add at least one preference</div>
+                                <div class="qr-placeholder">
+                                    <div style="text-align: center;">
+                                        <p style="margin-bottom: 10px;">No preferences added yet</p>
+                                        <p style="font-size: 0.9em; color: var(--color-text-secondary);">
+                                            Use the search above to find known preferences<br>
+                                            or click "Add Preference" to manually add custom ones
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
                             <div class="qr-actions">
                                 <button id="preferences-download" class="btn btn-primary" disabled>Download PNG</button>

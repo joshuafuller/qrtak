@@ -2,14 +2,20 @@
  * @jest-environment jsdom
  */
 
-/* global File, Event */
+// File and Event are globally available via ESLint config
 
 import JSZip from 'jszip';
 
 // Mock JSZip
 jest.mock('jszip');
 
-// Import main.js first
+// Mock UIController before importing main.js
+global.UIController = {
+  showNotification: jest.fn(),
+  showDataStatus: jest.fn()
+};
+
+// Import main.js after mocks are set up
 import '../main.js';
 
 describe('PackageBuilder', () => {
@@ -55,20 +61,27 @@ describe('PackageBuilder', () => {
           <option value="soft-cert">ATAK Soft Certificate</option>
           <option value="auto-enroll">iTAK Auto-Enrollment</option>
         </select>
+        <input id="package-name" placeholder="Package name" />
         <input id="package-host" placeholder="Server hostname" />
         <input id="package-port" value="8089" />
         <select id="package-protocol">
           <option value="https">HTTPS</option>
           <option value="http">HTTP</option>
+          <option value="quic">QUIC</option>
         </select>
         <input id="package-username" placeholder="Username" />
-        <input id="package-token" placeholder="Password/Token" />
+        <input id="package-password" placeholder="Password" />
         <input id="package-ca-pass" placeholder="CA password" />
-        <div id="client-pass-group">
+        <div id="client-cert-group">
           <input id="package-client-pass" placeholder="Client cert password" />
         </div>
+        <input type="checkbox" id="package-cache-creds" />
+        <input id="package-callsign" placeholder="Callsign" />
+        <input id="package-team" placeholder="Team" />
+        <input id="package-role" placeholder="Role" />
         <input type="file" id="pkg-ca" />
         <input type="file" id="pkg-client" />
+        <input type="file" id="pkg-extra" multiple />
         <button id="package-build">Build Package</button>
       </form>
       <div id="package-dropzone">Drop files here</div>
@@ -106,10 +119,9 @@ describe('PackageBuilder', () => {
 
     // Don't override Event - jsdom provides it
 
-    // Mock UIController
-    global.UIController = {
-      showNotification: jest.fn()
-    };
+    // Reset UIController mock for each test
+    global.UIController.showNotification.mockClear();
+    global.UIController.showDataStatus.mockClear();
   });
 
   afterEach(() => {
@@ -122,16 +134,16 @@ describe('PackageBuilder', () => {
       window.PackageBuilder.init();
 
       const deploymentSelect = document.getElementById('package-deployment');
-      const clientPassGroup = document.getElementById('client-pass-group');
+      const clientCertGroup = document.getElementById('client-cert-group');
 
       // Test that deployment change toggles password field
       deploymentSelect.value = 'auto-enroll';
       deploymentSelect.dispatchEvent(new Event('change'));
-      expect(clientPassGroup.style.display).toBe('none');
+      expect(clientCertGroup.style.display).toBe('none');
 
       deploymentSelect.value = 'soft-cert';
       deploymentSelect.dispatchEvent(new Event('change'));
-      expect(clientPassGroup.style.display).toBe('');
+      expect(clientCertGroup.style.display).toBe('');
     });
   });
 
@@ -144,12 +156,11 @@ describe('PackageBuilder', () => {
       document.getElementById('package-host').value = '';
       document.getElementById('package-port').value = '8089';
 
-      const downloadBtn = document.getElementById('package-build');
-      downloadBtn.click();
+      await window.PackageBuilder.buildPackage();
 
-      // Should show error notification for missing hostname
-      expect(UIController.showNotification).toHaveBeenCalledWith(
-        expect.stringContaining('hostname'),
+      // Should show error notification for validation failure
+      expect(global.UIController.showNotification).toHaveBeenCalledWith(
+        'Please fix the highlighted field errors before building the package',
         'error'
       );
     });
@@ -158,12 +169,11 @@ describe('PackageBuilder', () => {
       document.getElementById('package-host').value = 'tak.example.com';
       document.getElementById('package-port').value = '99999'; // Invalid port
 
-      const downloadBtn = document.getElementById('package-build');
-      downloadBtn.click();
+      await window.PackageBuilder.buildPackage();
 
-      // Should show error notification for invalid port
-      expect(UIController.showNotification).toHaveBeenCalledWith(
-        expect.stringContaining('port'),
+      // Should show error notification for validation failure
+      expect(global.UIController.showNotification).toHaveBeenCalledWith(
+        'Please fix the highlighted field errors before building the package',
         'error'
       );
     });
@@ -173,12 +183,11 @@ describe('PackageBuilder', () => {
       document.getElementById('package-port').value = '8089';
 
       // No files attached
-      const downloadBtn = document.getElementById('package-build');
-      downloadBtn.click();
+      await window.PackageBuilder.buildPackage();
 
-      // Should show error about missing certificates
-      expect(UIController.showNotification).toHaveBeenCalledWith(
-        expect.stringContaining('certificate'),
+      // Should show error about validation failure
+      expect(global.UIController.showNotification).toHaveBeenCalledWith(
+        'Please fix the highlighted field errors before building the package',
         'error'
       );
     });
@@ -191,12 +200,13 @@ describe('PackageBuilder', () => {
 
     it('should build ATAK soft-cert package with correct structure', async () => {
       // Setup form data
+      document.getElementById('package-client').value = 'atak';
       document.getElementById('package-deployment').value = 'soft-cert';
       document.getElementById('package-host').value = 'tak.example.com';
       document.getElementById('package-port').value = '8089';
       document.getElementById('package-protocol').value = 'https';
       document.getElementById('package-username').value = 'testuser';
-      document.getElementById('package-token').value = 'testpass';
+      document.getElementById('package-password').value = 'testpass';
       document.getElementById('package-ca-pass').value = 'capass';
       document.getElementById('package-client-pass').value = 'clientpass';
 
@@ -218,12 +228,8 @@ describe('PackageBuilder', () => {
       mockLink.click = jest.fn();
       jest.spyOn(document, 'createElement').mockReturnValue(mockLink);
 
-      // Click download button
-      const downloadBtn = document.getElementById('package-build');
-      downloadBtn.click();
-
-      // Wait for async operations
-      await new Promise(resolve => setTimeout(resolve, 100));
+      // Build package
+      await window.PackageBuilder.buildPackage();
 
       // Verify ZIP structure for ATAK (files in certs folder)
       expect(mockZipFolder).toHaveBeenCalledWith('certs');
@@ -239,12 +245,13 @@ describe('PackageBuilder', () => {
 
     it('should build iTAK auto-enroll package with correct structure', async () => {
       // Setup form data
+      document.getElementById('package-client').value = 'itak';
       document.getElementById('package-deployment').value = 'auto-enroll';
       document.getElementById('package-host').value = 'tak.example.com';
       document.getElementById('package-port').value = '8089';
       document.getElementById('package-protocol').value = 'https';
       document.getElementById('package-username').value = 'testuser';
-      document.getElementById('package-token').value = 'testpass';
+      document.getElementById('package-password').value = 'testpass';
       document.getElementById('package-ca-pass').value = 'capass';
 
       // Mock file inputs
@@ -264,12 +271,8 @@ describe('PackageBuilder', () => {
       mockLink.click = jest.fn();
       jest.spyOn(document, 'createElement').mockReturnValue(mockLink);
 
-      // Click download button
-      const downloadBtn = document.getElementById('package-build');
-      downloadBtn.click();
-
-      // Wait for async operations
-      await new Promise(resolve => setTimeout(resolve, 100));
+      // Build package
+      await window.PackageBuilder.buildPackage();
 
       // Verify ZIP structure for iTAK (files in root, not in certs folder)
       expect(mockZipFile).toHaveBeenCalledWith(
@@ -290,17 +293,17 @@ describe('PackageBuilder', () => {
 
     it('should toggle client password field based on deployment type', () => {
       const deploymentSelect = document.getElementById('package-deployment');
-      const clientPassGroup = document.getElementById('client-pass-group');
+      const clientCertGroup = document.getElementById('client-cert-group');
 
       // Switch to auto-enroll (iTAK)
       deploymentSelect.value = 'auto-enroll';
       deploymentSelect.dispatchEvent(new Event('change'));
-      expect(clientPassGroup.style.display).toBe('none');
+      expect(clientCertGroup.style.display).toBe('none');
 
       // Switch back to soft-cert (ATAK)
       deploymentSelect.value = 'soft-cert';
       deploymentSelect.dispatchEvent(new Event('change'));
-      expect(clientPassGroup.style.display).toBe('');
+      expect(clientCertGroup.style.display).toBe('');
     });
 
     it('should handle drag and drop events', () => {
@@ -337,9 +340,13 @@ describe('PackageBuilder', () => {
       // that the package builder works without making network requests
 
       // Setup minimal valid form
+      document.getElementById('package-client').value = 'atak';
       document.getElementById('package-deployment').value = 'soft-cert';
       document.getElementById('package-host').value = 'tak.example.com';
       document.getElementById('package-port').value = '8089';
+      document.getElementById('package-protocol').value = 'https';
+      document.getElementById('package-ca-pass').value = 'atakatak';
+      document.getElementById('package-client-pass').value = 'clientpass';
 
       // Mock file inputs
       const mockCAFile = new File(['ca-cert-content'], 'ca.p12');
@@ -359,12 +366,8 @@ describe('PackageBuilder', () => {
       mockLink.click = jest.fn();
       jest.spyOn(document, 'createElement').mockReturnValue(mockLink);
 
-      // Click download button
-      const downloadBtn = document.getElementById('package-build');
-      downloadBtn.click();
-
-      // Wait for async operations
-      await new Promise(resolve => setTimeout(resolve, 100));
+      // Build package
+      await window.PackageBuilder.buildPackage();
 
       // Should still generate package offline
       expect(mockZip.generateAsync).toHaveBeenCalled();
@@ -379,6 +382,78 @@ describe('PackageBuilder', () => {
 
       // Should not make any network requests during initialization
       expect(mockFetch).not.toHaveBeenCalled();
+    });
+
+    it('should build package with QUIC protocol and custom port', async () => {
+      // Setup form data for QUIC with custom port
+      document.getElementById('package-client').value = 'atak';
+      document.getElementById('package-deployment').value = 'auto-enroll';
+      document.getElementById('package-host').value = 'tak.example.com';
+      document.getElementById('package-port').value = '9999'; // Custom port
+      document.getElementById('package-protocol').value = 'quic';
+      document.getElementById('package-username').value = 'testuser';
+      document.getElementById('package-password').value = 'testpass';
+      document.getElementById('package-ca-pass').value = 'atakatak';
+
+      // Mock file inputs
+      const mockCAFile = new File(['ca-cert-content'], 'ca.p12', { type: 'application/x-pkcs12' });
+
+      Object.defineProperty(document.getElementById('pkg-ca'), 'files', {
+        value: [mockCAFile],
+        writable: false
+      });
+
+      // Mock download link
+      const mockLink = document.createElement('a');
+      mockLink.click = jest.fn();
+      jest.spyOn(document, 'createElement').mockReturnValue(mockLink);
+
+      // Build package
+      await window.PackageBuilder.buildPackage();
+
+      // Verify the config.pref contains QUIC connection string with custom port
+      const configPrefCall = mockZipFile.mock.calls.find(call =>
+        call[0] === 'certs/config.pref' || call[0] === 'config.pref'
+      );
+      expect(configPrefCall).toBeDefined();
+      expect(configPrefCall[1]).toContain('tak.example.com:9999:quic');
+      expect(configPrefCall[1]).toContain('network_quic_enabled');
+      expect(configPrefCall[1]).toContain('true');
+    });
+
+    it('should allow any port for QUIC protocol', async () => {
+      // Setup form data for QUIC with port that would normally be SSL
+      document.getElementById('package-client').value = 'atak';
+      document.getElementById('package-deployment').value = 'auto-enroll';
+      document.getElementById('package-host').value = 'tak.example.com';
+      document.getElementById('package-port').value = '8089'; // User wants QUIC on 8089
+      document.getElementById('package-protocol').value = 'quic';
+      document.getElementById('package-username').value = 'testuser';
+      document.getElementById('package-password').value = 'testpass';
+      document.getElementById('package-ca-pass').value = 'atakatak';
+
+      // Mock file inputs
+      const mockCAFile = new File(['ca-cert-content'], 'ca.p12', { type: 'application/x-pkcs12' });
+
+      Object.defineProperty(document.getElementById('pkg-ca'), 'files', {
+        value: [mockCAFile],
+        writable: false
+      });
+
+      // Mock download link
+      const mockLink = document.createElement('a');
+      mockLink.click = jest.fn();
+      jest.spyOn(document, 'createElement').mockReturnValue(mockLink);
+
+      // Build package
+      await window.PackageBuilder.buildPackage();
+
+      // Verify the config.pref contains QUIC with user-specified port (8089)
+      const configPrefCall = mockZipFile.mock.calls.find(call =>
+        call[0] === 'certs/config.pref' || call[0] === 'config.pref'
+      );
+      expect(configPrefCall).toBeDefined();
+      expect(configPrefCall[1]).toContain('tak.example.com:8089:quic');
     });
   });
 });

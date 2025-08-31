@@ -1,0 +1,308 @@
+{
+  "preferences": {
+    "identity": [
+      {
+        "key": "locationCallsign",
+        "label": "Callsign",
+        "type": "string",
+        "description": "User's callsign/identifier displayed to other users",
+        "default": "ANDROID-XXXXX",
+        "validation": {
+          "maxLength": 40,
+          "pattern": "^[a-zA-Z0-9-_]+$"
+        },
+        "example": "ALPHA-1",
+        "category": "Identity"
+      },
+      {
+        "key": "locationTeam",
+        "label": "Team Color",
+        "type": "string",
+        "description": "Team affiliation color for visual identification",
+        "default": "Cyan",
+        "validValues": [
+          "White", "Yellow", "Orange", "Red", "Maroon", 
+          "Purple", "Blue", "Cyan", "Green", "Dark Green", 
+          "Brown", "Gray"
+        ],
+        "category": "Identity"
+      },
+      {
+        "key": "atakRoleType",
+        "label": "Role",
+        "type": "string",
+        "description": "User's tactical role within the team",
+        "default": "Team Member",
+        "validValues": [
+          "Team Member", "Team Lead", "HQ", "Sniper", 
+          "Medic", "Forward Observer", "RTO", "K9", 
+          "Driver", "Pilot", "ATC", "Observer",
+          "Operations", "Logistics", "Communications", "Intelligence"
+        ],
+        "category": "Identity"
+      },
+      {
+        "key": "locationUnitType",
+        "label": "Unit Type",
+        "type": "string",
+        "description": "CoT (Cursor on Target) unit type identifier",
+        "default": "a-f-G-U-C",
+        "example": "a-f-G-U-C-I",
+        "category": "Identity",
+        "advanced": true
+      },
+      {
+        "key": "userRemarks",
+        "label": "Remarks",
+        "type": "string",
+        "description": "Additional notes or information about the user",
+        "default": "",
+        "maxLength": 200,
+        "category": "Identity"
+      }
+    ],
+    "reporting": [
+      {
+        "key": "locationReportingStrategy",
+        "label": "Reporting Strategy",
+        "type": "string",
+        "description": "How often to send position updates",
+        "default": "Dynamic",
+        "validValues": ["Constant", "Dynamic"],
+        "category": "Reporting"
+      },
+      {
+        "key": "constantReportingRateUnreliable",
+        "label": "Constant Rate (UDP)",
+        "type": "int",
+        "description": "Position update interval for UDP in seconds",
+        "default": 5,
+        "min": 1,
+        "max": 300,
+        "unit": "seconds",
+        "category": "Reporting",
+        "condition": "locationReportingStrategy=Constant"
+      },
+      {
+        "key": "constantReportingRateReliable",
+        "label": "Constant Rate (TCP)",
+        "type": "int",
+        "description": "Position update interval for TCP in seconds",
+        "default": 15,
+        "min": 5,
+        "max": 300,
+        "unit": "seconds",
+        "category": "Reporting",
+        "condition": "locationReportingStrategy=Constant"
+      },
+      {
+        "key": "dispatchLocationCotExternal",
+        "label": "Broadcast Position",
+        "type": "boolean",
+        "description": "Send position updates to network",
+        "default": "true",
+        "category": "Reporting"
+      }
+    ],
+    "display": [
+      {
+        "key": "atakControlShowLabels",
+        "label": "Show Labels",
+        "type": "boolean",
+        "description": "Display labels on map markers",
+        "default": "true",
+        "category": "Display"
+      },
+      {
+        "key": "atakControlShortenLabels",
+        "label": "Shorten Labels",
+        "type": "boolean",
+        "description": "Abbreviate long labels on the map",
+        "default": "false",
+        "category": "Display"
+      },
+      {
+        "key": "atakControlForcePortrait",
+        "label": "Force Portrait",
+        "type": "boolean",
+        "description": "Lock screen to portrait orientation",
+        "default": "false",
+        "category": "Display"
+      },
+      {
+        "key": "atakForcedBrightness",
+        "label": "Screen Brightness",
+        "type": "string",
+        "description": "Override system brightness (-1 for auto)",
+        "default": "-1",
+        "validValues": ["-1", "0", "25", "50", "75", "100"],
+        "category": "Display"
+      },
+      {
+        "key": "coord_display_pref",
+        "label": "Coordinate Format",
+        "type": "string",
+        "description": "How to display coordinates",
+        "default": "MGRS",
+        "validValues": ["MGRS", "DD", "DMS", "UTM"],
+        "category": "Display"
+      },
+      {
+        "key": "rab_bearing_units",
+        "label": "Bearing Units",
+        "type": "string",
+        "description": "Units for bearing display",
+        "default": "0",
+        "validValues": [
+          {"value": "0", "label": "Degrees"},
+          {"value": "1", "label": "Mils"}
+        ],
+        "category": "Display"
+      },
+      {
+        "key": "rab_range_system",
+        "label": "Range Units",
+        "type": "string",
+        "description": "Measurement system for distances",
+        "default": "1",
+        "validValues": [
+          {"value": "0", "label": "Imperial (ft/mi)"},
+          {"value": "1", "label": "Metric (m/km)"},
+          {"value": "2", "label": "Nautical (NM)"}
+        ],
+        "category": "Display"
+      },
+      {
+        "key": "rab_north_ref_pref",
+        "label": "North Reference",
+        "type": "string",
+        "description": "Reference for north direction",
+        "default": "1",
+        "validValues": [
+          {"value": "0", "label": "True North"},
+          {"value": "1", "label": "Magnetic North"},
+          {"value": "2", "label": "Grid North"}
+        ],
+        "category": "Display"
+      }
+    ],
+    "network": [
+      {
+        "key": "multicastTTL",
+        "label": "Multicast TTL",
+        "type": "int",
+        "description": "Time-to-live for multicast packets",
+        "default": 64,
+        "min": 1,
+        "max": 255,
+        "category": "Network",
+        "advanced": true
+      },
+      {
+        "key": "udpNoDataTimeout",
+        "label": "UDP Timeout",
+        "type": "int",
+        "description": "Timeout for UDP connections in seconds",
+        "default": 30,
+        "min": 10,
+        "max": 300,
+        "unit": "seconds",
+        "category": "Network",
+        "advanced": true
+      },
+      {
+        "key": "tcpConnectTimeout",
+        "label": "TCP Timeout",
+        "type": "int",
+        "description": "TCP connection timeout in seconds",
+        "default": 20,
+        "min": 5,
+        "max": 60,
+        "unit": "seconds",
+        "category": "Network",
+        "advanced": true
+      },
+      {
+        "key": "enableNonStreamingConnections",
+        "label": "Non-Streaming Connections",
+        "type": "boolean",
+        "description": "Enable non-streaming network connections",
+        "default": "true",
+        "category": "Network",
+        "advanced": true
+      },
+      {
+        "key": "monitorServerConnections",
+        "label": "Monitor Connections",
+        "type": "boolean",
+        "description": "Monitor server connection health",
+        "default": "true",
+        "category": "Network"
+      },
+      {
+        "key": "network_quic_enabled",
+        "label": "Enable QUIC",
+        "type": "boolean",
+        "description": "Enable QUIC protocol support",
+        "default": "true",
+        "category": "Network",
+        "advanced": true
+      }
+    ]
+  },
+  "categories": {
+    "Identity": {
+      "label": "Identity & Role",
+      "description": "User identification and team affiliation",
+      "icon": "user"
+    },
+    "Reporting": {
+      "label": "Position Reporting",
+      "description": "How and when to share your location",
+      "icon": "broadcast"
+    },
+    "Display": {
+      "label": "Display & Units",
+      "description": "Map display and measurement preferences",
+      "icon": "display"
+    },
+    "Network": {
+      "label": "Network",
+      "description": "Network connection settings",
+      "icon": "network"
+    }
+  },
+  "commonProfiles": [
+    {
+      "name": "Basic User",
+      "description": "Essential settings for team member",
+      "preferences": [
+        {"key": "locationCallsign", "value": ""},
+        {"key": "locationTeam", "value": "Cyan"},
+        {"key": "atakRoleType", "value": "Team Member"}
+      ]
+    },
+    {
+      "name": "Team Lead",
+      "description": "Configuration for team leaders",
+      "preferences": [
+        {"key": "locationCallsign", "value": ""},
+        {"key": "locationTeam", "value": "Blue"},
+        {"key": "atakRoleType", "value": "Team Lead"},
+        {"key": "atakControlShowLabels", "value": "true"},
+        {"key": "locationReportingStrategy", "value": "Dynamic"}
+      ]
+    },
+    {
+      "name": "Observer",
+      "description": "Settings for observation roles",
+      "preferences": [
+        {"key": "locationCallsign", "value": ""},
+        {"key": "locationTeam", "value": "Green"},
+        {"key": "atakRoleType", "value": "Observer"},
+        {"key": "dispatchLocationCotExternal", "value": "false"},
+        {"key": "locationReportingStrategy", "value": "Dynamic"}
+      ]
+    }
+  ]
+}

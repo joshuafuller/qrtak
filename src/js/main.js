@@ -9,6 +9,7 @@ import {
   isValidURL
 } from './utils.js';
 import JSZip from 'jszip';
+import { HeaderAutoHide, PageEnhancements } from './header-autohide.js';
 
 // ============================================================================
 // Constants and Configuration
@@ -34,7 +35,8 @@ const CONFIG = {
     HTTPS: 'https',
     HTTP: 'http',
     SSL: 'ssl',
-    TCP: 'tcp'
+    TCP: 'tcp',
+    QUIC: 'quic'
   },
 
   // Single normalized preferences JSON
@@ -136,44 +138,7 @@ const TabManager = (function () {
     }
   }
 
-  /**
-   * Transfer data from ATAK to iTAK tab
-   */
-  function transferDataFromATAKToiTAK () {
-    const atakHost = document.getElementById('atak-host');
-    if (!atakHost?.value.trim()) {
-      return;
-    }
-
-    const itakUrl = document.getElementById('itak-url');
-    if (!itakUrl?.value.trim()) {
-      itakUrl.value = `https://${atakHost.value.trim()}`;
-      QRGenerator.updateiTAKQR();
-      UIController.showDataStatus('itak');
-      UIController.showNotification('Server URL copied from ATAK tab', 'info');
-    }
-  }
-
-  /**
-   * Transfer data from iTAK to ATAK tab
-   */
-  function transferDataFromiTAKToATAK () {
-    const itakUrl = document.getElementById('itak-url');
-    if (!itakUrl?.value.trim()) {
-      return;
-    }
-
-    const host = extractHostnameFromURL(itakUrl.value);
-    if (host) {
-      const atakHost = document.getElementById('atak-host');
-      if (!atakHost?.value.trim()) {
-        atakHost.value = host;
-        QRGenerator.updateATAKQR();
-        UIController.showDataStatus('atak');
-        UIController.showNotification('Server hostname copied from iTAK tab', 'info');
-      }
-    }
-  }
+  // Transfer functions removed - functionality moved to window exports
 
   return {
     init,
@@ -222,7 +187,11 @@ const QRGenerator = (function () {
         placeholder.remove();
       }
 
+      // Remove any existing canvas immediately
       const oldCanvas = container.querySelector('canvas');
+      if (oldCanvas) {
+        oldCanvas.remove();
+      }
 
       container.setAttribute('aria-label', 'QR code generated successfully');
       if (canvas && typeof canvas === 'object' && canvas.nodeType === 1) {
@@ -230,14 +199,9 @@ const QRGenerator = (function () {
         container.appendChild(canvas);
 
         // Trigger fade-in
-        canvas.offsetHeight; // force reflow
-        canvas.style.opacity = '1';
-
-        // Fade out old canvas if it exists
-        if (oldCanvas) {
-          oldCanvas.style.opacity = '0';
-          oldCanvas.addEventListener('transitionend', () => oldCanvas.remove(), { once: true });
-        }
+        requestAnimationFrame(() => {
+          canvas.style.opacity = '1';
+        });
       }
 
       return canvas;
@@ -401,12 +365,21 @@ const TAKConfigManager = (function () {
     if (form) {
       const inputs = form.querySelectorAll('input, select');
       inputs.forEach(input => {
-        input.addEventListener('input', () => updateQR());
+        // Use 'change' event for checkboxes and selects, 'input' for text inputs
+        const eventType = (input.type === 'checkbox' || input.tagName === 'SELECT') ? 'change' : 'input';
+        input.addEventListener(eventType, () => updateQR());
+        // Also add input event for selects for better responsiveness
+        if (input.tagName === 'SELECT') {
+          input.addEventListener('input', () => updateQR());
+        }
       });
     }
 
     // Initialize with ATAK mode
     switchMode('atak');
+
+    // Setup QUIC port switching for both modes
+    setTimeout(() => setupQuicPortSwitching(), 100);
   }
 
   /**
@@ -449,20 +422,46 @@ const TAKConfigManager = (function () {
       // Show iTAK fields, hide ATAK fields
       document.querySelectorAll('.itak-fields').forEach(el => el.style.display = 'block');
       document.querySelectorAll('.atak-fields').forEach(el => el.style.display = 'none');
+
+      // Setup QUIC port auto-switching for iTAK mode
+      setTimeout(() => setupQuicPortSwitching(), 100); // Small delay to ensure elements are ready
     }
 
     // Update QR code
     updateQR();
   }
 
+  // Setup QUIC port auto-switching
+  function setupQuicPortSwitching () {
+    const protocolField = document.getElementById('tak-protocol');
+    const portField = document.getElementById('tak-port');
+
+    if (protocolField && portField) {
+      // Remove any existing listeners to avoid duplicates
+      protocolField.removeEventListener('change', handleProtocolChange);
+      protocolField.addEventListener('change', handleProtocolChange);
+    }
+  }
+
+  // Protocol change handler for QUIC auto-switching
+  function handleProtocolChange (e) {
+    const portField = document.getElementById('tak-port');
+    if (!portField) {
+      return;
+    }
+
+    if (e.target.value === 'quic') {
+      portField.value = '8090';
+    } else if (portField.value === '8090') {
+      portField.value = '8089';
+    }
+    updateQR(); // Update QR after port change
+  }
+
   /**
    * Update QR code based on current mode and form data
    */
   async function updateQR () {
-    const host = document.getElementById('tak-host')?.value || '';
-    const port = document.getElementById('tak-port')?.value || '8089';
-    const protocol = document.getElementById('tak-protocol')?.value || 'https';
-
     if (currentMode === 'atak') {
       await updateATAKQR();
     } else {
@@ -472,32 +471,53 @@ const TAKConfigManager = (function () {
 
   /**
    * Update ATAK QR code
+   *
+   * IMPORTANT: The tak://com.atakmap.app/enroll URL scheme ONLY supports:
+   * - host (server hostname/IP)
+   * - username
+   * - token (password)
+   *
+   * It does NOT support port or protocol parameters!
+   * ATAK defaults to port 8089 and SSL protocol.
+   * For QUIC or custom ports, users must use data packages.
    */
   async function updateATAKQR () {
     const host = document.getElementById('tak-host')?.value || '';
     const username = document.getElementById('tak-username')?.value || '';
     const token = document.getElementById('tak-token')?.value || '';
-    const askCreds = document.getElementById('tak-ask-creds')?.checked;
 
+    // Build URI with whatever data we have
+    let uri = 'tak://com.atakmap.app/enroll?';
+    const params = [];
+
+    // Always add host if present
     if (host.trim()) {
+      // Validate hostname only if provided
       if (!isValidHostname(host.trim())) {
         UIController.showNotification(ERROR_MESSAGES.INVALID_HOSTNAME, 'error');
-        generateQRCode(null, 'tak-qr');
-        UIController.disableButtons('tak');
-        return;
       }
+      params.push(`host=${encodeURIComponent(host.trim())}`);
+    }
 
-      let uri;
-      if (askCreds || !username.trim() || !token.trim()) {
-        // Host-only enrollment
-        uri = `tak://com.atakmap.app/enroll?host=${encodeURIComponent(host.trim())}`;
-      } else {
-        // Full enrollment with credentials
-        uri = `tak://com.atakmap.app/enroll?host=${encodeURIComponent(host.trim())}&username=${encodeURIComponent(username.trim())}&token=${encodeURIComponent(token.trim())}`;
-      }
+    // Add credentials
+    if (username.trim()) {
+      params.push(`username=${encodeURIComponent(username.trim())}`);
+    }
+    if (token.trim()) {
+      params.push(`token=${encodeURIComponent(token.trim())}`);
+    }
 
+    // Generate QR code with whatever we have
+    if (params.length > 0) {
+      uri += params.join('&');
       await generateQRCode(uri, 'tak-qr');
-      UIController.enableButtons('tak');
+
+      // Enable buttons only if we have minimum required fields
+      if (host.trim() && username.trim() && token.trim()) {
+        UIController.enableButtons('tak');
+      } else {
+        UIController.disableButtons('tak');
+      }
 
       // Store URI for debugging
       const container = document.getElementById('tak-qr');
@@ -505,6 +525,7 @@ const TAKConfigManager = (function () {
         container.dataset.uri = uri;
       }
     } else {
+      // No data at all - show placeholder
       await generateQRCode(null, 'tak-qr');
       UIController.disableButtons('tak');
     }
@@ -519,40 +540,52 @@ const TAKConfigManager = (function () {
     const port = document.getElementById('tak-port')?.value || '8089';
     const protocol = document.getElementById('tak-protocol')?.value || 'https';
 
-    const itakProtocol = protocol === 'https' ? 'ssl' : 'tcp';
-
-    // Validate required fields
-    const requiredFields = [description, host, port];
-    const hasAllRequired = requiredFields.every(field => field && field.trim() !== '');
-
-    if (hasAllRequired) {
-      if (!isValidHostname(host)) {
-        UIController.showNotification(ERROR_MESSAGES.INVALID_HOSTNAME, 'error');
-        generateQRCode(null, 'tak-qr');
-        UIController.disableButtons('tak');
-        return;
-      }
-
-      if (!isValidPort(port)) {
-        UIController.showNotification(ERROR_MESSAGES.INVALID_PORT, 'error');
-        generateQRCode(null, 'tak-qr');
-        UIController.disableButtons('tak');
-        return;
-      }
-
-      // Build iTAK CSV format: description,host,port,protocol
-      const csvData = `${description.trim()},${host.trim()},${port.trim()},${itakProtocol}`;
-      await generateQRCode(csvData, 'tak-qr');
-      UIController.enableButtons('tak');
-
-      // Store data for debugging
-      const container = document.getElementById('tak-qr');
-      if (container) {
-        container.dataset.uri = csvData;
-      }
+    // Map protocol to iTAK format
+    let itakProtocol;
+    if (protocol === 'quic') {
+      itakProtocol = 'quic';
+    } else if (protocol === 'https') {
+      itakProtocol = 'ssl';
     } else {
+      itakProtocol = 'tcp';
+    }
+
+    // Validate fields if provided
+    if (host && !isValidHostname(host)) {
+      UIController.showNotification(ERROR_MESSAGES.INVALID_HOSTNAME, 'error');
+    }
+
+    if (port && !isValidPort(port)) {
+      UIController.showNotification(ERROR_MESSAGES.INVALID_PORT, 'error');
+    }
+
+    // Check if we have minimum required data
+    const hasMinimumData = description.trim() && host.trim();
+
+    if (!hasMinimumData) {
+      // No data - show placeholder
       await generateQRCode(null, 'tak-qr');
       UIController.disableButtons('tak');
+      return;
+    }
+
+    // Build iTAK CSV format: description,host,port,protocol
+    const csvData = `${description.trim()},${host.trim()},${port},${itakProtocol}`;
+    // Generate QR code only with valid data
+    await generateQRCode(csvData, 'tak-qr');
+
+    // Enable buttons only if all required fields are present and valid
+    const hasAllRequired = description.trim() && host.trim() && port.trim();
+    if (hasAllRequired && isValidHostname(host) && isValidPort(port)) {
+      UIController.enableButtons('tak');
+    } else {
+      UIController.disableButtons('tak');
+    }
+
+    // Store data for debugging
+    const container = document.getElementById('tak-qr');
+    if (container) {
+      container.dataset.uri = csvData;
     }
   }
 
@@ -587,7 +620,11 @@ const TAKConfigManager = (function () {
         placeholder.remove();
       }
 
+      // Remove any existing canvas immediately
       const oldCanvas = container.querySelector('canvas');
+      if (oldCanvas) {
+        oldCanvas.remove();
+      }
 
       container.setAttribute('aria-label', 'QR code generated successfully');
       if (canvas && typeof canvas === 'object' && canvas.nodeType === 1) {
@@ -595,18 +632,14 @@ const TAKConfigManager = (function () {
         container.appendChild(canvas);
 
         // Trigger fade-in
-        canvas.offsetHeight; // force reflow
-        canvas.style.opacity = '1';
-
-        // Fade out old canvas if it exists
-        if (oldCanvas) {
-          oldCanvas.style.opacity = '0';
-          oldCanvas.addEventListener('transitionend', () => oldCanvas.remove(), { once: true });
-        }
+        requestAnimationFrame(() => {
+          canvas.style.opacity = '1';
+        });
       }
 
       return canvas;
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error(ERROR_MESSAGES.QR_GENERATION_ERROR, error);
       UIController.showNotification(ERROR_MESSAGES.QR_GENERATION_ERROR, 'error');
       return null;
@@ -627,12 +660,12 @@ const TAKConfigManager = (function () {
     return {
       mode: currentMode,
       host: document.getElementById('tak-host')?.value || '',
-      port: document.getElementById('tak-port')?.value || '8089',
-      protocol: document.getElementById('tak-protocol')?.value || 'https',
+      // Port and protocol are fixed for enrollment QR codes
+      port: '8089',
+      protocol: 'ssl',
       // ATAK-specific
       username: currentMode === 'atak' ? (document.getElementById('tak-username')?.value || '') : '',
       token: currentMode === 'atak' ? (document.getElementById('tak-token')?.value || '') : '',
-      askCreds: currentMode === 'atak' ? (document.getElementById('tak-ask-creds')?.checked || false) : false,
       // iTAK-specific
       description: currentMode === 'itak' ? (document.getElementById('tak-description')?.value || '') : ''
     };
@@ -649,18 +682,8 @@ const TAKConfigManager = (function () {
         hostInput.value = data.host;
       }
     }
-    if (data.port) {
-      const portInput = document.getElementById('tak-port');
-      if (portInput) {
-        portInput.value = data.port;
-      }
-    }
-    if (data.protocol) {
-      const protocolInput = document.getElementById('tak-protocol');
-      if (protocolInput) {
-        protocolInput.value = data.protocol;
-      }
-    }
+    // Port and protocol are fixed for enrollment QR codes (8089/SSL)
+    // No need to set these fields as they've been removed from the UI
 
     // Set mode-specific fields
     if (data.mode) {
@@ -683,12 +706,6 @@ const TAKConfigManager = (function () {
       const tokenInput = document.getElementById('tak-token');
       if (tokenInput) {
         tokenInput.value = data.token;
-      }
-    }
-    if (data.askCreds !== undefined) {
-      const askCredsInput = document.getElementById('tak-ask-creds');
-      if (askCredsInput) {
-        askCredsInput.checked = data.askCreds;
       }
     }
 
@@ -728,15 +745,73 @@ const PackageBuilder = (function () {
     }
 
     const deployment = document.getElementById('package-deployment');
-    const clientPassGroup = document.getElementById('client-pass-group');
-    deployment?.addEventListener('change', () => {
-      if (deployment.value === 'auto-enroll') {
-        clientPassGroup.style.display = 'none';
-      } else {
-        clientPassGroup.style.display = '';
-      }
-    });
+    const clientCertGroup = document.getElementById('client-cert-group');
 
+    // Smart field visibility based on deployment type
+    function updateFieldVisibility () {
+      const deploymentTypeDesc = document.getElementById('deployment-type-desc');
+      const deploymentDesc = document.getElementById('deployment-desc');
+      const usernameField = document.getElementById('package-username');
+      const passwordField = document.getElementById('package-password');
+
+      if (deployment.value === 'auto-enroll') {
+        // Auto-Enrollment: Hide client cert, make username/password required
+        clientCertGroup.style.display = 'none';
+
+        // Update help text to indicate username/password are required
+        const usernameHelp = usernameField.parentElement.querySelector('.help-text');
+        const passwordHelp = passwordField.parentElement.querySelector('.help-text');
+        if (usernameHelp) {
+          usernameHelp.textContent = 'Username required for certificate enrollment from server';
+        }
+        if (passwordHelp) {
+          passwordHelp.textContent = 'Password required for certificate enrollment';
+        }
+
+        // Update deployment description
+        if (deploymentTypeDesc) {
+          deploymentTypeDesc.textContent = 'Auto-Enrollment:';
+        }
+        if (deploymentDesc) {
+          deploymentDesc.textContent = 'Package contains server info and CA certificate. Device will request its own certificate from server on first connection.';
+        }
+      } else {
+        // Soft-Certificate: Show client cert, make username/password optional
+        clientCertGroup.style.display = '';
+
+        // Update help text to indicate username/password are optional
+        const usernameHelp = usernameField.parentElement.querySelector('.help-text');
+        const passwordHelp = passwordField.parentElement.querySelector('.help-text');
+        if (usernameHelp) {
+          usernameHelp.textContent = 'Username for server authentication (optional - uses certificate by default)';
+        }
+        if (passwordHelp) {
+          passwordHelp.textContent = 'Password for additional authentication layer (optional)';
+        }
+
+        // Update deployment description
+        if (deploymentTypeDesc) {
+          deploymentTypeDesc.textContent = 'Soft-Certificate:';
+        }
+        if (deploymentDesc) {
+          deploymentDesc.textContent = 'Package includes pre-generated client certificate. User imports and connects immediately.';
+        }
+      }
+
+      // Update package name preview when deployment type changes
+      updatePackageNamePreview();
+    }
+
+    // Set up event listener and initial state
+    deployment?.addEventListener('change', updateFieldVisibility);
+
+    // Initialize field visibility
+    setTimeout(updateFieldVisibility, 0);
+
+    // Set up real-time validation
+    setupRealTimeValidation();
+
+    // Set up drag and drop functionality
     const dropzone = document.getElementById('package-dropzone');
     const fileInput = document.getElementById('pkg-extra');
     const filesList = document.getElementById('package-files-list');
@@ -782,52 +857,518 @@ const PackageBuilder = (function () {
       }
       updateFilesList();
       form.reset();
+      updatePackageNamePreview(); // Update preview after reset
     });
 
     document.getElementById('package-build')?.addEventListener('click', buildPackage);
+
+    // Set up dynamic package name preview
+    setupDynamicNaming();
+
+    // Set up QUIC port auto-switching for package form
+    setupPackageQuicSwitching();
+  }
+
+  /**
+   * Setup real-time validation for package form fields
+   */
+  function setupRealTimeValidation () {
+    const fields = [
+      { id: 'package-host', validator: validateHost, required: true },
+      { id: 'package-port', validator: validatePort, required: true },
+      { id: 'package-protocol', validator: validateProtocol, required: true },
+      { id: 'package-username', validator: validateUsername, required: 'conditional' },
+      { id: 'package-password', validator: validatePassword, required: 'conditional' },
+      { id: 'package-callsign', validator: validateCallsign, required: false },
+      { id: 'package-team', validator: validateTeam, required: false },
+      { id: 'package-role', validator: validateRole, required: false },
+      { id: 'pkg-ca', validator: validateCaFile, required: true },
+      { id: 'package-ca-pass', validator: validateCaPassword, required: true },
+      { id: 'pkg-client', validator: validateClientFile, required: 'conditional' },
+      { id: 'package-client-pass', validator: validateClientPassword, required: 'conditional' }
+    ];
+
+    // Add event listeners for real-time validation
+    fields.forEach(fieldConfig => {
+      const field = document.getElementById(fieldConfig.id);
+      if (field) {
+        // Add validation on input/change
+        field.addEventListener('input', () => validateField(fieldConfig));
+        field.addEventListener('change', () => validateField(fieldConfig));
+        field.addEventListener('blur', () => validateField(fieldConfig));
+      }
+    });
+
+    // Also watch for deployment type changes to re-validate
+    const deploymentSelect = document.getElementById('package-deployment');
+    if (deploymentSelect) {
+      deploymentSelect.addEventListener('change', () => {
+        fields.forEach(validateField);
+        updateFieldLabels();
+      });
+    }
+
+    // Initial validation
+    setTimeout(() => {
+      fields.forEach(validateField);
+      updateFieldLabels();
+    }, 100);
+  }
+
+  /**
+   * Validate a single field and update its visual state
+   */
+  function validateField (fieldConfig) {
+    const field = document.getElementById(fieldConfig.id);
+    const formGroup = field?.closest('.form-group');
+
+    if (!field || !formGroup) {
+      return;
+    }
+
+    const deployment = document.getElementById('package-deployment')?.value || 'auto-enroll';
+    const isRequired = getFieldRequirement(fieldConfig.required, deployment, fieldConfig.id);
+    const value = field.type === 'file' ? field.files?.[0] : field.value;
+
+    // Run field-specific validation
+    const isValid = fieldConfig.validator(value, deployment);
+    const isEmpty = !value || (typeof value === 'string' && !value.trim());
+
+    // Determine validation state
+    let validationState = 'neutral';
+
+    if (isEmpty && isRequired) {
+      validationState = 'invalid'; // Required but empty
+    } else if (isEmpty && !isRequired) {
+      validationState = 'neutral'; // Optional and empty
+    } else if (!isEmpty && isValid) {
+      validationState = 'valid'; // Has value and valid
+    } else if (!isEmpty && !isValid) {
+      validationState = 'invalid'; // Has value but invalid
+    }
+
+    // Update field classes
+    field.classList.remove('field-valid', 'field-invalid');
+    formGroup.classList.remove('field-valid', 'field-invalid', 'has-validation');
+
+    if (validationState === 'valid') {
+      field.classList.add('field-valid');
+      formGroup.classList.add('field-valid', 'has-validation');
+    } else if (validationState === 'invalid') {
+      field.classList.add('field-invalid');
+      formGroup.classList.add('field-invalid', 'has-validation');
+    }
+
+    return validationState;
+  }
+
+  /**
+   * Determine if a field is required based on deployment type
+   */
+  function getFieldRequirement (requiredConfig, deployment, fieldId) {
+    if (requiredConfig === true) {
+      return true;
+    }
+    if (requiredConfig === false) {
+      return false;
+    }
+    if (requiredConfig === 'conditional') {
+      // Conditional requirements based on deployment type
+      if (deployment === 'auto-enroll') {
+        return ['package-username', 'package-password'].includes(fieldId);
+      } else if (deployment === 'soft-cert') {
+        return ['pkg-client', 'package-client-pass'].includes(fieldId);
+      }
+    }
+    return false;
+  }
+
+  /**
+   * Update field labels with required/optional indicators
+   */
+  function updateFieldLabels () {
+    const deployment = document.getElementById('package-deployment')?.value || 'auto-enroll';
+
+    const labelUpdates = [
+      { id: 'package-host', required: true },
+      { id: 'package-port', required: true },
+      { id: 'package-protocol', required: true },
+      { id: 'package-username', required: deployment === 'auto-enroll' },
+      { id: 'package-password', required: deployment === 'auto-enroll' },
+      { id: 'package-callsign', required: false },
+      { id: 'package-team', required: false },
+      { id: 'package-role', required: false },
+      { id: 'pkg-ca', required: true },
+      { id: 'package-ca-pass', required: true },
+      { id: 'pkg-client', required: deployment === 'soft-cert' },
+      { id: 'package-client-pass', required: deployment === 'soft-cert' }
+    ];
+
+    labelUpdates.forEach(({ id, required }) => {
+      const field = document.getElementById(id);
+      const label = field?.previousElementSibling?.tagName === 'LABEL' ?
+        field.previousElementSibling :
+        field?.closest('.form-group')?.querySelector('label');
+
+      if (label) {
+        label.classList.remove('field-required', 'field-optional');
+        label.classList.add(required ? 'field-required' : 'field-optional');
+      }
+    });
+  }
+
+  // Field-specific validation functions
+  function validateHost (value) {
+    return value && isValidHostname(value);
+  }
+
+  function validatePort (value) {
+    return value && isValidPort(value);
+  }
+
+  function validateProtocol (value) {
+    return value && ['http', 'https', 'quic'].includes(value);
+  }
+
+  function validateUsername (value, deployment) {
+    if (deployment === 'auto-enroll') {
+      return value && value.trim().length >= 2;
+    }
+    return !value || value.trim().length >= 2; // Optional but must be valid if provided
+  }
+
+  function validatePassword (value, deployment) {
+    if (deployment === 'auto-enroll') {
+      return value && value.length >= 4;
+    }
+    return !value || value.length >= 4; // Optional but must be valid if provided
+  }
+
+  function validateCallsign (value) {
+    return !value || (value.trim().length >= 2 && value.trim().length <= 20);
+  }
+
+  function validateTeam () {
+    return true; // Team dropdown is always valid
+  }
+
+  function validateRole () {
+    return true; // Role dropdown is always valid
+  }
+
+  function validateCaFile (value) {
+    return value instanceof File && value.name.endsWith('.p12');
+  }
+
+  function validateCaPassword (value) {
+    return value && value.length >= 1;
+  }
+
+  function validateClientFile (value, deployment) {
+    if (deployment === 'soft-cert') {
+      return value instanceof File && value.name.endsWith('.p12');
+    }
+    return true; // Not required for auto-enroll
+  }
+
+  function validateClientPassword (value, deployment) {
+    if (deployment === 'soft-cert') {
+      return value && value.length >= 1;
+    }
+    return true; // Not required for auto-enroll
+  }
+
+  /**
+   * Check if all required fields are valid for package building
+   */
+  function validatePackageForm () {
+    const deployment = document.getElementById('package-deployment')?.value || 'auto-enroll';
+
+    // Check all required fields based on deployment type
+    const requiredFields = [
+      'package-host',
+      'package-port',
+      'package-protocol',
+      'pkg-ca',
+      'package-ca-pass'
+    ];
+
+    if (deployment === 'auto-enroll') {
+      requiredFields.push('package-username', 'package-password');
+    } else if (deployment === 'soft-cert') {
+      requiredFields.push('pkg-client', 'package-client-pass');
+    }
+
+    for (const fieldId of requiredFields) {
+      const field = document.getElementById(fieldId);
+      if (!field) {
+        continue;
+      }
+
+      // Check actual field values instead of CSS classes
+      let isValid = false;
+
+      if (field.type === 'file') {
+        isValid = field.files && field.files.length > 0;
+      } else if (field.tagName === 'SELECT') {
+        isValid = field.value && field.value.trim() !== '';
+      } else {
+        isValid = field.value && field.value.trim() !== '';
+      }
+
+      // For required fields, ensure they have valid values
+      if (isFieldRequired(fieldId, deployment) && !isValid) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  function isFieldRequired (fieldId, deployment) {
+    const alwaysRequired = ['package-host', 'package-port', 'package-protocol', 'pkg-ca', 'package-ca-pass'];
+    const autoEnrollRequired = ['package-username', 'package-password'];
+    const softCertRequired = ['pkg-client', 'package-client-pass'];
+
+    if (alwaysRequired.includes(fieldId)) {
+      return true;
+    }
+    if (deployment === 'auto-enroll' && autoEnrollRequired.includes(fieldId)) {
+      return true;
+    }
+    if (deployment === 'soft-cert' && softCertRequired.includes(fieldId)) {
+      return true;
+    }
+
+    return false;
+  }
+
+  /**
+   * Setup dynamic package name preview that updates as user types
+   */
+  function setupDynamicNaming () {
+    const nameInput = document.getElementById('package-name');
+    if (!nameInput) {
+      return;
+    }
+
+    // Fields that affect the package name
+    const watchFields = [
+      'package-host',
+      'package-username',
+      'package-callsign',
+      'package-client',
+      'package-team',
+      'package-role',
+      'package-protocol',
+      'package-port',
+      'package-deployment'
+    ];
+
+    // Update preview when any relevant field changes
+    watchFields.forEach(fieldId => {
+      const field = document.getElementById(fieldId);
+      if (field) {
+        field.addEventListener('input', updatePackageNamePreview);
+        field.addEventListener('change', updatePackageNamePreview);
+      }
+    });
+
+    // Initial preview update
+    updatePackageNamePreview();
+  }
+
+  /**
+   * Setup QUIC port auto-switching for package form
+   */
+  function setupPackageQuicSwitching () {
+    const protocolSelect = document.getElementById('package-protocol');
+    const portInput = document.getElementById('package-port');
+
+    if (!protocolSelect || !portInput) {
+      return;
+    }
+
+    function handlePackageProtocolChange () {
+      const selectedProtocol = protocolSelect.value;
+
+      if (selectedProtocol === 'quic') {
+        portInput.value = '8090';
+      } else if (selectedProtocol === 'https' || selectedProtocol === 'http') {
+        portInput.value = '8089';
+      }
+
+      // Update package name preview when protocol changes
+      updatePackageNamePreview();
+    }
+
+    // Set up event listener
+    protocolSelect.addEventListener('change', handlePackageProtocolChange);
+  }
+
+  /**
+   * Update the package name input with dynamic preview
+   */
+  function updatePackageNamePreview () {
+    const nameInput = document.getElementById('package-name');
+    if (!nameInput) {
+      return;
+    }
+
+    // Get current form values
+    const host = document.getElementById('package-host')?.value?.trim() || '';
+    const callsign = document.getElementById('package-callsign')?.value?.trim() || '';
+    const client = document.getElementById('package-client')?.value || 'atak';
+    const team = document.getElementById('package-team')?.value?.trim() || '';
+    const role = document.getElementById('package-role')?.value?.trim() || '';
+    const proto = document.getElementById('package-protocol')?.value || 'https';
+    const port = document.getElementById('package-port')?.value?.trim() || '';
+
+    // Generate dynamic name
+    const dynamicName = generatePackageName({
+      host,
+      callsign,
+      client,
+      team,
+      role,
+      protocol: proto,
+      port
+    });
+
+    // If the input is empty or contains the old default, update with dynamic name
+    const currentValue = nameInput.value.trim();
+    if (!currentValue || currentValue === 'TAK_Server.zip' || currentValue.endsWith('-package.zip')) {
+      nameInput.value = dynamicName;
+    }
+
+    // Always update placeholder to show what the dynamic name would be
+    nameInput.placeholder = `Auto-generated: ${dynamicName}`;
+  }
+
+  /**
+   * Generate dynamic package name based on server and client details
+   */
+  function generatePackageName ({ host, callsign, client, team, role, protocol }) {
+    // Sanitize string for filename safety
+    function sanitizeForFilename (str) {
+      if (!str) {
+        return '';
+      }
+      return str
+        .toLowerCase()
+        .replace(/[^a-z0-9-_.]/g, '-')  // Replace invalid chars with dash
+        .replace(/--+/g, '-')          // Collapse multiple dashes
+        .replace(/^-|-$/g, '');        // Remove leading/trailing dashes
+    }
+
+    // Preserve full hostname (FQDN) but sanitize for filename
+    function cleanHostname (hostname) {
+      if (!hostname) {
+        return '';
+      }
+
+      // Keep the full hostname but sanitize it for filename safety
+      return sanitizeForFilename(hostname);
+    }
+
+    // Build name parts
+    const parts = [];
+
+    // Always start with hostname
+    const cleanHost = cleanHostname(host);
+    parts.push(cleanHost || 'tak-server');
+
+    // Add callsign if provided
+    if (callsign?.trim()) {
+      parts.push(sanitizeForFilename(callsign));
+    }
+
+    // Always add client type
+    parts.push(client || 'atak');
+
+    // Add team if provided and it's not just a color
+    if (team?.trim() && team.toLowerCase() !== 'none') {
+      const cleanTeam = sanitizeForFilename(team);
+      if (cleanTeam) {
+        parts.push(cleanTeam);
+      }
+    }
+
+    // Add role if provided
+    if (role?.trim() && role.toLowerCase() !== 'none') {
+      const cleanRole = sanitizeForFilename(role);
+      if (cleanRole) {
+        parts.push(cleanRole);
+      }
+    }
+
+    // Add protocol indicator if it's not standard HTTPS
+    if (protocol === 'quic') {
+      parts.push('quic');
+    } else if (protocol === 'http') {
+      parts.push('tcp');
+    }
+
+    // Join parts and add extension
+    const baseName = parts.join('-');
+    return `${baseName}-package.zip`;
   }
 
   async function buildPackage () {
     try {
       const client = document.getElementById('package-client').value;
       const deployment = document.getElementById('package-deployment').value;
-      const name = document.getElementById('package-name').value.trim() || 'TAK_Server.zip';
       const host = document.getElementById('package-host').value.trim();
       const port = document.getElementById('package-port').value.trim();
       const proto = document.getElementById('package-protocol').value;
       const caPass = document.getElementById('package-ca-pass').value;
       const clientPass = document.getElementById('package-client-pass').value;
+      const username = document.getElementById('package-username').value.trim();
+      const password = document.getElementById('package-password').value.trim();
+      const cacheCreds = document.getElementById('package-cache-creds').checked;
       const callsign = document.getElementById('package-callsign').value.trim();
       const team = document.getElementById('package-team').value.trim();
       const role = document.getElementById('package-role').value.trim();
+
+      // Generate dynamic package name based on configuration
+      const dynamicName = generatePackageName({
+        host,
+        callsign,
+        client,
+        team,
+        role,
+        protocol: proto,
+        port
+      });
+
+      // Allow manual override if provided, otherwise use dynamic name
+      const manualName = document.getElementById('package-name').value.trim();
+      const name = manualName || dynamicName;
       const caFile = document.getElementById('pkg-ca').files?.[0] || null;
       const clientFile = document.getElementById('pkg-client').files?.[0] || null;
 
-      // Validate required fields
-      if (!host) {
-        UIController.showNotification('Please enter a server hostname', 'error');
-        return;
-      }
-      if (!isValidHostname(host)) {
-        UIController.showNotification(ERROR_MESSAGES.INVALID_HOSTNAME, 'error');
-        return;
-      }
-      if (!isValidPort(port)) {
-        UIController.showNotification(ERROR_MESSAGES.INVALID_PORT, 'error');
-        return;
-      }
-      
-      // Validate certificate files
-      if (!caFile) {
-        UIController.showNotification('Please select a CA certificate file', 'error');
-        return;
-      }
-      if (deployment === 'soft-cert' && !clientFile) {
-        UIController.showNotification('Please select a client certificate file for soft-cert deployment', 'error');
+      // Use the comprehensive validation system
+      if (!validatePackageForm()) {
+        (window.UIController || UIController).showNotification('Please fix the highlighted field errors before building the package', 'error');
+
+        // Scroll to first invalid field
+        const firstInvalid = document.querySelector('.field-invalid');
+        if (firstInvalid) {
+          firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          firstInvalid.focus();
+        }
         return;
       }
 
-      const protocolToken = proto === 'https' ? 'ssl' : 'tcp';
+      // Map protocol to connection string token
+      let protocolToken;
+
+      if (proto === 'quic') {
+        protocolToken = 'quic';
+      } else {
+        protocolToken = proto === 'https' ? 'ssl' : 'tcp';
+      }
+
       const connectString = `${host}:${port}:${protocolToken}`;
 
       const prefXml = buildConfigPref({
@@ -835,6 +1376,9 @@ const PackageBuilder = (function () {
         connectString,
         caPass,
         clientPass,
+        username,
+        password,
+        cacheCreds,
         callsign,
         team,
         role,
@@ -876,42 +1420,71 @@ const PackageBuilder = (function () {
       }
 
       const blob = await zip.generateAsync({ type: 'blob' });
+      const filename = name || 'TAK_Server.zip';
 
       // Download the package
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
-      a.download = name || 'TAK_Server.zip';
+      a.download = filename;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(a.href);
-      
-      UIController.showNotification(`Package "${name || 'TAK_Server.zip'}" downloaded successfully!`, 'success');
+
+      (window.UIController || UIController).showNotification(`Package "${filename}" downloaded successfully!`, 'success');
     } catch (e) {
       // eslint-disable-next-line no-console
       console.error(e);
-      UIController.showNotification('Error building data package', 'error');
+      (window.UIController || UIController).showNotification('Error building data package', 'error');
     }
   }
 
-  function buildConfigPref ({ deployment, connectString, caPass, clientPass, callsign, team, role, client }) {
+  function buildConfigPref ({ deployment, connectString, caPass, clientPass, username, password, cacheCreds, callsign, team, role, client }) {
     const isSoft = deployment === 'soft-cert';
     const isITAK = client === 'itak';
     const certPathPrefix = isITAK ? '' : 'certs'; // iTAK expects files in root, ATAK uses certs folder
 
-    const extraSoftEntries = isSoft ? `
-    <entry key="caPassword" class="class java.lang.String">${sanitizeInput(caPass)}</entry>
-    <entry key="clientPassword" class="class java.lang.String">${sanitizeInput(clientPass)}</entry>
-    <entry key="certificateLocation" class="class java.lang.String">${certPathPrefix ? certPathPrefix + '/' : ''}clientCert.p12</entry>` : `
-    <entry key="caPassword0" class="class java.lang.String">${sanitizeInput(caPass)}</entry>
-    <entry key="enrollForCertificateWithTrust0" class="class java.lang.Boolean">true</entry>
-    <entry key="useAuth0" class="class java.lang.Boolean">true</entry>
-    <entry key="cacheCreds0" class="class java.lang.String">Cache credentials</entry>`;
+    // Check if QUIC protocol is being used
+    const isQUIC = connectString.endsWith(':quic');
 
-    const optionalUser = `
-    ${callsign ? `<entry key="locationCallsign" class="class java.lang.String">${sanitizeInput(callsign)}</entry>` : ''}
-    ${team ? `<entry key="locationTeam" class="class java.lang.String">${sanitizeInput(team)}</entry>` : ''}
-    ${role ? `<entry key="atakRoleType" class="class java.lang.String">${sanitizeInput(role)}</entry>` : ''}`;
+    // Authentication and credential entries
+    const authEntries = [];
+
+    // Always include CA password
+    authEntries.push(`<entry key="caPassword${isSoft ? '' : '0'}" class="class java.lang.String">${sanitizeInput(caPass)}</entry>`);
+
+    // Add username/password if provided
+    if (username) {
+      authEntries.push(`<entry key="username${isSoft ? '' : '0'}" class="class java.lang.String">${sanitizeInput(username)}</entry>`);
+    }
+
+    // Add authentication settings
+    if (username && password) {
+      authEntries.push(`<entry key="useAuth${isSoft ? '' : '0'}" class="class java.lang.Boolean">true</entry>`);
+      authEntries.push(`<entry key="cacheCreds${isSoft ? '' : '0'}" class="class java.lang.Boolean">${cacheCreds}</entry>`);
+      // Note: Password is not stored in prefs for security - provided during connection
+    }
+
+    // Deployment-specific entries
+    const extraSoftEntries = isSoft ?
+      `<entry key="clientPassword" class="class java.lang.String">${sanitizeInput(clientPass)}</entry>
+    <entry key="certificateLocation" class="class java.lang.String">${certPathPrefix ? `${certPathPrefix}/` : ''}clientCert.p12</entry>` :
+      '<entry key="enrollForCertificateWithTrust0" class="class java.lang.Boolean">true</entry>';
+
+    const allAuthEntries = authEntries.join('\n    ');
+
+    // Build optional user entries without empty lines
+    const optionalUserEntries = [];
+    if (callsign) {
+      optionalUserEntries.push(`<entry key="locationCallsign" class="class java.lang.String">${sanitizeInput(callsign)}</entry>`);
+    }
+    if (team) {
+      optionalUserEntries.push(`<entry key="locationTeam" class="class java.lang.String">${sanitizeInput(team)}</entry>`);
+    }
+    if (role) {
+      optionalUserEntries.push(`<entry key="atakRoleType" class="class java.lang.String">${sanitizeInput(role)}</entry>`);
+    }
+    const optionalUser = optionalUserEntries.length > 0 ? `\n    ${optionalUserEntries.join('\n    ')}` : '';
 
     return `<?xml version='1.0' encoding='ASCII' standalone='yes'?>
 <preferences>
@@ -920,13 +1493,12 @@ const PackageBuilder = (function () {
     <entry key="description0" class="class java.lang.String">TAK Server</entry>
     <entry key="enabled0" class="class java.lang.Boolean">true</entry>
     <entry key="connectString0" class="class java.lang.String">${sanitizeInput(connectString)}</entry>
-    ${isSoft ? '' : `<entry key="caLocation0" class="class java.lang.String">${certPathPrefix ? certPathPrefix + '/' : ''}caCert.p12</entry>`}
+    <entry key="caLocation${isSoft ? '' : '0'}" class="class java.lang.String">${certPathPrefix ? `${certPathPrefix}/` : ''}caCert.p12</entry>
+    ${allAuthEntries}
+    ${extraSoftEntries}
   </preference>
   <preference version="1" name="com.atakmap.app_preferences">
-    <entry key="displayServerConnectionWidget" class="class java.lang.Boolean">true</entry>
-    <entry key="caLocation" class="class java.lang.String">${certPathPrefix ? certPathPrefix + '/' : ''}caCert.p12</entry>
-    ${extraSoftEntries}
-    ${optionalUser}
+    <entry key="displayServerConnectionWidget" class="class java.lang.Boolean">true</entry>${isQUIC ? '\n    <entry key="network_quic_enabled" class="class java.lang.Boolean">true</entry>' : ''}${optionalUser}
   </preference>
 </preferences>`;
   }
@@ -951,7 +1523,7 @@ const PackageBuilder = (function () {
 </MissionPackageManifest>`;
   }
 
-  return { init };
+  return { init, buildPackage };
 })();
 
 // ============================================================================
@@ -960,7 +1532,9 @@ const PackageBuilder = (function () {
 
 const PreferenceBuilder = (function () {
   let prefsJson = null;
+  let detailedPrefsJson = null;
   let currentKnownPrefs = [];
+  const preferenceDetails = {};
 
   function init () {
     const container = document.getElementById('pref-rows');
@@ -968,73 +1542,142 @@ const PreferenceBuilder = (function () {
     const versionSelect = document.getElementById('pref-version');
     const searchInput = document.getElementById('pref-search');
     const addKnownBtn = document.getElementById('pref-add-known');
-    const datalist = document.getElementById('pref-datalist');
     const suggestions = document.getElementById('pref-suggestions');
     const browseBtn = document.getElementById('pref-browse');
     if (!container || !addBtn) {
       return;
     }
 
-    addBtn.addEventListener('click', () => addRow(container));
-    addKnownBtn?.addEventListener('click', () => {
+    addBtn.addEventListener('click', async () => await addRow(container));
+    addKnownBtn?.addEventListener('click', async () => {
       const val = searchInput?.value?.trim();
       if (!val) {
         return;
       }
+
+      // Ensure detailed preferences are loaded
+      await loadDetailedPreferences();
+
       // match by label or key
       const hit = currentKnownPrefs.find(p => p.label === val || p.key === val || `${p.label} (${p.key})` === val);
       if (hit) {
-        addRow(container, hit.key);
+        await addRow(container, hit.key);
         // reset search
         searchInput.value = '';
+      } else {
+        // Also check detailed preferences
+        const detailKey = Object.keys(preferenceDetails).find(key =>
+          key === val || preferenceDetails[key].label === val
+        );
+        if (detailKey) {
+          await addRow(container, detailKey);
+          searchInput.value = '';
+        }
       }
     });
 
     versionSelect?.addEventListener('change', () => {
       const v = versionSelect.value;
-      updateKnownPrefsForVersion(v, datalist);
+      updateKnownPrefsForVersion(v);
       // Clear suggestions on version change
       if (suggestions) {
         suggestions.style.display = 'none';
       }
     });
 
-    // initial
-    addRow(container);
+    // Load preferences for the selected version (don't add initial empty row)
     if (versionSelect) {
-      updateKnownPrefsForVersion(versionSelect.value, datalist);
+      updateKnownPrefsForVersion(versionSelect.value);
     }
 
-    // Live suggestions dropdown (label and key)
+    // Load detailed preference information
+    loadDetailedPreferences();
+
+    // Show all suggestions on focus
+    searchInput?.addEventListener('focus', async () => {
+      if (!suggestions) {
+        return;
+      }
+
+      await loadDetailedPreferences();
+
+      // Combine version-specific and detailed preferences
+      const allPrefs = [...currentKnownPrefs];
+      Object.entries(preferenceDetails).forEach(([key, detail]) => {
+        if (!allPrefs.find(p => p.key === key)) {
+          allPrefs.push({ key, label: detail.label || key });
+        }
+      });
+
+      // Sort alphabetically by label
+      allPrefs.sort((a, b) => a.label.toLowerCase().localeCompare(b.label.toLowerCase()));
+
+      const toShow = allPrefs.slice(0, 500);
+      if (toShow.length > 0) {
+        suggestions.innerHTML = toShow.map(p => {
+          const normalizedLabel = p.label
+            .split(' ')
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+            .join(' ');
+          return `
+          <div class="pref-suggestion" data-key="${p.key}" style="padding:.5rem .75rem;cursor:pointer;display:flex;flex-direction:column;gap:.125rem;">
+            <span style="font-weight:600;">${normalizedLabel}</span>
+            <span style="font-size:.85em;color:var(--color-muted,#64748b);">${p.key}</span>
+          </div>
+        `;
+        }).join('');
+        suggestions.style.display = 'block';
+      }
+    });
+
+    // Live suggestions dropdown (label and key) - filter as they type
     searchInput?.addEventListener('input', () => {
       if (!suggestions) {
         return;
       }
       const q = searchInput.value.trim().toLowerCase();
       if (!q) {
-        suggestions.style.display = 'none';
-        suggestions.innerHTML = '';
+        // If empty, show all preferences again
+        searchInput.dispatchEvent(new Event('focus'));
         return;
       }
-      const filtered = currentKnownPrefs.filter(p =>
+
+      // Combine and filter
+      const allPrefs = [...currentKnownPrefs];
+      Object.entries(preferenceDetails).forEach(([key, detail]) => {
+        if (!allPrefs.find(p => p.key === key)) {
+          allPrefs.push({ key, label: detail.label || key });
+        }
+      });
+
+      const filtered = allPrefs.filter(p =>
         p.label.toLowerCase().includes(q) || p.key.toLowerCase().includes(q)
-      ).slice(0, 50);
+      ).sort((a, b) => a.label.toLowerCase().localeCompare(b.label.toLowerCase()))
+        .slice(0, 50);
+
       if (filtered.length === 0) {
         suggestions.style.display = 'none';
         suggestions.innerHTML = '';
         return;
       }
-      suggestions.innerHTML = filtered.map(p => `
+      suggestions.innerHTML = filtered.map(p => {
+        // Normalize label casing
+        const normalizedLabel = p.label
+          .split(' ')
+          .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+          .join(' ');
+        return `
         <div class="pref-suggestion" data-key="${p.key}" style="padding:.5rem .75rem;cursor:pointer;display:flex;flex-direction:column;gap:.125rem;">
-          <span style="font-weight:600;">${p.label}</span>
+          <span style="font-weight:600;">${normalizedLabel}</span>
           <span style="font-size:.85em;color:var(--color-muted,#64748b);">${p.key}</span>
         </div>
-      `).join('');
+      `;
+      }).join('');
       suggestions.style.display = 'block';
     });
 
     // Click to pick suggestion
-    suggestions?.addEventListener('click', (e) => {
+    suggestions?.addEventListener('click', async (e) => {
       const target = e.target.closest('.pref-suggestion');
       if (!target) {
         return;
@@ -1043,22 +1686,49 @@ const PreferenceBuilder = (function () {
       if (pickedKey) {
         searchInput.value = pickedKey;
         suggestions.style.display = 'none';
+        // Optionally auto-add the row when clicked
+        // await addRow(container, pickedKey);
+        // searchInput.value = '';
       }
     });
 
     // Browse modal (inline dropdown) to list all keys for current version
-    browseBtn?.addEventListener('click', () => {
+    browseBtn?.addEventListener('click', async () => {
       if (!suggestions) {
         return;
       }
-      const all = currentKnownPrefs.slice(0, 500);
-      suggestions.innerHTML = all.map(p => `
+
+      await loadDetailedPreferences();
+
+      // Combine version-specific and detailed preferences
+      const allPrefs = [...currentKnownPrefs];
+      Object.entries(preferenceDetails).forEach(([key, detail]) => {
+        if (!allPrefs.find(p => p.key === key)) {
+          allPrefs.push({ key, label: detail.label || key });
+        }
+      });
+
+      // Sort alphabetically by label
+      allPrefs.sort((a, b) => a.label.toLowerCase().localeCompare(b.label.toLowerCase()));
+
+      const all = allPrefs.slice(0, 500);
+      suggestions.innerHTML = all.map(p => {
+        // Normalize label casing
+        const normalizedLabel = p.label
+          .split(' ')
+          .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+          .join(' ');
+        return `
         <div class="pref-suggestion" data-key="${p.key}" style="padding:.5rem .75rem;cursor:pointer;display:flex;flex-direction:column;gap:.125rem;">
-          <span style="font-weight:600;">${p.label}</span>
+          <span style="font-weight:600;">${normalizedLabel}</span>
           <span style="font-size:.85em;color:var(--color-muted,#64748b);">${p.key}</span>
         </div>
-      `).join('');
+      `;
+      }).join('');
       suggestions.style.display = 'block';
+
+      // Focus the search input so user can start typing to filter
+      searchInput?.focus();
     });
 
     // Close suggestions on outside click
@@ -1073,41 +1743,63 @@ const PreferenceBuilder = (function () {
     });
   }
 
-  function addRow (container, presetKey = '') {
+  async function addRow (container, presetKey = '') {
+    // Ensure detailed preferences are loaded
+    await loadDetailedPreferences();
+
     const index = container.children.length + 1;
     const row = document.createElement('div');
     row.className = 'form-group';
+
+    // Get preference details if available
+    const prefDetail = preferenceDetails[presetKey] || {};
+    const defaultType = prefDetail.type || 'string';
+    const defaultValue = prefDetail.default !== undefined ? String(prefDetail.default) : '';
+    const placeholder = prefDetail.example || prefDetail.default || 'value';
+
     row.innerHTML = `
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:var(--spacing-md);align-items:end;">
-        <div>
+      <div class="pref-row-grid">
+        <div class="pref-field-with-hint">
           <label>Key ${index}</label>
-          <input type="text" data-pref="key" placeholder="displayRed" value="${presetKey}" />
-          <div class="help-text" data-pref="key-label"></div>
+          <input type="text" data-pref="key" placeholder="e.g., locationCallsign" value="${presetKey}" />
+          <div class="pref-key-hint" data-pref="key-label"></div>
+          <div class="pref-description" data-pref="description"></div>
         </div>
         <div>
           <label>Type ${index}</label>
           <select data-pref="type">
-            <option value="string">string</option>
-            <option value="boolean">boolean</option>
-            <option value="long">long</option>
-            <option value="int">int</option>
+            <option value="string" ${defaultType === 'string' ? 'selected' : ''}>string</option>
+            <option value="boolean" ${defaultType === 'boolean' ? 'selected' : ''}>boolean</option>
+            <option value="long" ${defaultType === 'long' || defaultType === 'int' ? 'selected' : ''}>long</option>
+            <option value="int" ${defaultType === 'int' && defaultType !== 'long' ? 'selected' : ''}>int</option>
           </select>
         </div>
-        <div>
+        <div class="pref-value-field">
           <label>Value ${index}</label>
-          <input type="text" data-pref="value" placeholder="true" />
+          <input type="text" data-pref="value" placeholder="${placeholder}" value="${presetKey ? defaultValue : ''}" />
+          <div class="pref-value-hint" data-pref="value-hint"></div>
         </div>
-        <button class="btn btn-secondary" type="button">Remove</button>
+        <button class="btn btn-secondary pref-remove-btn" type="button">Remove</button>
       </div>`;
     const removeBtn = row.querySelector('button');
     removeBtn.addEventListener('click', () => row.remove());
     container.appendChild(row);
+
     // live update QR on input
     row.querySelectorAll('input,select').forEach(el => el.addEventListener('input', updateQR));
-    // update label hint on key input
+
+    // update hints on key input
     const keyInput = row.querySelector('[data-pref="key"]');
-    keyInput?.addEventListener('input', () => updateKeyLabelHint(row));
+    keyInput?.addEventListener('input', () => {
+      updateKeyLabelHint(row);
+      updatePreferenceDetails(row);
+    });
+
+    // Initial update
     updateKeyLabelHint(row);
+    if (presetKey) {
+      updatePreferenceDetails(row);
+    }
     updateQR();
   }
 
@@ -1116,7 +1808,15 @@ const PreferenceBuilder = (function () {
       return '';
     }
     const hit = currentKnownPrefs.find(p => p.key === key);
-    return hit ? hit.label : '';
+    if (!hit) {
+      return '';
+    }
+
+    // Normalize label casing
+    return hit.label
+      .split(' ')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(' ');
   }
 
   function updateKeyLabelHint (row) {
@@ -1129,6 +1829,74 @@ const PreferenceBuilder = (function () {
     hintEl.textContent = label ? `Label: ${label}` : '';
   }
 
+  function updatePreferenceDetails (row) {
+    const keyEl = row.querySelector('[data-pref="key"]');
+    const descEl = row.querySelector('[data-pref="description"]');
+    const valueHintEl = row.querySelector('[data-pref="value-hint"]');
+    const typeEl = row.querySelector('[data-pref="type"]');
+    const valueEl = row.querySelector('[data-pref="value"]');
+
+    if (!keyEl) {
+      return;
+    }
+
+    const key = keyEl.value.trim();
+    const detail = preferenceDetails[key];
+
+    if (detail) {
+      // Update description
+      if (descEl) {
+        descEl.textContent = detail.description || '';
+        descEl.style.display = detail.description ? 'block' : 'none';
+      }
+
+      // Update type if it's defined
+      if (typeEl && detail.type) {
+        const typeValue = detail.type === 'int' ? 'int' : detail.type;
+        typeEl.value = typeValue;
+      }
+
+      // Update value hints
+      if (valueHintEl) {
+        let hint = '';
+        if (detail.validValues) {
+          if (Array.isArray(detail.validValues)) {
+            // Simple array of values
+            if (typeof detail.validValues[0] === 'object') {
+              hint = `Options: ${detail.validValues.map(v => `${v.value}=${v.label}`).join(', ')}`;
+            } else {
+              hint = `Options: ${detail.validValues.join(', ')}`;
+            }
+          }
+        } else if (detail.min !== undefined || detail.max !== undefined) {
+          hint = `Range: ${detail.min || 0} - ${detail.max || '∞'}`;
+          if (detail.unit) {
+            hint += ` ${detail.unit}`;
+          }
+        } else if (detail.type === 'boolean') {
+          hint = 'Options: true, false';
+        }
+        valueHintEl.textContent = hint;
+        valueHintEl.style.display = hint ? 'block' : 'none';
+      }
+
+      // Set default value if field is empty
+      if (valueEl && !valueEl.value && detail.default !== undefined) {
+        valueEl.placeholder = String(detail.default);
+      }
+    } else {
+      // Clear hints if no detail found
+      if (descEl) {
+        descEl.textContent = '';
+        descEl.style.display = 'none';
+      }
+      if (valueHintEl) {
+        valueHintEl.textContent = '';
+        valueHintEl.style.display = 'none';
+      }
+    }
+  }
+
   async function ensurePrefsJsonLoaded () {
     if (prefsJson) {
       return prefsJson;
@@ -1138,31 +1906,37 @@ const PreferenceBuilder = (function () {
     return prefsJson;
   }
 
-  async function updateKnownPrefsForVersion (version, datalist) {
+  async function loadDetailedPreferences () {
+    if (detailedPrefsJson) {
+      return detailedPrefsJson;
+    }
+    try {
+      const res = await fetch('docs/prefs/atak-preferences-detailed.json');
+      detailedPrefsJson = await res.json();
+      // Build a lookup map for quick access
+      if (detailedPrefsJson.preferences) {
+        Object.values(detailedPrefsJson.preferences).forEach(category => {
+          category.forEach(pref => {
+            preferenceDetails[pref.key] = pref;
+          });
+        });
+      }
+      // Loaded preference details successfully
+    } catch (error) {
+      // Could not load detailed preferences
+      detailedPrefsJson = { preferences: {}, categories: {} };
+    }
+    return detailedPrefsJson;
+  }
+
+  async function updateKnownPrefsForVersion (version) {
     try {
       const data = await ensurePrefsJsonLoaded();
       const byVersion = data?.preferencesByVersion || {};
       currentKnownPrefs = byVersion[version] || [];
-      populateDatalist(datalist, currentKnownPrefs);
     } catch {
       currentKnownPrefs = [];
-      populateDatalist(datalist, currentKnownPrefs);
     }
-  }
-
-  function populateDatalist (datalist, prefs) {
-    if (!datalist) {
-      return;
-    }
-    datalist.innerHTML = '';
-    prefs.forEach(p => {
-      const opt1 = document.createElement('option');
-      opt1.value = `${p.label} (${p.key})`;
-      datalist.appendChild(opt1);
-      const opt2 = document.createElement('option');
-      opt2.value = p.key;
-      datalist.appendChild(opt2);
-    });
   }
 
   function buildPreferenceURI () {
@@ -1199,7 +1973,15 @@ const PreferenceBuilder = (function () {
       return;
     }
     if (!uri) {
-      container.innerHTML = '<div class="qr-placeholder">Add at least one preference</div>';
+      container.innerHTML = `<div class="qr-placeholder">
+        <div style="text-align: center;">
+          <p style="margin-bottom: 10px;">No preferences added yet</p>
+          <p style="font-size: 0.9em; color: var(--color-text-secondary);">
+            Use the search above to find known preferences<br>
+            or click "Add Preference" to manually add custom ones
+          </p>
+        </div>
+      </div>`;
       if (downloadBtn) {
         downloadBtn.disabled = true;
       }
@@ -1210,10 +1992,8 @@ const PreferenceBuilder = (function () {
     }
     try {
       const canvas = await QRCode.toCanvas(uri, { width: CONFIG.QR_SIZE, margin: CONFIG.QR_MARGIN });
-      const old = container.querySelector('canvas');
-      if (old) {
-        old.remove();
-      }
+      // Clear all content first to prevent overlapping
+      container.innerHTML = '';
       container.appendChild(canvas);
       if (downloadBtn) {
         downloadBtn.disabled = false;
@@ -1292,8 +2072,7 @@ const ProfileManager = (function () {
         atak: takData.mode === 'atak' ? {
           host: takData.host,
           username: takData.username,
-          token: takData.token,
-          askCreds: takData.askCreds
+          token: takData.token
         } : {},
         itak: takData.mode === 'itak' ? {
           description: takData.description,
@@ -1422,7 +2201,6 @@ const ProfileManager = (function () {
         host: atakData.host || '',
         username: atakData.username || '',
         token: atakData.token || '',
-        askCreds: atakData.askCreds || false,
         port: '8089',
         protocol: 'https'
       });
@@ -1708,38 +2486,44 @@ const UIController = (function () {
   async function copyURI (type) {
     let uri = '';
 
-    switch (type) {
-    case CONFIG.TABS.ATAK: {
-      const host = document.getElementById('atak-host')?.value || '';
-      const username = document.getElementById('atak-username')?.value || '';
-      const token = document.getElementById('atak-token')?.value || '';
-      const askCreds = document.getElementById('atak-ask-creds')?.checked;
-      uri = askCreds ?
-        `tak://com.atakmap.app/enroll?host=${encodeURIComponent(host.trim())}` :
-        `tak://com.atakmap.app/enroll?host=${encodeURIComponent(host.trim())}&username=${encodeURIComponent(username.trim())}&token=${encodeURIComponent(token.trim())}`;
-      break;
-    }
-    case CONFIG.TABS.ITAK: {
-      const description = document.getElementById('itak-description')?.value || '';
-      const url = document.getElementById('itak-url')?.value || '';
-      const port = document.getElementById('itak-port')?.value || '';
-      const protocol = document.getElementById('itak-protocol')?.value || '';
+    // Handle the unified TAK config tab
+    if (type === 'tak') {
+      const container = document.getElementById('tak-qr');
+      if (container && container.dataset.uri) {
+        const { uri: datasetUri } = container.dataset;
+        uri = datasetUri;
+      }
+    } else {
+      switch (type) {
+      case CONFIG.TABS.ATAK: {
+        const host = document.getElementById('atak-host')?.value || '';
+        const username = document.getElementById('atak-username')?.value || '';
+        const token = document.getElementById('atak-token')?.value || '';
+        uri = `tak://com.atakmap.app/enroll?host=${encodeURIComponent(host.trim())}&username=${encodeURIComponent(username.trim())}&token=${encodeURIComponent(token.trim())}`;
+        break;
+      }
+      case CONFIG.TABS.ITAK: {
+        const description = document.getElementById('itak-description')?.value || '';
+        const url = document.getElementById('itak-url')?.value || '';
+        const port = document.getElementById('itak-port')?.value || '';
+        const protocol = document.getElementById('itak-protocol')?.value || '';
 
-      const host = extractHostnameFromURL(url);
-      const itakProtocol = protocol === CONFIG.PROTOCOLS.HTTPS ? CONFIG.PROTOCOLS.SSL : CONFIG.PROTOCOLS.TCP;
+        const host = extractHostnameFromURL(url);
+        const itakProtocol = protocol === CONFIG.PROTOCOLS.HTTPS ? CONFIG.PROTOCOLS.SSL : CONFIG.PROTOCOLS.TCP;
 
-      uri = `${description.trim()},${host},${port.trim()},${itakProtocol}`;
-      break;
-    }
-    case CONFIG.TABS.IMPORT: {
-      const url = document.getElementById('import-url')?.value || '';
-      uri = `tak://com.atakmap.app/import?url=${encodeURIComponent(url.trim())}`;
-      break;
-    }
-    case CONFIG.TABS.PREFERENCES: {
-      uri = PreferenceBuilder.buildPreferenceURI();
-      break;
-    }
+        uri = `${description.trim()},${host},${port.trim()},${itakProtocol}`;
+        break;
+      }
+      case CONFIG.TABS.IMPORT: {
+        const url = document.getElementById('import-url')?.value || '';
+        uri = `tak://com.atakmap.app/import?url=${encodeURIComponent(url.trim())}`;
+        break;
+      }
+      case CONFIG.TABS.PREFERENCES: {
+        uri = PreferenceBuilder.buildPreferenceURI();
+        break;
+      }
+      }
     }
 
     try {
@@ -1775,6 +2559,7 @@ const FormManager = (function () {
     initializeiTAKForm();
     initializeImportForm();
     initializeActionButtons();
+    initializeProtocolHandlers();
   }
 
   /**
@@ -1931,6 +2716,24 @@ const FormManager = (function () {
     }
 
     QRGenerator.updateATAKQR();
+  }
+
+  /**
+   * Initialize protocol change handlers
+   */
+  function initializeProtocolHandlers () {
+    // TAK Config protocol handler removed - enrollment always uses SSL on port 8089
+    // Users needing custom protocols must use the Package Builder
+
+    // Package protocol handler - no automatic port changes
+    const packageProtocol = document.getElementById('package-protocol');
+
+    if (packageProtocol) {
+      packageProtocol.addEventListener('change', () => {
+        // Just let the user set whatever port they want
+        // No automatic port switching
+      });
+    }
   }
 
   return {
@@ -2163,6 +2966,9 @@ const VersionManager = (() => {
 })();
 
 // ============================================================================
+// Header Auto-Hide functionality is handled by header-autohide.js module
+
+// ============================================================================
 // Application Initialization
 // ============================================================================
 
@@ -2172,6 +2978,12 @@ const VersionManager = (() => {
 async function initializeApp () {
   // Initialize theme first
   ThemeManager.init();
+
+  // Initialize professional header auto-hide system
+  window.headerAutoHide = new HeaderAutoHide();
+
+  // Initialize professional page enhancements
+  window.pageEnhancements = new PageEnhancements();
 
   // Initialize all modules
   TabManager.init();
@@ -2212,5 +3024,7 @@ window.loadProfile = ProfileManager.loadProfile;
 window.deleteProfile = ProfileManager.deleteProfile;
 window.ProfileManager = ProfileManager;
 window.PackageBuilder = PackageBuilder;
+window.UIController = UIController;
 window.showDataStatus = UIController.showDataStatus;
 window.switchTab = TabManager.switchTab;
+window.TAKConfigManager = TAKConfigManager;

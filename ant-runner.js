@@ -1,5 +1,8 @@
 #!/usr/bin/env node
 
+/* eslint-disable no-console */
+/* eslint-disable no-unused-vars */
+
 import { exec } from 'child_process';
 import { promisify } from 'util';
 import { readFileSync } from 'fs';
@@ -10,7 +13,7 @@ const execAsync = promisify(exec);
 // Parse build.xml to understand targets
 const buildXml = readFileSync('./build.xml', 'utf8');
 const parser = new XMLParser({ ignoreAttributes: false });
-const buildConfig = parser.parse(buildXml);
+// const buildConfig = parser.parse(buildXml); // Not currently used
 
 async function runTarget (targetName) {
   console.log(`\n🐜 Running ANT target: ${targetName}\n`);
