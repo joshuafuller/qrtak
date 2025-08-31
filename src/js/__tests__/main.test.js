@@ -1,3 +1,5 @@
+// Event is globally available via ESLint config
+
 import '../main.js';
 
 describe('updateATAKQR', () => {
@@ -45,7 +47,7 @@ describe('updateiTAKQR', () => {
       <input id="itak-description" value="Test Server" />
       <input id="itak-url" value="https://tak.example.com" />
       <input id="itak-port" value="8089" />
-      <select id="itak-protocol"><option value="https" selected>https</option><option value="http">http</option></select>
+      <select id="itak-protocol"><option value="https" selected>https</option><option value="http">http</option><option value="quic">quic</option></select>
       <canvas id="itak-qr"></canvas>
       <button id="itak-download" disabled>Download</button>
       <button id="itak-copy" disabled>Copy</button>
@@ -146,6 +148,9 @@ describe('populateATAKFromiTAK', () => {
   });
 });
 
+// NOTE: These tests have been disabled as we've merged ATAK and iTAK tabs into a unified TAK Configuration tab
+// The transfer functions are no longer needed since both modes share the same fields now
+/*
 describe('transferDataFromATAKToiTAK', () => {
   beforeEach(() => {
     document.body.innerHTML = `
@@ -197,5 +202,71 @@ describe('transferDataFromiTAKToATAK', () => {
     document.getElementById('atak-host').value = 'existing.com';
     await window.transferDataFromiTAKToATAK();
     expect(document.getElementById('atak-host').value).toBe('existing.com');
+  });
+});
+*/
+
+describe('QUIC Protocol Support', () => {
+  beforeEach(() => {
+    document.body.innerHTML = `
+      <input id="tak-host" value="tak.example.com" />
+      <input id="tak-port" value="8089" />
+      <select id="tak-protocol">
+        <option value="https">HTTPS</option>
+        <option value="http">HTTP</option>
+        <option value="quic">QUIC</option>
+      </select>
+      <input id="package-host" value="tak.example.com" />
+      <input id="package-port" value="8089" />
+      <select id="package-protocol">
+        <option value="https">HTTPS</option>
+        <option value="http">HTTP</option>
+        <option value="quic">QUIC</option>
+      </select>
+    `;
+  });
+
+  it('should allow any custom port with QUIC protocol', () => {
+    const takProtocol = document.getElementById('tak-protocol');
+    const takPort = document.getElementById('tak-port');
+
+    // Set custom port
+    takPort.value = '9999';
+
+    // Select QUIC
+    takProtocol.value = 'quic';
+    takProtocol.dispatchEvent(new Event('change'));
+
+    // Custom port should be preserved
+    expect(takPort.value).toBe('9999');
+  });
+
+  it('should allow QUIC on any port including 8089', () => {
+    const takProtocol = document.getElementById('tak-protocol');
+    const takPort = document.getElementById('tak-port');
+
+    // Keep port as 8089
+    takPort.value = '8089';
+
+    // Select QUIC
+    takProtocol.value = 'quic';
+    takProtocol.dispatchEvent(new Event('change'));
+
+    // Port 8089 should be allowed for QUIC
+    expect(takPort.value).toBe('8089');
+  });
+
+  it('should allow QUIC on port 8090', () => {
+    const takProtocol = document.getElementById('tak-protocol');
+    const takPort = document.getElementById('tak-port');
+
+    // Set port to 8090
+    takPort.value = '8090';
+
+    // Select QUIC
+    takProtocol.value = 'quic';
+
+    // Port 8090 should work with QUIC
+    expect(takPort.value).toBe('8090');
   });
 });

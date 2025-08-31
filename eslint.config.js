@@ -46,7 +46,18 @@ export default [
         beforeAll: 'readonly',
         afterAll: 'readonly',
         jest: 'readonly',
-        // DOM Events
+        // DOM Events and APIs
+        Event: 'readonly',
+        KeyboardEvent: 'readonly',
+        MouseEvent: 'readonly',
+        FocusEvent: 'readonly',
+        TouchEvent: 'readonly',
+        CustomEvent: 'readonly',
+        File: 'readonly',
+        FileList: 'readonly',
+        FormData: 'readonly',
+        requestAnimationFrame: 'readonly',
+        cancelAnimationFrame: 'readonly',
         event: 'readonly'
       },
       ecmaVersion: 'latest',

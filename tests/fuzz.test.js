@@ -25,8 +25,8 @@ function fuzzQRGeneration (data) {
     // Test ATAK QR generation
     const atakUrl = `tak://${host}:${port}?callsign=${encodeURIComponent(callsign)}&uid=${encodeURIComponent(uid)}&protocol=${protocol}`;
 
-    // Test iTAK CSV format
-    const itakCsv = `${host},${port},${callsign},${uid}`;
+    // Test iTAK CSV format (not used but keeping for future testing)
+    // const itakCsv = `${host},${port},${callsign},${uid}`;
 
     // Validate outputs
     if (atakUrl.length > 10000) {
@@ -57,11 +57,11 @@ function fuzzInputValidation (data) {
 
   for (const input of inputs) {
     try {
-      // Test input sanitization
-      const sanitized = input.replace(/[<>'"]/g, '');
+      // Test input sanitization (keeping for validation check)
+      input.replace(/[<>'"]/g, '');
 
-      // Test URL encoding
-      const encoded = encodeURIComponent(input);
+      // Test URL encoding (keeping for validation check)
+      encodeURIComponent(input);
 
       // Test length limits
       if (input.length > 0 && input.length < 10000) {
