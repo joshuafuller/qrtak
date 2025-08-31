@@ -10,8 +10,6 @@
 
 A Progressive Web App (PWA) for rapid TAK (Tactical Assault Kit) client deployment through QR code generation. Perfect for tactical environments where speed and simplicity matter.
 
-> NOTE: This is a work in progress and very unstable at the moment.
-
 ## Features
 
 - **ATAK Enrollment** - Generate QR codes for ATAK client enrollment
