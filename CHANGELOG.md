@@ -7,6 +7,13 @@
 * remove OpenSSF Scorecard workflow and references ([#93](https://github.com/joshuafuller/qrtak/issues/93)) ([d20d6af](https://github.com/joshuafuller/qrtak/commit/d20d6af281d05c8214b804d0f898a24d81c2543c))
 * sync package-lock.json version with package.json ([ad41874](https://github.com/joshuafuller/qrtak/commit/ad41874628cf9ad005744701e5c78cdb4aa4e11b))
 
+## [1.5.6](https://github.com/joshuafuller/qrtak/compare/qrtak-v1.5.5...qrtak-v1.5.6) (2025-08-31)
+
+
+### Bug Fixes
+
+* add test certificate files to gitignore ([66b7464](https://github.com/joshuafuller/qrtak/commit/66b746425a0fc95aabe33e21668dc2a72e192c8a))
+
 ## [1.5.5](https://github.com/joshuafuller/qrtak/compare/qrtak-v1.5.4...qrtak-v1.5.5) (2025-08-31)
 
 
