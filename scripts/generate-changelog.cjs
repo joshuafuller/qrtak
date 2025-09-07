@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+/* eslint-disable no-console */
 /**
  * Generate proposed changelog entries by analyzing actual diffs, not just messages.
  * Heuristic: use commits with subject matching /^chore: release / as boundaries.
@@ -18,10 +19,10 @@ function sh (cmd) {
 }
 
 function getReleaseBoundaries () {
-  const lines = sh("git --no-pager log --pretty=format:'%h %ad %s' --date=short").split('\n');
+  const lines = sh('git --no-pager log --pretty=format:%h %ad %s --date=short').split('\n');
   const releases = [];
   for (const line of lines) {
-    const m = line.match(/^(\w+)\s+(\d{4}-\d{2}-\d{2})\s+chore: release\s+([\w\.-]+)/);
+    const m = line.match(/^(\w+)\s+(\d{4}-\d{2}-\d{2})\s+chore: release\s+([\w.-]+)/);
     if (m) {
       releases.push({ hash: m[1], date: m[2], version: m[3] });
     }
