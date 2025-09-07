@@ -7,6 +7,21 @@
 * remove OpenSSF Scorecard workflow and references ([#93](https://github.com/joshuafuller/qrtak/issues/93)) ([d20d6af](https://github.com/joshuafuller/qrtak/commit/d20d6af281d05c8214b804d0f898a24d81c2543c))
 * sync package-lock.json version with package.json ([ad41874](https://github.com/joshuafuller/qrtak/commit/ad41874628cf9ad005744701e5c78cdb4aa4e11b))
 
+## [1.6.0](https://github.com/joshuafuller/qrtak/compare/qrtak-v1.5.6...qrtak-v1.6.0) (2025-09-07)
+
+
+### Features
+
+* add required workflows for branch protection ([c4ccf2c](https://github.com/joshuafuller/qrtak/commit/c4ccf2c4fe620c1d870a4aad0030ca0fc47ae84b))
+* **bulk:** add Bulk Onboarding; unify validation; tighten iTAK protocols; expand e2e; fix offline badge; docs(help) ([94d6c66](https://github.com/joshuafuller/qrtak/commit/94d6c6632e3bfb46caf8d1f5ea36e76f9558a2ea))
+
+
+### Bug Fixes
+
+* **bulk:** make Load Example respect base path and bundled location ([3f28915](https://github.com/joshuafuller/qrtak/commit/3f28915baf6e665786e540b1496e4b93bc763beb))
+* **ci:** load built Docker image into local daemon for test job ([c68b1f0](https://github.com/joshuafuller/qrtak/commit/c68b1f060e207edbcc6139452235760e30bb44eb))
+* **docker:** set explicit image tag and container_name; simplify compose naming ([e77d280](https://github.com/joshuafuller/qrtak/commit/e77d280b6f30f8d81ff21502cf033f98de762757))
+
 ## [1.5.6](https://github.com/joshuafuller/qrtak/compare/qrtak-v1.5.5...qrtak-v1.5.6) (2025-08-31)
 
 
