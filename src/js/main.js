@@ -26,6 +26,7 @@ const CONFIG = {
     ITAK: 'itak',  // Keep for backward compatibility
     IMPORT: 'import',
     PACKAGES: 'packages',
+    BULK: 'bulk',
     PROFILES: 'profiles',
     HELP: 'help'
   },
@@ -70,6 +71,52 @@ const ERROR_MESSAGES = {
   CLIPBOARD_ERROR: 'Error copying to clipboard',
   LOAD_PROFILES_ERROR: 'Error loading profiles'
 };
+
+// ============================================================================
+// Validation Helpers (shared visual states)
+// ============================================================================
+
+/**
+ * Compute validation state given value and rules
+ * @param {Object} opts
+ * @param {boolean} opts.required
+ * @param {string} opts.value
+ * @param {function(string):boolean} [opts.validator]
+ * @returns {'valid'|'invalid'|'neutral'}
+ */
+function computeValidationState ({ required, value, validator }) {
+  const v = (value ?? '').toString();
+  const has = v.trim().length > 0;
+  if (!has) {
+    return required ? 'invalid' : 'neutral';
+  }
+  if (validator) {
+    return validator(v) ? 'valid' : 'invalid';
+  }
+  return 'valid';
+}
+
+/**
+ * Apply red/green/neutral classes to a field and its .form-group
+ * @param {HTMLElement|null} field
+ * @param {'valid'|'invalid'|'neutral'} state
+ */
+function setFieldValidationState (field, state) {
+  if (!field || (field.nodeType !== 1)) {
+    return;
+  }
+  const group = field.closest('.form-group');
+  const classes = ['field-valid', 'field-invalid'];
+  field.classList.remove(...classes);
+  group?.classList.remove('field-valid', 'field-invalid', 'has-validation');
+  if (state === 'valid') {
+    field.classList.add('field-valid');
+    group?.classList.add('field-valid', 'has-validation');
+  } else if (state === 'invalid') {
+    field.classList.add('field-invalid');
+    group?.classList.add('field-invalid', 'has-validation');
+  }
+}
 
 // Tab Manager Module
 // ============================================================================
@@ -301,19 +348,47 @@ const QRGenerator = (function () {
    * Update Import QR code
    */
   async function updateImportQRCore () {
-    const url = document.getElementById('import-url')?.value || '';
+    const inputEl = document.getElementById('import-url');
+    const url = inputEl?.value || '';
+    const formGroup = inputEl?.closest('.form-group');
 
     if (url.trim()) {
       if (!isValidURL(url.trim())) {
         UIController.showNotification(ERROR_MESSAGES.INVALID_URL, 'error');
         generateQRCode(null, 'import-qr');
         UIController.disableButtons('import');
+        // visual feedback
+        if (inputEl) {
+          inputEl.classList.remove('field-valid');
+        }
+        if (formGroup) {
+          formGroup.classList.remove('field-valid');
+        }
+        if (inputEl) {
+          inputEl.classList.add('field-invalid');
+        }
+        if (formGroup) {
+          formGroup.classList.add('field-invalid', 'has-validation');
+        }
         return;
       }
 
       const uri = `tak://com.atakmap.app/import?url=${encodeURIComponent(url.trim())}`;
       await generateQRCode(uri, 'import-qr');
       UIController.enableButtons('import');
+      // visual feedback
+      if (inputEl) {
+        inputEl.classList.remove('field-invalid');
+      }
+      if (formGroup) {
+        formGroup.classList.remove('field-invalid');
+      }
+      if (inputEl) {
+        inputEl.classList.add('field-valid');
+      }
+      if (formGroup) {
+        formGroup.classList.add('field-valid', 'has-validation');
+      }
 
       // Store URI for debugging
       const container = document.getElementById('import-qr');
@@ -323,6 +398,19 @@ const QRGenerator = (function () {
     } else {
       await generateQRCode(null, 'import-qr');
       UIController.disableButtons('import');
+      // missing value -> invalid
+      if (inputEl) {
+        inputEl.classList.remove('field-valid');
+      }
+      if (formGroup) {
+        formGroup.classList.remove('field-valid');
+      }
+      if (inputEl) {
+        inputEl.classList.add('field-invalid');
+      }
+      if (formGroup) {
+        formGroup.classList.add('field-invalid', 'has-validation');
+      }
     }
   }
 
@@ -337,6 +425,380 @@ const QRGenerator = (function () {
     updateiTAKQRCore,
     updateImportQRCore
   };
+})();
+
+// Bulk TAK Users .txt Import Module
+// ============================================================================
+
+const BulkUsers = (function () {
+  let users = [];
+  let currentIndex = 0;
+
+  function init () {
+    const fileInput = document.getElementById('tak-users-file');
+    const hostInput = document.getElementById('bulk-host');
+    const loadExampleBtn = document.getElementById('bulk-load-example');
+    const prevBtn = document.getElementById('bulk-prev');
+    const nextBtn = document.getElementById('bulk-next');
+    const listEl = document.getElementById('bulk-user-list');
+    const copyUriBtn = document.getElementById('bulk-copy-uri');
+    const toggleUriBtn = document.getElementById('bulk-toggle-uri');
+    const copyPassBtn = document.getElementById('bulk-copy-pass');
+    const togglePassBtn = document.getElementById('bulk-toggle-pass');
+
+    fileInput?.addEventListener('change', async (e) => {
+      const file = e.target?.files?.[0];
+      if (!file) {
+        return;
+      }
+      const text = await file.text();
+      users = parseTakUsers(text);
+      const nameEl = document.getElementById('bulk-file-name');
+      if (nameEl) {
+        nameEl.textContent = `Loaded: ${file.name}`;
+      }
+      currentIndex = 0;
+      renderUserList();
+      const session = document.getElementById('bulk-session');
+      if (session) {
+        session.style.display = '';
+      }
+      UIController.showNotification(`Loaded ${users.length} users`, 'success');
+      renderCurrent();
+      // Hide example loader once a real file is loaded
+      if (loadExampleBtn) {
+        loadExampleBtn.style.display = 'none';
+      }
+      // Mark host as required/invalid until provided
+      validateBulkHost();
+    });
+
+    // Load example from known paths, try multiple, parse only when valid JSON
+    loadExampleBtn?.addEventListener('click', async () => {
+      const tryPaths = [
+        '/tak_users.txt',                 // if user placed a file at site root
+        '/examples/tak_users.txt',        // bundled example in public/
+        './tak_users.txt'                 // relative fallback
+      ];
+
+      let loaded = [];
+      for (const p of tryPaths) {
+        try {
+          const res = await fetch(p, { cache: 'no-store' });
+          if (!res.ok) {
+            continue;
+          }
+          const text = await res.text();
+          // Parse without showing notifications; only accept when valid array
+          try {
+            const data = JSON.parse(text);
+            if (Array.isArray(data)) {
+              const parsed = data
+                .map((item) => {
+                  const username = String(item.username ?? item.user ?? '').trim();
+                  const token = String(item.password ?? item.token ?? '').trim();
+                  return { username, token };
+                })
+                .filter(u => u.username && u.token);
+              if (parsed.length) {
+                loaded = parsed;
+                break;
+              }
+            }
+          } catch {
+            // keep trying next path
+          }
+        } catch {
+          // ignore network errors and try next path
+        }
+      }
+
+      if (!loaded.length) {
+        UIController.showNotification('Could not load example file (tak_users.txt)', 'error');
+        return;
+      }
+
+      users = loaded;
+      currentIndex = 0;
+      const session = document.getElementById('bulk-session');
+      if (session) {
+        session.style.display = '';
+      }
+      if (hostInput && !hostInput.value) {
+        hostInput.value = 'tak.example.com';
+      }
+      renderUserList();
+      renderCurrent();
+      UIController.showNotification(`Example loaded: ${users.length} users`, 'success');
+      // Hide example loader after successful example load
+      if (loadExampleBtn) {
+        loadExampleBtn.style.display = 'none';
+      }
+      const nameEl2 = document.getElementById('bulk-file-name');
+      if (nameEl2) {
+        nameEl2.textContent = `Loaded: example tak_users.txt (${users.length} users)`;
+      }
+      validateBulkHost();
+    });
+
+    hostInput?.addEventListener('input', debounce(() => {
+      validateBulkHost();
+      renderCurrent();
+    }, 200));
+
+    prevBtn?.addEventListener('click', () => {
+      if (users.length) {
+        currentIndex = (currentIndex - 1 + users.length) % users.length;
+        renderCurrent();
+      }
+    });
+    nextBtn?.addEventListener('click', () => {
+      if (users.length) {
+        currentIndex = (currentIndex + 1) % users.length;
+        renderCurrent();
+      }
+    });
+
+    // Keyboard navigation for speed: Left/Right to navigate
+    document.addEventListener('keydown', (e) => {
+      const bulkTabActive = document.getElementById('bulk-tab')?.classList.contains('active');
+      if (!bulkTabActive || !users.length) {
+        return;
+      }
+      if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        currentIndex = (currentIndex - 1 + users.length) % users.length;
+        renderCurrent();
+      }
+      if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        currentIndex = (currentIndex + 1) % users.length;
+        renderCurrent();
+      }
+    });
+
+    listEl?.addEventListener('click', (e) => {
+      const item = e.target.closest('[data-index]');
+      if (!item) {
+        return;
+      }
+      const idx = parseInt(item.dataset.index, 10);
+      if (!Number.isNaN(idx)) {
+        currentIndex = idx;
+        renderCurrent();
+      }
+    });
+
+    copyUriBtn?.addEventListener('click', async () => {
+      const uri = document.getElementById('bulk-uri')?.dataset?.value || '';
+      if (uri) {
+        try {
+          await navigator.clipboard.writeText(uri);
+          UIController.showNotification('URI copied', 'success');
+        } catch {
+          UIController.showNotification(ERROR_MESSAGES.CLIPBOARD_ERROR, 'error');
+        }
+      }
+    });
+
+    toggleUriBtn?.addEventListener('click', () => {
+      const uriEl = document.getElementById('bulk-uri');
+      if (!uriEl) {
+        return;
+      }
+      const hidden = uriEl.getAttribute('data-hidden') === 'true';
+      const value = uriEl.dataset.value || '';
+      uriEl.setAttribute('data-hidden', hidden ? 'false' : 'true');
+      uriEl.textContent = hidden ? value : (value ? '••••••••' : '');
+      const btn = document.getElementById('bulk-toggle-uri');
+      if (btn) {
+        btn.textContent = hidden ? 'Hide URI' : 'Show URI';
+      }
+    });
+
+    copyPassBtn?.addEventListener('click', async () => {
+      const pass = document.getElementById('bulk-pass')?.dataset?.value || '';
+      if (pass) {
+        try {
+          await navigator.clipboard.writeText(pass);
+          UIController.showNotification('Password copied', 'success');
+        } catch {
+          UIController.showNotification(ERROR_MESSAGES.CLIPBOARD_ERROR, 'error');
+        }
+      }
+    });
+
+    togglePassBtn?.addEventListener('click', () => {
+      const passEl = document.getElementById('bulk-pass');
+      if (!passEl) {
+        return;
+      }
+      const hidden = passEl.getAttribute('data-hidden') === 'true';
+      const value = passEl.dataset.value || '';
+      passEl.setAttribute('data-hidden', hidden ? 'false' : 'true');
+      passEl.textContent = hidden ? value : (value ? '••••••••' : '');
+      const btn = document.getElementById('bulk-toggle-pass');
+      if (btn) {
+        btn.textContent = hidden ? 'Hide Password' : 'Show Password';
+      }
+    });
+  }
+
+  function validateBulkHost () {
+    const hostEl = document.getElementById('bulk-host');
+    if (!hostEl) {
+      return;
+    }
+    const formGroup = hostEl.closest('.form-group');
+    const value = hostEl.value.trim();
+    const valid = value.length > 0 && isValidHostname(value);
+    hostEl.classList.remove('field-valid', 'field-invalid');
+    formGroup?.classList.remove('field-valid', 'field-invalid', 'has-validation');
+    if (valid) {
+      hostEl.classList.add('field-valid');
+      formGroup?.classList.add('field-valid', 'has-validation');
+    } else {
+      hostEl.classList.add('field-invalid');
+      formGroup?.classList.add('field-invalid', 'has-validation');
+    }
+  }
+
+  function renderUserList () {
+    const listEl = document.getElementById('bulk-user-list');
+    if (!listEl) {
+      return;
+    }
+    if (!users.length) {
+      listEl.innerHTML = '<li class="muted">No users loaded</li>';
+      return;
+    }
+    listEl.innerHTML = users
+      .map((u, i) => `<li class="user-item${i === currentIndex ? ' active' : ''}" data-index="${i}">${sanitizeInput(u.username)}</li>`)
+      .join('');
+  }
+
+  async function renderCurrent () {
+    const host = document.getElementById('bulk-host')?.value?.trim() || '';
+    const user = users[currentIndex];
+    const usernameEl = document.getElementById('bulk-current-username');
+    const passEl = document.getElementById('bulk-pass');
+    const uriEl = document.getElementById('bulk-uri');
+    const counterEl = document.getElementById('bulk-counter');
+    const qrContainerId = 'bulk-user-qr';
+    const passToggleBtn = document.getElementById('bulk-toggle-pass');
+    const uriToggleBtn = document.getElementById('bulk-toggle-uri');
+
+    renderUserList();
+
+    if (!user) {
+      const qrContainer = document.getElementById(qrContainerId);
+      if (qrContainer) {
+        qrContainer.innerHTML = '<div class="qr-placeholder">Load a tak_users.txt to begin</div>';
+      }
+      if (usernameEl) {
+        usernameEl.textContent = '';
+      }
+      if (passEl) {
+        passEl.textContent = '';
+        passEl.dataset.value = '';
+        passEl.setAttribute('data-hidden', 'true');
+      }
+      if (uriEl) {
+        uriEl.textContent = '';
+        uriEl.dataset.value = '';
+        uriEl.setAttribute('data-hidden', 'true');
+      }
+      if (passToggleBtn) {
+        passToggleBtn.textContent = 'Show Password';
+      }
+      if (uriToggleBtn) {
+        uriToggleBtn.textContent = 'Show URI';
+      }
+      if (counterEl) {
+        counterEl.textContent = '0 / 0';
+      }
+      return;
+    }
+
+    if (!host) {
+      UIController.showNotification('Enter TAK Server host to generate URIs', 'warning');
+    } else if (!isValidHostname(host)) {
+      UIController.showNotification(ERROR_MESSAGES.INVALID_HOSTNAME, 'error');
+    }
+
+    if (usernameEl) {
+      usernameEl.textContent = user.username;
+    }
+    // Reset password visibility on user change, and sync button label
+    if (passEl) {
+      passEl.dataset.value = user.token || '';
+      passEl.setAttribute('data-hidden', 'true');
+      passEl.textContent = user.token ? '••••••••' : '';
+    }
+    if (passToggleBtn) {
+      passToggleBtn.textContent = 'Show Password';
+    }
+    if (counterEl) {
+      counterEl.textContent = `${currentIndex + 1} / ${users.length}`;
+    }
+
+    let uri = '';
+    if (host && isValidHostname(host) && user.username && user.token) {
+      uri = `tak://com.atakmap.app/enroll?host=${encodeURIComponent(host)}&username=${encodeURIComponent(user.username)}&token=${encodeURIComponent(user.token)}`;
+    }
+    // Reset URI visibility on user change, and sync button label
+    if (uriEl) {
+      uriEl.dataset.value = uri;
+      uriEl.setAttribute('data-hidden', 'true');
+      uriEl.textContent = uri ? '••••••••' : '';
+    }
+    if (uriToggleBtn) {
+      uriToggleBtn.textContent = 'Show URI';
+    }
+
+    // Generate QR
+    const container = document.getElementById(qrContainerId);
+    if (!container) {
+      return;
+    }
+    container.innerHTML = '';
+    if (!uri) {
+      container.innerHTML = '<div class="qr-placeholder">Provide host to generate QR</div>';
+      return;
+    }
+    try {
+      const canvas = await QRCode.toCanvas(uri, {
+        width: CONFIG.QR_SIZE,
+        margin: CONFIG.QR_MARGIN,
+        color: { dark: '#000000', light: '#FFFFFF' }
+      });
+      container.appendChild(canvas);
+    } catch {
+      UIController.showNotification(ERROR_MESSAGES.QR_GENERATION_ERROR, 'error');
+    }
+  }
+
+  function parseTakUsers (text) {
+    // Expected format: JSON array of { username, password }
+    try {
+      const data = JSON.parse(text);
+      if (Array.isArray(data)) {
+        return data
+          .map((item) => {
+            const username = String(item.username ?? item.user ?? '').trim();
+            const token = String(item.password ?? item.token ?? '').trim();
+            return { username, token };
+          })
+          .filter(u => u.username && u.token);
+      }
+    } catch {
+      // Fall back to empty to force user to provide proper file
+    }
+    UIController.showNotification('Invalid tak_users.txt format: expected JSON array of {username,password}', 'error');
+    return [];
+  }
+
+  return { init };
 })();
 
 // ============================================================================
@@ -372,14 +834,20 @@ const TAKConfigManager = (function () {
         if (input.tagName === 'SELECT') {
           input.addEventListener('input', () => updateQR());
         }
+        // Always reflect visual validation on any input/select activity
+        input.addEventListener('input', () => validateCurrentForm());
+        input.addEventListener('change', () => validateCurrentForm());
       });
     }
 
     // Initialize with ATAK mode
     switchMode('atak');
 
-    // Setup QUIC port switching for both modes
-    setTimeout(() => setupQuicPortSwitching(), 100);
+    // Setup protocol/port switching listener immediately
+    setupQuicPortSwitching();
+
+    // Initial validation rendering
+    setTimeout(() => validateCurrentForm(), 0);
   }
 
   /**
@@ -423,12 +891,15 @@ const TAKConfigManager = (function () {
       document.querySelectorAll('.itak-fields').forEach(el => el.style.display = 'block');
       document.querySelectorAll('.atak-fields').forEach(el => el.style.display = 'none');
 
-      // Setup QUIC port auto-switching for iTAK mode
-      setTimeout(() => setupQuicPortSwitching(), 100); // Small delay to ensure elements are ready
+      // Ensure protocol/port switch listener is attached in iTAK mode
+      setupQuicPortSwitching();
     }
 
     // Update QR code
     updateQR();
+
+    // Re-validate fields for new mode
+    validateCurrentForm();
   }
 
   // Setup QUIC port auto-switching
@@ -450,12 +921,27 @@ const TAKConfigManager = (function () {
       return;
     }
 
-    if (e.target.value === 'quic') {
+    const proto = e.target.value;
+    // Map common defaults conservatively:
+    // - https -> 8089 (standard TAK SSL)
+    // - http  -> 8080 (typical non-SSL)
+    // - quic  -> 8090 (legacy mapping; option not exposed for iTAK)
+    if (proto === 'quic') {
       portField.value = '8090';
+    } else if (proto === 'https') {
+      if (!portField.value || portField.value === '8080' || portField.value === '8090') {
+        portField.value = '8089';
+      }
+    } else if (proto === 'http') {
+      if (!portField.value || portField.value === '8089' || portField.value === '8090') {
+        portField.value = '8080';
+      }
     } else if (portField.value === '8090') {
+      // Fallback: any other protocol should not keep QUIC port
       portField.value = '8089';
     }
     updateQR(); // Update QR after port change
+    validateCurrentForm();
   }
 
   /**
@@ -467,6 +953,8 @@ const TAKConfigManager = (function () {
     } else {
       await updateiTAKQR();
     }
+    // Keep validation visuals in sync
+    validateCurrentForm();
   }
 
   /**
@@ -535,19 +1023,23 @@ const TAKConfigManager = (function () {
    * Update iTAK QR code
    */
   async function updateiTAKQR () {
-    const description = document.getElementById('tak-description')?.value || '';
-    const host = document.getElementById('tak-host')?.value || '';
-    const port = document.getElementById('tak-port')?.value || '8089';
-    const protocol = document.getElementById('tak-protocol')?.value || 'https';
+    // Trim and sanitize inputs; iTAK CSV does not define quoting/escaping
+    const rawDescription = (document.getElementById('tak-description')?.value || '').trim();
+    const description = rawDescription.replace(/,/g, ' ').trim();
+    const host = (document.getElementById('tak-host')?.value || '').trim();
+    const port = (document.getElementById('tak-port')?.value || '8089').trim();
+    const protocol = (document.getElementById('tak-protocol')?.value || 'https').trim();
 
     // Map protocol to iTAK format
+    // Only ssl (HTTPS) and tcp (HTTP) are supported for iTAK CSV quick connect
     let itakProtocol;
-    if (protocol === 'quic') {
-      itakProtocol = 'quic';
-    } else if (protocol === 'https') {
+    if (protocol === 'https') {
       itakProtocol = 'ssl';
-    } else {
+    } else if (protocol === 'http') {
       itakProtocol = 'tcp';
+    } else {
+      // Fallback to ssl if unknown
+      itakProtocol = 'ssl';
     }
 
     // Validate fields if provided
@@ -560,7 +1052,7 @@ const TAKConfigManager = (function () {
     }
 
     // Check if we have minimum required data
-    const hasMinimumData = description.trim() && host.trim();
+    const hasMinimumData = description && host;
 
     if (!hasMinimumData) {
       // No data - show placeholder
@@ -570,7 +1062,7 @@ const TAKConfigManager = (function () {
     }
 
     // Build iTAK CSV format: description,host,port,protocol
-    const csvData = `${description.trim()},${host.trim()},${port},${itakProtocol}`;
+    const csvData = `${description},${host},${port},${itakProtocol}`;
     // Generate QR code only with valid data
     await generateQRCode(csvData, 'tak-qr');
 
@@ -586,6 +1078,39 @@ const TAKConfigManager = (function () {
     const container = document.getElementById('tak-qr');
     if (container) {
       container.dataset.uri = csvData;
+    }
+  }
+
+  /**
+   * Apply visual validation across TAK Config fields based on mode
+   */
+  function validateCurrentForm () {
+    const hostEl = document.getElementById('tak-host');
+    const userEl = document.getElementById('tak-username');
+    const tokenEl = document.getElementById('tak-token');
+    const descEl = document.getElementById('tak-description');
+    const portEl = document.getElementById('tak-port');
+    const protoEl = document.getElementById('tak-protocol');
+
+    if (currentMode === 'atak') {
+      // ATAK required fields: host, username, token
+      setFieldValidationState(hostEl, computeValidationState({ required: true, value: hostEl?.value || '', validator: isValidHostname }));
+      setFieldValidationState(userEl, computeValidationState({ required: true, value: userEl?.value || '' }));
+      setFieldValidationState(tokenEl, computeValidationState({ required: true, value: tokenEl?.value || '' }));
+      // Hide iTAK-only fields validation when not visible
+      setFieldValidationState(descEl, 'neutral');
+      setFieldValidationState(portEl, 'neutral');
+      setFieldValidationState(protoEl, 'neutral');
+    } else {
+      // iTAK required fields: description, host, port, protocol
+      setFieldValidationState(descEl, computeValidationState({ required: true, value: descEl?.value || '' }));
+      setFieldValidationState(hostEl, computeValidationState({ required: true, value: hostEl?.value || '', validator: isValidHostname }));
+      setFieldValidationState(portEl, computeValidationState({ required: true, value: portEl?.value || '', validator: isValidPort }));
+      // Protocol select: required -> valid if has some value
+      setFieldValidationState(protoEl, computeValidationState({ required: true, value: protoEl?.value || '' }));
+      // ATAK-only fields neutral
+      setFieldValidationState(userEl, 'neutral');
+      setFieldValidationState(tokenEl, 'neutral');
     }
   }
 
@@ -1027,7 +1552,9 @@ const PackageBuilder = (function () {
   }
 
   function validateProtocol (value) {
-    return value && ['http', 'https', 'quic'].includes(value);
+    const client = document.getElementById('package-client')?.value || 'atak';
+    const allowed = client === 'itak' ? ['http', 'https'] : ['http', 'https', 'quic'];
+    return value && allowed.includes(value);
   }
 
   function validateUsername (value, deployment) {
@@ -1184,6 +1711,7 @@ const PackageBuilder = (function () {
   function setupPackageQuicSwitching () {
     const protocolSelect = document.getElementById('package-protocol');
     const portInput = document.getElementById('package-port');
+    const clientSelect = document.getElementById('package-client');
 
     if (!protocolSelect || !portInput) {
       return;
@@ -1191,10 +1719,15 @@ const PackageBuilder = (function () {
 
     function handlePackageProtocolChange () {
       const selectedProtocol = protocolSelect.value;
+      const client = clientSelect?.value || 'atak';
 
-      if (selectedProtocol === 'quic') {
+      if (client === 'itak' && selectedProtocol === 'quic') {
+        protocolSelect.value = 'https';
+      }
+
+      if (protocolSelect.value === 'quic') {
         portInput.value = '8090';
-      } else if (selectedProtocol === 'https' || selectedProtocol === 'http') {
+      } else if (protocolSelect.value === 'https' || protocolSelect.value === 'http') {
         portInput.value = '8089';
       }
 
@@ -1204,6 +1737,28 @@ const PackageBuilder = (function () {
 
     // Set up event listener
     protocolSelect.addEventListener('change', handlePackageProtocolChange);
+
+    // If client switches to iTAK, force protocol away from QUIC and hide option
+    if (clientSelect) {
+      clientSelect.addEventListener('change', () => {
+        const isITAK = clientSelect.value === 'itak';
+        const quicOption = protocolSelect.querySelector('option[value="quic"]');
+        if (isITAK) {
+          if (protocolSelect.value === 'quic') {
+            protocolSelect.value = 'https';
+            portInput.value = '8089';
+          }
+          if (quicOption) {
+            quicOption.disabled = true;
+            quicOption.hidden = true;
+          }
+        } else if (quicOption) {
+          quicOption.disabled = false;
+          quicOption.hidden = false;
+        }
+        updatePackageNamePreview();
+      });
+    }
   }
 
   /**
@@ -1303,7 +1858,7 @@ const PackageBuilder = (function () {
     }
 
     // Add protocol indicator if it's not standard HTTPS
-    if (protocol === 'quic') {
+    if (protocol === 'quic' && client !== 'itak') {
       parts.push('quic');
     } else if (protocol === 'http') {
       parts.push('tcp');
@@ -1363,10 +1918,10 @@ const PackageBuilder = (function () {
       // Map protocol to connection string token
       let protocolToken;
 
-      if (proto === 'quic') {
-        protocolToken = 'quic';
-      } else {
+      if (client === 'itak') {
         protocolToken = proto === 'https' ? 'ssl' : 'tcp';
+      } else {
+        protocolToken = proto === 'quic' ? 'quic' : (proto === 'https' ? 'ssl' : 'tcp');
       }
 
       const connectString = `${host}:${port}:${protocolToken}`;
@@ -1922,7 +2477,7 @@ const PreferenceBuilder = (function () {
         });
       }
       // Loaded preference details successfully
-    } catch (error) {
+    } catch {
       // Could not load detailed preferences
       detailedPrefsJson = { preferences: {}, categories: {} };
     }
@@ -2140,8 +2695,12 @@ const ProfileManager = (function () {
 
     if (!sanitizedName) {
       UIController.showNotification(ERROR_MESSAGES.PROFILE_NAME_REQUIRED, 'error');
+      setFieldValidationState(profileName, 'invalid');
       return;
     }
+
+    // Mark valid when saving succeeds
+    setFieldValidationState(profileName, 'valid');
 
     const profileData = getCurrentFormData();
     profileData.name = sanitizedName;
@@ -2312,6 +2871,13 @@ const ProfileManager = (function () {
     }
 
     ModalManager.openModal();
+
+    // Bind live validation for profile name while modal is open
+    const nameInput = document.getElementById('profile-name');
+    nameInput?.addEventListener('input', () => {
+      const state = computeValidationState({ required: true, value: nameInput.value });
+      setFieldValidationState(nameInput, state);
+    }, { once: false });
   }
 
   /**
@@ -2988,11 +3554,37 @@ async function initializeApp () {
   // Initialize all modules
   TabManager.init();
   TAKConfigManager.init();  // Initialize the new unified TAK config
+  BulkUsers.init();
   FormManager.init();
   ProfileManager.init();
   ModalManager.init();
   HelpManager.init();
   VersionManager.init();
+
+  // Offline indicator setup (conservative: only show after an actual 'offline' event)
+  try {
+    const indicator = document.getElementById('offline-indicator');
+    const showOffline = () => {
+      if (!indicator) {
+        return;
+      }
+      indicator.removeAttribute('hidden');
+      document.body.classList.add('offline');
+    };
+    const hideOffline = () => {
+      if (!indicator) {
+        return;
+      }
+      indicator.setAttribute('hidden', '');
+      document.body.classList.remove('offline');
+    };
+    // Assume online on initial load; rely on events to toggle
+    hideOffline();
+    window.addEventListener('online', hideOffline);
+    window.addEventListener('offline', showOffline);
+  } catch {
+    // ignore offline indicator init failures
+  }
 
   // Register service worker (handled by Vite PWA plugin)
   // Custom registration logic can be added here if needed

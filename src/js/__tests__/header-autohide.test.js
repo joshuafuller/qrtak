@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /**
  * Tests for header auto-hide functionality
  */

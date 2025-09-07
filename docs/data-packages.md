@@ -221,6 +221,14 @@ iTAK_Package.zip
 
 **⚠️ Important**: iTAK uses a different path handling mechanism. Even though certificate files are placed at the root level of the package, the config.pref must still reference them using `cert/` paths. ATAK automatically handles the path mapping for iTAK packages.
 
+**Protocol tokens in connectString**: iTAK packages use the same `connectString` convention as ATAK:
+
+```
+HOST:PORT:PROTOCOL
+```
+
+where `PROTOCOL` is `ssl` (HTTPS) or `tcp` (HTTP). QUIC is not supported in iTAK package `connectString`.
+
 ```xml
 <?xml version='1.0' standalone='yes'?>
 <preferences>

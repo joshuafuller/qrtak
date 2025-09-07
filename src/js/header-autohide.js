@@ -25,7 +25,10 @@ class HeaderAutoHide {
 
   init () {
     if (!this.header) {
-      console.warn('Header element not found');
+      if (typeof process === 'undefined' || process.env.NODE_ENV !== 'test') {
+        // eslint-disable-next-line no-console
+        console.warn('Header element not found');
+      }
       return;
     }
 
@@ -378,13 +381,12 @@ class PageEnhancements {
       });
 
       // Focus trap within modal
-      const focusableElements = modal.querySelectorAll(
-        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-      );
+      const focusableElements = modal.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
 
       if (focusableElements.length > 0) {
-        const firstElement = focusableElements[0];
-        const lastElement = focusableElements[focusableElements.length - 1];
+        const els = Array.from(focusableElements);
+        const [firstElement, ...restElements] = els;
+        const lastElement = restElements.length ? restElements[restElements.length - 1] : firstElement;
 
         modal.addEventListener('keydown', (e) => {
           if (e.key === 'Tab') {
@@ -475,7 +477,10 @@ function initializeEnhancements () {
   // Add professional loading states
   document.body.classList.add('enhanced');
 
-  console.log('🚀 Professional TAK Onboarding Platform enhancements loaded');
+  if (typeof process === 'undefined' || process.env.NODE_ENV !== 'test') {
+    // eslint-disable-next-line no-console
+    console.log('🚀 Professional TAK Onboarding Platform enhancements loaded');
+  }
 }
 
 // Add CSS for enhanced states

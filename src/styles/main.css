@@ -193,6 +193,11 @@
   --qr-padding: var(--spacing-xl);       /* QR container internal padding */
 }
 
+/* Generic hidden attribute support to ensure author styles don't override it */
+[hidden] {
+  display: none !important;
+}
+
 /* ==========================================================================
    PROFESSIONAL NIGHT OPERATIONS THEME
    Dark mode optimized for 24/7 emergency operations centers
@@ -345,7 +350,7 @@ a:hover {
    PROFESSIONAL HEADER SYSTEM
    Compact, auto-hide header for emergency operations interfaces
    40% more compact than standard headers with intelligent auto-hide
-   ========================================================================== */
+========================================================================== */
 .header {
   background: var(--color-surface);
   backdrop-filter: var(--backdrop-blur);
@@ -394,6 +399,7 @@ a:hover {
   padding: 0 var(--header-padding);
   max-width: var(--container-max-width);
   margin: 0 auto;
+  flex-wrap: nowrap; /* keep actions inline with title */
 }
 
 .header-main {
@@ -461,6 +467,7 @@ a:hover {
   align-items: center;
   gap: var(--spacing-xs);
   flex-shrink: 0;
+  flex-wrap: nowrap; /* avoid wrapping out of the title bar */
 }
 
 /* ================================
@@ -616,6 +623,30 @@ a:hover {
 
 .github-link:hover .github-icon {
   transform: scale(1.1) rotate(-5deg);
+}
+
+/* Offline indicator - subtle but visible pill */
+.offline-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  background: #7f1d1d; /* dark red */
+  color: #fee2e2;
+  border: 2px solid #dc2626;
+  border-radius: var(--radius-full);
+  padding: 0 var(--spacing-md);
+  height: var(--button-height-sm);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  box-shadow: var(--shadow-sm);
+}
+
+.offline-indicator .badge-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ef4444;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.25);
 }
 
 /* Help Button - Emergency Operations Primary Action */
@@ -1791,6 +1822,222 @@ a:hover {
 }
 
 /* ==========================================================================
+   BULK ONBOARD UI
+   Clean, responsive layout for tak_users.txt onboarding
+   ========================================================================= */
+.bulk-onboard .form-description {
+  margin-top: var(--spacing-sm);
+}
+
+.bulk-setup {
+  margin-top: var(--spacing-xl);
+}
+
+.file-input {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 2px dashed var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+  padding: var(--spacing-sm) var(--spacing-md);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.file-input:hover {
+  border-color: var(--color-border-hover);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Consistent styling for native file selector buttons */
+.file-input::file-selector-button,
+input[type="file"]::file-selector-button {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  color: var(--color-text-inverse);
+  border: 2px solid transparent;
+  border-radius: var(--radius-lg);
+  height: var(--button-height-sm);
+  padding: 0 var(--spacing-xl);
+  margin-right: var(--spacing-md);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.file-input::-webkit-file-upload-button,
+input[type="file"]::-webkit-file-upload-button {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  color: var(--color-text-inverse);
+  border: 2px solid transparent;
+  border-radius: var(--radius-lg);
+  height: var(--button-height-sm);
+  padding: 0 var(--spacing-xl);
+  margin-right: var(--spacing-md);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.file-input:hover::file-selector-button,
+input[type="file"]:hover::file-selector-button,
+.file-input:hover::-webkit-file-upload-button,
+input[type="file"]:hover::-webkit-file-upload-button {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+.file-input:active::file-selector-button,
+input[type="file"]:active::file-selector-button,
+.file-input:active::-webkit-file-upload-button,
+input[type="file"]:active::-webkit-file-upload-button {
+  transform: translateY(0);
+  box-shadow: var(--shadow-inset);
+}
+
+.bulk-session {
+  margin-top: var(--spacing-xl);
+  padding: var(--spacing-xl);
+  /* Ensure a meaningful canvas to allow sidebar to fill */
+  min-height: 60vh;
+}
+
+.bulk-grid {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: var(--spacing-xl);
+  align-items: stretch;
+}
+
+@media (max-width: 900px) {
+  .bulk-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.bulk-sidebar {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  min-height: 0; /* allow children to flex */
+}
+
+.bulk-sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-md);
+}
+
+.text-muted,
+.muted {
+  color: var(--color-text-tertiary);
+  font-size: var(--font-size-sm);
+}
+
+.user-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  /* Fill remaining height in the sidebar and scroll */
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+}
+
+.user-list li {
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-bottom: 1px solid var(--color-border);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.user-list li:last-child {
+  border-bottom: none;
+}
+
+.user-list li:hover {
+  background: var(--color-surface-hover);
+}
+
+.user-list li.active {
+  background: rgba(59,130,246,0.08);
+  border-left: 3px solid var(--color-accent);
+  padding-left: calc(var(--spacing-lg) - 3px);
+  font-weight: var(--font-weight-semibold);
+}
+
+.bulk-nav {
+  display: flex;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-md);
+  justify-content: space-between;
+}
+
+.bulk-main .qr-container {
+  margin: var(--spacing-lg) auto;
+}
+
+.bulk-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-lg);
+  margin-top: var(--spacing-md);
+}
+
+.bulk-controls #bulk-counter {
+  min-width: 80px;
+  text-align: center;
+}
+
+.bulk-detail {
+  padding: var(--spacing-xl);
+}
+
+.bulk-username {
+  margin: 0;
+  margin-bottom: var(--spacing-sm);
+}
+
+.code {
+  font-family: var(--font-family-mono);
+  background: var(--color-background-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md);
+  color: var(--color-text-primary);
+  word-break: break-word;
+}
+
+.masked {
+  letter-spacing: 0.1em;
+}
+
+.action-row {
+  display: flex;
+  gap: var(--spacing-sm);
+  flex-wrap: nowrap; /* keep Copy to the right of Show */
+  margin-top: var(--spacing-sm);
+}
+
+@media (max-width: 420px) {
+  .action-row {
+    flex-wrap: wrap; /* allow wrap on very small screens */
+  }
+}
+
+/* ==========================================================================
    PROFESSIONAL BUTTON SYSTEM
    Large, accessible touch targets for emergency operations
    ========================================================================== */
@@ -2703,18 +2950,18 @@ a:hover {
   }
 
   .header-content {
-    flex-direction: column;
-    gap: var(--spacing-md);
-    padding: var(--spacing-md) var(--spacing-lg);
+    flex-direction: row;
+    gap: var(--spacing-sm);
+    padding: 0 var(--spacing-md);
   }
 
   .header {
-    height: auto;
-    position: relative;
+    height: var(--header-height);
+    position: fixed;
   }
-  
+
   .main {
-    padding-top: var(--spacing-xl);
+    padding-top: calc(var(--header-height) + var(--spacing-xl));
   }
 
   .tabs {
@@ -2763,12 +3010,11 @@ a:hover {
   }
 
   .header-content {
-    padding: var(--spacing-sm) var(--spacing-md);
+    padding: 0 var(--spacing-md);
   }
 
   .header-actions {
-    flex-wrap: wrap;
-    justify-content: center;
+    flex-wrap: nowrap;
     gap: var(--spacing-xs);
   }
 

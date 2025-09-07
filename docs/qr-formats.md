@@ -76,28 +76,47 @@ ATAK 5.1+ supports QR code onboarding using the `tak://` URI scheme. There are t
 
 ## 2. iTAK (iOS TAK) QR Code Format
 
-iTAK does not use the `tak://` URI scheme for enrollment. Instead, it supports a plain CSV string for Quick Connect.
+iTAK does not use the `tak://` URI scheme for server onboarding. It scans a plain CSV string known as “Quick Connect”.
 
 ### 2.1 Quick Connect (CSV)
-- **Format:**
+- **Format (strictly 4 fields, in order):**
   ```
-  {serverDescription},{serverURL},{port},{protocol}
+  {description},{host},{port},{protocol}
   ```
-- **Example:**
+- **Examples (canonical):**
   ```
-  My TAK Server,tictak.ddns.network,8089,ssl
+  My TAK,tak.example.com,8089,ssl
+  My TAK,192.168.1.10,8089,tcp
   ```
 - **Fields:**
-  | Name             | Description                  | Acceptable Values         |
-  |------------------|------------------------------|--------------------------|
-  | serverDescription| Human-friendly server name    | string                   |
-  | serverURL        | TAK server FQDN or IP        | string                   |
-  | port             | Server port                  | integer (e.g., 8089)     |
-  | protocol         | Protocol                     | ssl (for HTTPS), tcp (for HTTP) |
+  | Name        | Description                    | Rules                                  |
+  |-------------|--------------------------------|----------------------------------------|
+  | description | Human-friendly server name     | UTF‑8; no commas; avoid control chars  |
+  | host        | TAK server FQDN or IPv4        | IPv6 typically not supported via CSV   |
+  | port        | Server port                    | Required; 1–65535                      |
+  | protocol    | Transport                      | ssl (HTTPS) or tcp (HTTP) only         |
 
-- **Usage:**
-  - The user will be prompted for credentials after scanning.
-  - This QR code is not a URI; it is a plain text CSV.
+- **Important constraints:**
+  - Exactly 4 comma-separated fields; no extra/missing fields.
+  - No quoting/escaping: descriptions must not contain commas.
+  - Trim whitespace in generator; emit plain UTF‑8 (no BOM), no trailing newline required.
+  - Protocol tokens are case-insensitive, but generators should emit lower-case `ssl`/`tcp`.
+  - iTAK prompts for username/password after scanning; CSV carries connection info only.
+  - QUIC is not supported in iTAK Quick Connect CSV.
+
+- **Non-examples (invalid):**
+  ```
+  # Missing port
+  My TAK,tak.example.com,ssl
+
+  # Unsupported protocol
+  My TAK,tak.example.com,8090,quic
+
+  # Comma in description breaks parsing
+  Team, One,tak.example.com,8089,ssl
+  ```
+
+> Note: If you need advanced options (e.g., certificates, QUIC, custom provisioning), use data packages rather than CSV QR.
 
 ---
 
@@ -119,7 +138,7 @@ iTAK does not use the `tak://` URI scheme for enrollment. Instead, it supports a
 ---
 
 ## 5. Versioning
-- **Based on**: ATAK 5.2 Official Change Log (July 2024)
-- **Compatibility**: ATAK 5.2+ (QR code support officially added in this version)
-- **Last Updated**: July 2025
+- **Based on**: ATAK 5.2 Official Change Log (July 2024) and iTAK Quick Connect guidance
+- **Compatibility**: ATAK 5.2+; iTAK Quick Connect CSV in current iTAK releases
+- **Last Updated**: September 2025
 - This document should be updated if TAK client QR code formats change in future releases. 

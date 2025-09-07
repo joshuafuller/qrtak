@@ -1,3 +1,4 @@
+/* eslint-disable prefer-destructuring */
 /**
  * Tests documenting ATAK enrollment URL limitations
  *
@@ -5,6 +6,7 @@
  * port or protocol parameters. This test suite documents this limitation.
  */
 
+/* eslint-disable no-unused-vars */
 // Mock QRCode
 jest.mock('qrcode', () => ({
   toCanvas: jest.fn()

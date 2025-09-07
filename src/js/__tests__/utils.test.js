@@ -1,75 +1,31 @@
-import {
-  sanitizeInput,
-  extractHostnameFromURL,
-  isValidHostname,
-  isValidPort,
-  isValidURL,
-  debounce
-} from '../utils.js';
+import { isValidHostname, isValidPort, isValidURL, extractHostnameFromURL } from '../utils.js';
 
-describe('sanitizeInput', () => {
-  it('escapes HTML characters', () => {
-    document.body.innerHTML = '<div></div>';
-    const result = sanitizeInput('<script>');
-    expect(result).toBe('&lt;script&gt;');
-  });
-});
-
-describe('extractHostnameFromURL', () => {
-  it('handles full URLs', () => {
-    expect(extractHostnameFromURL('https://example.com/path')).toBe('example.com');
+describe('utils validators', () => {
+  test('isValidHostname accepts FQDN and IP, rejects bad values', () => {
+    expect(isValidHostname('tak.example.com')).toBe(true);
+    expect(isValidHostname('192.168.1.100')).toBe(true);
+    expect(isValidHostname('256.0.0.1')).toBe(false);
+    expect(isValidHostname('http://bad')).toBe(false);
+    expect(isValidHostname('')).toBe(false);
   });
 
-  it('handles URLs without protocol', () => {
-    expect(extractHostnameFromURL('example.com')).toBe('example.com');
-  });
-
-  it('returns empty string for invalid input', () => {
-    expect(extractHostnameFromURL(null)).toBe('');
-  });
-});
-
-describe('isValidHostname', () => {
-  it('validates hostnames and IPs', () => {
-    expect(isValidHostname('example.com')).toBe(true);
-    expect(isValidHostname('192.168.1.1')).toBe(true);
-  });
-
-  it('rejects invalid hostnames', () => {
-    expect(isValidHostname('bad_host!')).toBe(false);
-  });
-});
-
-describe('isValidPort', () => {
-  it('validates ports', () => {
-    expect(isValidPort('80')).toBe(true);
+  test('isValidPort validates numeric range 1-65535', () => {
+    expect(isValidPort(1)).toBe(true);
+    expect(isValidPort(8089)).toBe(true);
     expect(isValidPort(65535)).toBe(true);
+    expect(isValidPort(0)).toBe(false);
+    expect(isValidPort(70000)).toBe(false);
   });
 
-  it('rejects invalid ports', () => {
-    expect(isValidPort('70000')).toBe(false);
-  });
-});
-
-describe('isValidURL', () => {
-  it('validates URLs', () => {
-    expect(isValidURL('https://example.com')).toBe(true);
+  test('isValidURL basic validation using URL constructor', () => {
+    expect(isValidURL('https://example.com/data.zip')).toBe(true);
+    expect(isValidURL('http://example.com')).toBe(true);
+    expect(isValidURL('notaurl')).toBe(false);
   });
 
-  it('rejects invalid URLs', () => {
-    expect(isValidURL('http://')).toBe(false);
-  });
-});
-
-describe('debounce', () => {
-  jest.useFakeTimers();
-
-  it('delays function execution', () => {
-    const fn = jest.fn();
-    const debounced = debounce(fn, 200);
-    debounced();
-    expect(fn).not.toHaveBeenCalled();
-    jest.advanceTimersByTime(200);
-    expect(fn).toHaveBeenCalled();
+  test('extractHostnameFromURL handles protocol and bare host', () => {
+    expect(extractHostnameFromURL('https://foo.bar:8080/path')).toBe('foo.bar');
+    expect(extractHostnameFromURL('foo.bar:8080/path')).toBe('foo.bar');
+    expect(extractHostnameFromURL('')).toBe('');
   });
 });

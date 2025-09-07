@@ -123,6 +123,7 @@ export default [
     ignores: [
       'dist/',
       'node_modules/',
+      'playwright-report/',
       'assets/',
       '*.min.js',
       'sw.js',

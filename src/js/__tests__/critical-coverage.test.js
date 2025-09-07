@@ -1,3 +1,4 @@
+/* eslint-disable prefer-destructuring */
 /**
  * Critical test coverage for untested functionality
  * These tests ensure all user-facing features work correctly
@@ -19,6 +20,7 @@ global.window.UIController = mockUIController;
 // Mock browser APIs that JSDOM doesn't implement
 global.window.confirm = jest.fn(() => true);
 
+/* eslint-disable no-unused-vars */
 // Mock QRCode
 jest.mock('qrcode', () => ({
   toCanvas: jest.fn()

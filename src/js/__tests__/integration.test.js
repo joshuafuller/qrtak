@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable prefer-destructuring */
 /**
  * Integration tests for TAK Onboarding Platform
  * Tests user interactions and QR code generation
