@@ -1,8 +1,7 @@
 name: Release Please
 
 on:
-  push:
-    branches: [main]
+  # Run Release Please manually to avoid unintended major bumps
   workflow_dispatch:
 
 permissions:

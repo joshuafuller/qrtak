@@ -26,6 +26,9 @@
     "scan:all": "npm run scan:trivy && npm run scan:grype",
     "sbom:generate": "syft qrtak:latest -o spdx-json > sbom.spdx.json"
   },
+  "scriptsExtra": {
+    "changelog:audit": "node scripts/generate-changelog-audit.cjs > /dev/null && echo 'Wrote docs/CHANGELOG-AUDIT.md'"
+  },
   "keywords": [
     "tak",
     "atak",

@@ -33,6 +33,9 @@
 
 ---
 
+Historical Notes
+- For a comprehensive record of repository-wide changes captured by Release Please (proposed v2.0.0), see docs/RELEASE-NOTES-2.0.0.md. This consolidates features, fixes, and workflow changes across the prior history and explains why a major was suggested while the app remained backward compatible.
+
 ## [1.5.1](https://github.com/joshuafuller/qrtak/compare/v1.5.0...v1.5.1) (2025-08-31)
 
 
