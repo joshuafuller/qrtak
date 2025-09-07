@@ -1,4 +1,13 @@
 
+## [1.6.1](https://github.com/joshuafuller/qrtak/compare/v1.6.0...v1.6.1) (2025-09-07)
+
+### Bug Fixes
+
+- Bulk: Load Example respects base path and bundled location (avoid fetching non-existent root `tak_users.txt`).
+
+### Security
+
+- Remove stray root `tak_users.txt` and ignore at repo root.
 
 ### Documentation
 
