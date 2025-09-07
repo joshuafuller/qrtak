@@ -94,6 +94,16 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
+      - name: Parse version
+        id: v
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          v="${{ inputs.version }}"
+          echo "full=${v}" >> $GITHUB_OUTPUT
+          echo "major=${v%%.*}" >> $GITHUB_OUTPUT
+          rest="${v#*.}"
+          echo "minor=${rest%%.*}" >> $GITHUB_OUTPUT
+
       - name: Download digests
         uses: actions/download-artifact@v4
         with:
@@ -124,6 +134,10 @@ jobs:
             type=semver,pattern={{major}}
             type=raw,value={{tag}},enable=${{ github.event_name == 'workflow_dispatch' }}
             type=raw,value=v${{ inputs.version }},enable=${{ github.event_name == 'workflow_dispatch' }}
+            # Also publish non-v tags when manually dispatched
+            type=raw,value=${{ steps.v.outputs.full }},enable=${{ github.event_name == 'workflow_dispatch' }}
+            type=raw,value=${{ steps.v.outputs.major }}.${{ steps.v.outputs.minor }},enable=${{ github.event_name == 'workflow_dispatch' }}
+            type=raw,value=${{ steps.v.outputs.major }},enable=${{ github.event_name == 'workflow_dispatch' }}
           labels: |
             org.opencontainers.image.title=qrtak
             org.opencontainers.image.description=Generate TAK client configuration QR codes instantly
