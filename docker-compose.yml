@@ -1,9 +1,7 @@
-version: '3.8'
-
 services:
   qrtak:
-    # image: ghcr.io/joshuafuller/qrtak:latest
-    # Uncomment to build locally instead:
+    image: qrtak:latest
+    container_name: qrtak
     build: .
     ports:
       - "8080:80"
