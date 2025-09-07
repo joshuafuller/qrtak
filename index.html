@@ -32,8 +32,8 @@
     <!-- PWA Manifest -->
     <link rel="manifest" href="/qrtak/assets/manifest-ByLZ3002.webmanifest">
     <script id="vite-plugin-pwa:register-sw" src="registerSW.js"></script>
-  <script type="module" crossorigin src="/qrtak/assets/index-34t8Ugyt.js"></script>
-  <link rel="stylesheet" crossorigin href="/qrtak/assets/index-U0eSYjJW.css">
+  <script type="module" crossorigin src="/qrtak/assets/index-CQg0tkAt.js"></script>
+  <link rel="stylesheet" crossorigin href="/qrtak/assets/index-DCeea5aD.css">
 <link rel="manifest" href="/qrtak/manifest.webmanifest"><script id="vite-plugin-pwa:register-sw" src="/qrtak/registerSW.js"></script></head>
 <body>
     <a href="#main-content" class="sr-only skip-link">Skip to main content</a>
@@ -41,19 +41,23 @@
         <!-- Header -->
         <header class="header">
             <div class="container">
-                <div class="header-content">
-                    <div class="header-main">
-                        <h1 class="title">
-                            <span class="title-icon">📱</span>
-                            TAK Onboarding Platform
-                        </h1>
-                        <p class="subtitle">Generate configuration QR codes for rapid TAK client deployment</p>
-                    </div>
-                    <div class="header-actions">
-                        <button id="theme-toggle" class="theme-toggle" title="Toggle dark mode" aria-label="Toggle dark mode">
-                            <svg class="theme-icon theme-icon-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <circle cx="12" cy="12" r="5"/>
-                                <line x1="12" y1="1" x2="12" y2="3"/>
+                    <div class="header-content">
+                        <div class="header-main">
+                            <h1 class="title">
+                                <span class="title-icon">📱</span>
+                                TAK Onboarding Platform
+                            </h1>
+                            <p class="subtitle">Generate configuration QR codes for rapid TAK client deployment</p>
+                        </div>
+                        <div class="header-actions">
+                            <div id="offline-indicator" class="offline-indicator" role="status" aria-live="polite" hidden>
+                                <span class="badge-dot" aria-hidden="true"></span>
+                                Offline
+                            </div>
+                            <button id="theme-toggle" class="theme-toggle" title="Toggle dark mode" aria-label="Toggle dark mode">
+                                <svg class="theme-icon theme-icon-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="5"/>
+                                    <line x1="12" y1="1" x2="12" y2="3"/>
                                 <line x1="12" y1="21" x2="12" y2="23"/>
                                 <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
                                 <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
@@ -84,6 +88,7 @@
                     <button class="tab-btn active" data-tab="tak-config" role="tab" aria-selected="true" aria-controls="tak-config-tab">TAK Config</button>
                     <button class="tab-btn" data-tab="import" role="tab" aria-selected="false" aria-controls="import-tab">URL Import</button>
                     <button class="tab-btn" data-tab="packages" role="tab" aria-selected="false" aria-controls="packages-tab">Data Package Builder</button>
+                    <button class="tab-btn" data-tab="bulk" role="tab" aria-selected="false" aria-controls="bulk-tab">Bulk Onboard</button>
                     <button class="tab-btn" data-tab="preferences" role="tab" aria-selected="false" aria-controls="preferences-tab">Preferences</button>
                     <button class="tab-btn" data-tab="profiles" role="tab" aria-selected="false" aria-controls="profiles-tab">Profiles</button>
                     <button class="tab-btn" data-tab="help" role="tab" aria-selected="false" aria-controls="help-tab">Help</button>
@@ -96,7 +101,7 @@
                         <div class="tak-config-container">
                             <!-- Configuration Form -->
                             <div class="config-panel">
-                                <div class="config-header">
+                                <div class="config-header" data-testid="tak-config-header">
                                     <h2>TAK Configuration</h2>
                                     <p class="config-description">Configure TAK clients for rapid deployment</p>
                                     
@@ -121,7 +126,7 @@
                                     </div>
                                 </div>
 
-                                <form id="tak-config-form" class="tak-form">
+                                <form id="tak-config-form" class="tak-form" data-testid="tak-config-form">
                                     <!-- Connection Settings -->
                                     <div class="form-section-compact">
                                         <h3 class="section-label">
@@ -131,7 +136,7 @@
                                         
                                         <div class="form-group">
                                             <label for="tak-host">Server Hostname/IP</label>
-                                            <input type="text" id="tak-host" name="host" placeholder="tak.example.com or 192.168.1.100" required>
+                                            <input type="text" id="tak-host" name="host" placeholder="tak.example.com or 192.168.1.100" required data-testid="tak-host">
                                             <div class="help-text">Enter the TAK server address for enrollment</div>
                                         </div>
                                     </div>
@@ -148,12 +153,12 @@
                                             <div class="form-grid">
                                                 <div class="form-group">
                                                     <label for="tak-username">Username</label>
-                                                    <input type="text" id="tak-username" name="username" placeholder="user123">
+                                                    <input type="text" id="tak-username" name="username" placeholder="user123" data-testid="tak-username">
                                                 </div>
                                                 
                                                 <div class="form-group">
                                                     <label for="tak-token">Password/Token</label>
-                                                    <input type="password" id="tak-token" name="token" placeholder="your-password">
+                                                    <input type="password" id="tak-token" name="token" placeholder="your-password" data-testid="tak-token">
                                                 </div>
                                             </div>
                                             
@@ -182,7 +187,6 @@
                                                     <select id="tak-protocol" name="protocol" required>
                                                         <option value="https">HTTPS (SSL/TLS)</option>
                                                         <option value="http">HTTP (TCP)</option>
-                                                        <option value="quic">QUIC (UDP)</option>
                                                     </select>
                                                 </div>
                                             </div>
@@ -191,7 +195,7 @@
                                                 <span class="notice-icon">ℹ️</span>
                                                 <div class="notice-content">
                                                     <strong>Authentication:</strong> iTAK will prompt for username and password after scanning the QR code. 
-                                                    The QR only contains server connection information.
+                                                    The QR only contains server connection information. Protocols supported: <code>ssl</code> (HTTPS) and <code>tcp</code> (HTTP).
                                                 </div>
                                             </div>
                                         </div>
@@ -206,7 +210,7 @@
                                     <p class="qr-description" id="qr-description">Scan this QR code with ATAK to automatically configure the connection</p>
                                 </div>
                                 
-                                <div id="tak-qr" class="qr-container">
+                                <div id="tak-qr" class="qr-container" data-testid="tak-qr">
                                     <div class="qr-placeholder">
                                         <div class="placeholder-icon">📱</div>
                                         <div class="placeholder-text">Enter configuration details to generate QR code</div>
@@ -214,11 +218,11 @@
                                 </div>
                                 
                                 <div class="qr-actions">
-                                    <button id="tak-download" class="btn btn-primary" disabled>
+                                    <button id="tak-download" class="btn btn-primary" disabled data-testid="tak-download">
                                         <span class="btn-icon">⬇️</span>
                                         Download PNG
                                     </button>
-                                    <button id="tak-copy" class="btn btn-secondary" disabled>
+                                    <button id="tak-copy" class="btn btn-secondary" disabled data-testid="tak-copy">
                                         <span class="btn-icon">📋</span>
                                         Copy URI
                                     </button>
@@ -255,7 +259,7 @@
                             <form id="import-form" class="config-form">
                                 <div class="form-group">
                                     <label for="import-url">Import URL:</label>
-                                    <input type="url" id="import-url" name="url" placeholder="https://example.com/data.zip" required>
+                                    <input type="url" id="import-url" name="url" placeholder="https://example.com/data.zip" required data-testid="import-url">
                                     <div class="help-text">Enter the URL of a data package (.zip) or configuration file to import</div>
                                 </div>
                             </form>
@@ -263,7 +267,7 @@
                         <div class="qr-section">
                             <h3>Generated QR Code</h3>
                             <p class="qr-description">Scan this QR code to import the specified data package</p>
-                            <div id="import-qr" class="qr-container">
+                            <div id="import-qr" class="qr-container" data-testid="import-qr">
                                 <div class="qr-placeholder">Enter URL above</div>
                             </div>
                             <div class="qr-actions">
@@ -421,6 +425,76 @@
                         </div>
                     </div>
 
+                    <!-- Bulk Onboard Tab -->
+                    <div class="tab-pane" id="bulk-tab" role="tabpanel" aria-labelledby="bulk-btn">
+                        <div class="form-section bulk-onboard">
+                            <h2>Bulk Onboard: TAK Users (.txt)</h2>
+                            <p class="form-description">Upload your TAK Server <code>tak_users.txt</code> export, set the server host, then step through users and scan. Processing stays on this device.</p>
+
+                            <div class="config-form form-grid bulk-setup">
+                                <div class="form-group">
+                                    <label for="bulk-host">Server Host</label>
+                                    <input type="text" id="bulk-host" placeholder="tak.example.com" />
+                                    <div class="help-text">Hostname only, no protocol. Example: <code>tak.example.com</code></div>
+                                </div>
+                                <div class="form-group form-group-full">
+                                    <label for="tak-users-file">TAK Users File (.txt)</label>
+                                    <input class="file-input" type="file" id="tak-users-file" accept=".txt,text/plain,application/json" data-testid="bulk-file" />
+                                    <div id="bulk-file-name" class="help-text"></div>
+                                    <div class="action-row">
+                                        <button id="bulk-load-example" type="button" class="btn btn-secondary">Load Example</button>
+                                    </div>
+                                    <div class="help-text">Expected JSON array: <code>[{\"username\":\"demo1\",\"password\":\"...\"}, ...]</code>. Typical filename <code>tak_users.txt</code>.</div>
+                                </div>
+                            </div>
+
+                            <div id="bulk-session" class="card bulk-session" style="display:none;">
+                                <div class="bulk-grid">
+                                    <!-- Left: User list -->
+                                    <aside class="bulk-sidebar">
+                                        <div class="bulk-sidebar-header">
+                                            <h3>Users</h3>
+                                        </div>
+                                        <ul id="bulk-user-list" class="user-list"></ul>
+                                    </aside>
+                                    
+                                    <!-- Right: Active user QR and details -->
+                                    <section class="bulk-main">
+                                        <div class="card bulk-detail">
+                                            <h3 id="bulk-current-username" class="bulk-username"></h3>
+                                            <div id="bulk-user-qr" class="qr-container" data-testid="bulk-qr"></div>
+
+                                            <div class="bulk-controls">
+                                                <button id="bulk-prev" class="btn btn-secondary" data-testid="bulk-prev">Previous</button>
+                                                <div id="bulk-counter" class="text-muted" data-testid="bulk-counter"></div>
+                                                <button id="bulk-next" class="btn btn-primary" data-testid="bulk-next">Next</button>
+                                            </div>
+
+                                            <div class="form-grid">
+                                                <div class="form-group form-group-full">
+                                                    <label>Enrollment URI</label>
+                                                    <div id="bulk-uri" data-hidden="true" data-value="" class="code masked" data-testid="bulk-uri-value">&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;</div>
+                                                    <div class="action-row">
+                                                        <button id="bulk-toggle-uri" class="btn btn-secondary" data-testid="bulk-toggle-uri">Show URI</button>
+                                                        <button id="bulk-copy-uri" class="btn btn-secondary" data-testid="bulk-copy-uri">Copy URI</button>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Password</label>
+                                                    <div id="bulk-pass" data-hidden="true" data-value="" class="code masked" data-testid="bulk-pass-value">&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;</div>
+                                                    <div class="action-row">
+                                                        <button id="bulk-toggle-pass" class="btn btn-secondary" data-testid="bulk-toggle-pass">Show Password</button>
+                                                        <button id="bulk-copy-pass" class="btn btn-secondary" data-testid="bulk-copy-pass">Copy Password</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </section>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Preferences Tab -->
                     <div class="tab-pane" id="preferences-tab" role="tabpanel" aria-labelledby="preferences-btn">
                         <div class="form-section">
@@ -466,7 +540,7 @@
                         <div class="qr-section">
                             <h3>Generated QR Code</h3>
                             <p class="qr-description">Scan in ATAK to apply preferences</p>
-                            <div id="preferences-qr" class="qr-container">
+                            <div id="preferences-qr" class="qr-container" data-testid="preferences-qr">
                                 <div class="qr-placeholder">
                                     <div style="text-align: center;">
                                         <p style="margin-bottom: 10px;">No preferences added yet</p>
@@ -478,8 +552,8 @@
                                 </div>
                             </div>
                             <div class="qr-actions">
-                                <button id="preferences-download" class="btn btn-primary" disabled>Download PNG</button>
-                                <button id="preferences-copy" class="btn btn-secondary" disabled>Copy URI</button>
+                                <button id="preferences-download" class="btn btn-primary" disabled data-testid="preferences-download">Download PNG</button>
+                                <button id="preferences-copy" class="btn btn-secondary" disabled data-testid="preferences-copy">Copy URI</button>
                             </div>
                         </div>
                     </div>
@@ -508,38 +582,38 @@
                     <div class="tab-pane" id="help-tab" role="tabpanel" aria-labelledby="help-btn">
                         <div class="help-section">
                             <h2>TAK Onboarding Platform Help</h2>
-                            <p class="help-intro">Welcome to the TAK Onboarding Platform! This tool helps you quickly configure TAK clients for rapid deployment.</p>
+                            <p class="help-intro">Welcome to the TAK Onboarding Platform. Generate enrollment/import QRs, build data packages, and bulk‑onboard users for fast, reliable TAK client deployment.</p>
                             
                             <!-- Quick Start -->
                             <div class="help-section-content">
-                                <h3>🚀 Quick Start Guide</h3>
+                                <h3>🚀 Quick Start</h3>
                                 <div class="help-steps">
                                     <div class="help-step">
                                         <div class="step-number">1</div>
                                         <div class="step-content">
-                                            <h4>Choose Configuration Type</h4>
-                                            <p>Select the appropriate tab for your needs: ATAK Enroll, iTAK Config, URL Import, or Profiles.</p>
+                                            <h4>Select a Tab</h4>
+                                            <p>Use: TAK Config (ATAK/iTAK), URL Import, Data Package Builder, Bulk Onboard, Preferences, or Profiles.</p>
                                         </div>
                                     </div>
                                     <div class="help-step">
                                         <div class="step-number">2</div>
                                         <div class="step-content">
-                                            <h4>Enter Configuration Details</h4>
-                                            <p>Fill in the required fields with your TAK server information.</p>
+                                            <h4>Fill Required Fields</h4>
+                                            <p>Required inputs show red until valid, then green. Hostname/port are validated; optional fields remain neutral until filled.</p>
                                         </div>
                                     </div>
                                     <div class="help-step">
                                         <div class="step-number">3</div>
                                         <div class="step-content">
-                                            <h4>Generate QR Code</h4>
-                                            <p>Scan the generated QR code with your TAK client to automatically configure it.</p>
+                                            <h4>Generate & Scan</h4>
+                                            <p>QRs render automatically when valid. Scan with ATAK/iTAK or download/copy as needed.</p>
                                         </div>
                                     </div>
                                     <div class="help-step">
                                         <div class="step-number">4</div>
                                         <div class="step-content">
-                                            <h4>Save Profile (Optional)</h4>
-                                            <p>Save your configuration as a profile for future use and team deployment.</p>
+                                            <h4>Save Profiles</h4>
+                                            <p>Store current configuration for reuse. Overwrites prompt for confirmation.</p>
                                         </div>
                                     </div>
                                 </div>
@@ -547,42 +621,46 @@
 
                             <!-- Tab Descriptions -->
                             <div class="help-section-content">
-                                <h3>📱 Tab Descriptions</h3>
+                                <h3>📱 Tabs Overview</h3>
                                 <div class="help-tabs">
                                     <div class="help-tab-item">
-                                        <h4>ATAK Enroll</h4>
-                                        <p>Configure Android ATAK client enrollment with server hostname, username, and token. Generates enrollment QR codes for rapid setup.</p>
+                                        <h4>TAK Config</h4>
+                                        <p>Unified configuration with two modes:
+                                        <ul>
+                                            <li><strong>ATAK:</strong> Enrollment QR with <em>host</em>, <em>username</em>, and <em>password/token</em>.</li>
+                                            <li><strong>iTAK:</strong> Quick‑connect CSV in QR (<code>description,host,port,protocol</code>).</li>
+                                        </ul></p>
                                         <div class="help-features">
-                                            <span class="feature-tag">Android</span>
-                                            <span class="feature-tag">Enrollment</span>
+                                            <span class="feature-tag">ATAK/iTAK</span>
+                                            <span class="feature-tag">Validation</span>
                                             <span class="feature-tag">QR Code</span>
                                         </div>
                                     </div>
                                     <div class="help-tab-item">
-                                        <h4>iTAK Config</h4>
-                                        <p>Configure iOS iTAK client with server URL, port, and protocol. Credentials are entered after scanning the QR code.</p>
+                                        <h4>Data Package Builder</h4>
+                                        <p>Create an import URI for data packages/config files at a URL. Red/green validation ensures a well‑formed URL before actions enable.</p>
                                         <div class="help-features">
-                                            <span class="feature-tag">iOS</span>
-                                            <span class="feature-tag">Configuration</span>
+                                            <span class="feature-tag">Import</span>
+                                            <span class="feature-tag">Validation</span>
                                             <span class="feature-tag">QR Code</span>
                                         </div>
                                     </div>
                                     <div class="help-tab-item">
                                         <h4>URL Import</h4>
-                                        <p>Import data packages or configuration files via URL. Useful for deploying pre-configured settings and resources.</p>
+                                        <p>Build ATAK/WinTAK/iTAK packages with <code>config.pref</code> and <code>MANIFEST.xml</code>. When <strong>client = iTAK</strong>, protocol tokens are <code>ssl</code> (HTTPS) and <code>tcp</code> (HTTP); QUIC is hidden.</p>
                                         <div class="help-features">
-                                            <span class="feature-tag">Data Packages</span>
-                                            <span class="feature-tag">Import</span>
-                                            <span class="feature-tag">URL</span>
+                                            <span class="feature-tag">Packages</span>
+                                            <span class="feature-tag">ATAK/WinTAK/iTAK</span>
+                                            <span class="feature-tag">ZIP</span>
                                         </div>
                                     </div>
                                     <div class="help-tab-item">
-                                        <h4>Profiles</h4>
-                                        <p>Save and manage configuration profiles for quick deployment. Perfect for team standardization and mass onboarding.</p>
+                                        <h4>Bulk Onboard</h4>
+                                        <p>Onboard many users from <code>tak_users.txt</code> (JSON array of <code>{username,password}</code>). Enter server host once, then step through users with <kbd>Prev/Next</kbd> or ←/→. Show/Copy controls sit under the QR and reset per user. The list fills the sidebar for efficient navigation.</p>
                                         <div class="help-features">
-                                            <span class="feature-tag">Profiles</span>
-                                            <span class="feature-tag">Team Management</span>
-                                            <span class="feature-tag">Bulk Deployment</span>
+                                            <span class="feature-tag">Bulk</span>
+                                            <span class="feature-tag">Keyboard</span>
+                                            <span class="feature-tag">Validation</span>
                                         </div>
                                     </div>
                                 </div>
@@ -669,7 +747,6 @@
                                         <ul>
                                             <li><a href="https://discord.gg/xTdEcpc" target="_blank">TAK Discord Server</a></li>
                                             <li><a href="https://reddit.com/r/ATAK" target="_blank">ATAK Subreddit</a></li>
-                                            <li><a href="https://wiki.tak.gov/display/DEV/ATAK+Change+Log+18+July+2024+Version+5.2" target="_blank">ATAK 5.2 Change Log</a></li>
                                         </ul>
                                     </div>
                                 </div>

@@ -1,0 +1,12 @@
+[
+  { "username": "alpha.one",   "password": "a1pha-Token!" },
+  { "username": "bravo.two",   "password": "br@vo-2025" },
+  { "username": "charlie.3",   "password": "Ch@r!ie#3" },
+  { "username": "delta.4",     "password": "D3lta-Pass" },
+  { "username": "echo.5",      "password": "Echo_5_Token" },
+  { "username": "foxtrot.6",   "password": "Fox-6-Secret" },
+  { "username": "golf.7",      "password": "G0lfSeven" },
+  { "username": "hotel.8",     "password": "H0tel8!" },
+  { "username": "india.9",     "password": "!ndiaNine" },
+  { "username": "juliet.10",   "password": "Ju!ietX" }
+]
