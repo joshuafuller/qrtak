@@ -142,5 +142,4 @@ pnpm-lock.yaml
 test-ca.p12
 test-client.p12
 *.test.p12
-tak_users.txt
-
+/tak_users.txt
