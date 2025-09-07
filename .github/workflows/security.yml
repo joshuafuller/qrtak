@@ -5,6 +5,12 @@ on:
     branches: [main, develop, 'release-please--**']
   pull_request:
     branches: [main, develop]
+    paths:
+      - 'src/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'Dockerfile'
+      - '.github/workflows/security.yml'
   schedule:
     # Weekly comprehensive scan
     - cron: '0 2 * * 0'
