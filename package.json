@@ -1,6 +1,6 @@
 {
   "name": "qrtak",
-  "version": "1.6.0",
+  "version": "1.6.1",
   "private": true,
   "description": "Generate TAK client configuration QR codes instantly",
   "main": "index.html",
@@ -19,7 +19,7 @@
     "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
     "security:audit": "npm audit --audit-level=moderate",
     "security:check": "npm audit --audit-level=moderate",
-    "build:docker": "docker build -t qrtak:latest .",
+    "build:docker": "docker build --build-arg VERSION=$npm_package_version -t qrtak:latest -t qrtak:$npm_package_version .",
     "scan:trivy": "trivy image qrtak:latest",
     "scan:grype": "grype qrtak:latest",
     "scan:container": "npm run scan:trivy",

@@ -1,6 +1,6 @@
 services:
   qrtak:
-    image: qrtak:latest
+    image: qrtak:${VERSION:-latest}
     container_name: qrtak
     build: .
     ports:
