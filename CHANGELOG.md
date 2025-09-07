@@ -385,7 +385,7 @@
 
 * Dockerfile structure changed significantly.
 Multi-platform builds now exclude arm/v7 (only amd64 and arm64).
-## [1.6.1](https://github.com/joshuafuller/qrtak/compare/qrtak-v1.6.0...qrtak-v1.6.1) (2025-09-07)
+## [1.6.1](https://github.com/joshuafuller/qrtak/compare/v1.6.0...v1.6.1) (2025-09-07)
 
 ### Bug Fixes
 
@@ -395,7 +395,7 @@ Multi-platform builds now exclude arm/v7 (only amd64 and arm64).
 
 * remove stray root tak_users.txt and ignore it at repo root
 
-## [1.6.0](https://github.com/joshuafuller/qrtak/compare/qrtak-v1.5.6...qrtak-v1.6.0) (2025-09-06)
+## [1.6.0](https://github.com/joshuafuller/qrtak/compare/v1.5.6...v1.6.0) (2025-09-06)
 
 Highlights
 - Bulk Onboarding: New flow to step through users from `tak_users.txt` with clear navigation (Prev/Next, keyboard ←/→), filename preview, and consistent Show/Copy controls under the QR. The user list now fills the sidebar; example loader hides after real file upload.
