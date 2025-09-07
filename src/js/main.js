@@ -475,10 +475,17 @@ const BulkUsers = (function () {
 
     // Load example from known paths, try multiple, parse only when valid JSON
     loadExampleBtn?.addEventListener('click', async () => {
+      // Resolve paths in a way that works for both root ('/') and subpath deployments (e.g. '/qrtak/')
+      const base = (typeof document !== 'undefined' && document.baseURI)
+        ? new URL('.', document.baseURI).pathname
+        : '/';
       const tryPaths = [
-        '/tak_users.txt',                 // if user placed a file at site root
-        '/examples/tak_users.txt',        // bundled example in public/
-        './tak_users.txt'                 // relative fallback
+        // Prefer relative path so it respects current base path (e.g., '/qrtak/')
+        'examples/tak_users.txt',
+        // Explicit base-prefixed path as a backup
+        `${base.replace(/\/$/, '')}/examples/tak_users.txt`,
+        // Absolute path (works for root deployments)
+        '/examples/tak_users.txt'
       ];
 
       let loaded = [];
