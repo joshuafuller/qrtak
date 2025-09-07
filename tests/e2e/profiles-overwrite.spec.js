@@ -3,7 +3,9 @@ import { test, expect } from '@playwright/test';
 async function saveProfile (page, name, description = '') {
   await page.getByRole('tab', { name: 'Profiles' }).click();
   await page.locator('#save-profile').click();
-  await expect(page.locator('#profile-modal')).toBeVisible();
+  const modal = page.locator('#profile-modal');
+  await expect(modal).toBeVisible();
+  await page.locator('#profile-name').waitFor({ state: 'visible' });
   await page.locator('#profile-name').fill(name);
   if (description) {
     await page.locator('#profile-description').fill(description);
@@ -33,6 +35,7 @@ test('Profiles: overwrite confirm/cancel flows and validation state on load', as
   page.once('dialog', d => d.dismiss());
   await page.getByRole('tab', { name: 'Profiles' }).click();
   await page.locator('#save-profile').click();
+  await page.locator('#profile-name').waitFor({ state: 'visible' });
   await page.locator('#profile-name').fill('TestProfile');
   await page.locator('#modal-save').click();
   // Cancel kept modal open; close it now
@@ -59,6 +62,7 @@ test('Profiles: overwrite confirm/cancel flows and validation state on load', as
   await page.getByRole('tab', { name: 'Profiles' }).click();
   await page.locator('#save-profile').click();
   await expect(page.locator('#profile-modal')).toBeVisible();
+  await page.locator('#profile-name').waitFor({ state: 'visible' });
   await page.locator('#profile-name').fill('TestProfile');
   await page.locator('#modal-save').click();
   await expect(page.locator('#profile-modal')).toBeHidden();
