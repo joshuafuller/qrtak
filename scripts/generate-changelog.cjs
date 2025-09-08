@@ -18,10 +18,10 @@ function sh (cmd) {
 }
 
 function getReleaseBoundaries () {
-  const lines = sh("git --no-pager log --pretty=format:'%h %ad %s' --date=short").split('\n');
+  const lines = sh('git --no-pager log --pretty=format:%h %ad %s --date=short').split('\n');
   const releases = [];
   for (const line of lines) {
-    const m = line.match(/^(\w+)\s+(\d{4}-\d{2}-\d{2})\s+chore: release\s+([\w\.-]+)/);
+    const m = line.match(/^(\w+)\s+(\d{4}-\d{2}-\d{2})\s+chore: release\s+([\w.-]+)/);
     if (m) {
       releases.push({ hash: m[1], date: m[2], version: m[3] });
     }
@@ -36,16 +36,36 @@ function summarizeCommit (hash) {
   const paths = files.filter(Boolean).map(l => l.split('\t').slice(1).join('\t'));
   const areas = new Set();
   for (const p of paths) {
-    if (p.startsWith('src/js/')) { areas.add('App'); }
-    if (p.startsWith('src/styles/')) { areas.add('Styles'); }
-    if (p === 'index.html') { areas.add('Index'); }
-    if (p.startsWith('tests/e2e/')) { areas.add('E2E Tests'); }
-    if (p.startsWith('src/js/__tests__/')) { areas.add('Unit Tests'); }
-    if (p.startsWith('.github/workflows/')) { areas.add('CI'); }
-    if (p.startsWith('docs/') || p === 'README.md') { areas.add('Docs'); }
-    if (p.startsWith('public/')) { areas.add('Public'); }
-    if (p.startsWith('Dockerfile') || p === 'docker-compose.yml') { areas.add('Docker'); }
-    if (p === 'eslint.config.js') { areas.add('Lint'); }
+    if (p.startsWith('src/js/')) {
+    areas.add('App');
+  }
+    if (p.startsWith('src/styles/')) {
+    areas.add('Styles');
+  }
+    if (p === 'index.html') {
+    areas.add('Index');
+  }
+    if (p.startsWith('tests/e2e/')) {
+    areas.add('E2E Tests');
+  }
+    if (p.startsWith('src/js/__tests__/')) {
+    areas.add('Unit Tests');
+  }
+    if (p.startsWith('.github/workflows/')) {
+    areas.add('CI');
+  }
+    if (p.startsWith('docs/') || p === 'README.md') {
+    areas.add('Docs');
+  }
+    if (p.startsWith('public/')) {
+    areas.add('Public');
+  }
+    if (p.startsWith('Dockerfile') || p === 'docker-compose.yml') {
+    areas.add('Docker');
+  }
+    if (p === 'eslint.config.js') {
+    areas.add('Lint');
+  }
   }
   return { subject, areas: [...areas], files: paths };
 }
@@ -70,10 +90,18 @@ function analyzeRange (fromHash, toHash) {
     } else if (lower.startsWith('fix') || lower.startsWith('chore(security)')) {
       buckets['Bug Fixes'].push(line);
     }
-    if (s.areas.includes('Docs')) { buckets.Docs.push(line); }
-    if (s.areas.includes('CI') || lower.startsWith('fix(ci')) { buckets.CI.push(line); }
-    if (s.areas.includes('Docker')) { buckets.Docker.push(line); }
-    if (s.areas.includes('E2E Tests') || s.areas.includes('Unit Tests') || lower.startsWith('test')) { buckets.Tests.push(line); }
+    if (s.areas.includes('Docs')) {
+      buckets.Docs.push(line);
+    }
+    if (s.areas.includes('CI') || lower.startsWith('fix(ci')) {
+      buckets.CI.push(line);
+    }
+    if (s.areas.includes('Docker')) {
+      buckets.Docker.push(line);
+    }
+    if (s.areas.includes('E2E Tests') || s.areas.includes('Unit Tests') || lower.startsWith('test')) {
+      buckets.Tests.push(line);
+    }
   }
   return buckets;
 }
