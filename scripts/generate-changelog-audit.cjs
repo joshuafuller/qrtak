@@ -15,7 +15,7 @@ const lines = sh("git --no-pager log --pretty=format:'%h %ad %s' --date=short").
 const releases = [];
 for (const l of lines) {
   const m = l.match(/^(\w+)\s+(\d{4}-\d{2}-\d{2})\s+chore: release\s+([\w\.-]+)/);
-  if (m) releases.push({ hash: m[1], date: m[2], version: m[3] });
+  if (m) { releases.push({ hash: m[1], date: m[2], version: m[3] }); }
 }
 const ordered = releases.slice().reverse();
 let out = '# Changelog Audit (from release commits)\n\n';

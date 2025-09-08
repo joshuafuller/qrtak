@@ -476,9 +476,9 @@ const BulkUsers = (function () {
     // Load example from known paths, try multiple, parse only when valid JSON
     loadExampleBtn?.addEventListener('click', async () => {
       // Resolve paths in a way that works for both root ('/') and subpath deployments (e.g. '/qrtak/')
-      const base = (typeof document !== 'undefined' && document.baseURI)
-        ? new URL('.', document.baseURI).pathname
-        : '/';
+      const base = (typeof document !== 'undefined' && document.baseURI) ?
+        new URL('.', document.baseURI).pathname :
+        '/';
       const tryPaths = [
         // Prefer relative path so it respects current base path (e.g., '/qrtak/')
         'examples/tak_users.txt',
