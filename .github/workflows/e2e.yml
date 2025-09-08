@@ -5,6 +5,17 @@ on:
     branches: [ main, master ]
   pull_request:
     branches: [ "**" ]
+    paths:
+      - 'src/**'
+      - 'public/**'
+      - 'tests/**'
+      - 'playwright.config.js'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'Dockerfile'
+      - 'vite.config.js'
+      - 'index.html'
+      - '.github/workflows/e2e.yml'
 
 jobs:
   lint:
