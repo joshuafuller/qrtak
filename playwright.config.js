@@ -15,6 +15,13 @@ export default defineConfig({
     actionTimeout: 10_000,
     navigationTimeout: 15_000
   },
+  // Automatically start server before tests
+  webServer: {
+    command: process.env.CI ? 'npm run preview -- --port 8080' : 'npm run dev -- --port 8080',
+    port: 8080,
+    reuseExistingServer: !process.env.CI,
+    timeout: 30000
+  },
   projects: [
     {
       name: 'chromium',
