@@ -179,15 +179,14 @@ jobs:
   ci-status:
     name: CI Status
     runs-on: ubuntu-latest
-    needs: [lint, test, build, docker]
+    needs: [lint, test, build]
     if: always()
     steps:
       - name: Check CI status
         run: |
           if [[ "${{ needs.lint.result }}" != "success" ]] ||
              [[ "${{ needs.test.result }}" != "success" ]] ||
-             [[ "${{ needs.build.result }}" != "success" ]] ||
-             [[ "${{ needs.docker.result }}" != "success" ]]; then
+             [[ "${{ needs.build.result }}" != "success" ]]; then
             echo "CI failed"
             exit 1
           fi

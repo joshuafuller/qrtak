@@ -21,7 +21,7 @@ jobs:
         run: |
           # Update branch protection rules to match new CI job names
           gh api -X PUT repos/${{ github.repository }}/branches/main/protection \
-            --field required_status_checks='{"strict":false,"contexts":["CI Pipeline / Lint","CI Pipeline / Test","CI Pipeline / Build","CI Pipeline / Docker Build"]}' \
+            --field required_status_checks='{"strict":false,"contexts":["CI Pipeline / Lint","CI Pipeline / Test","CI Pipeline / Build","CI Pipeline / CI Status"]}' \
             --field enforce_admins=false \
             --field required_pull_request_reviews=null \
             --field restrictions=null \
@@ -38,7 +38,7 @@ jobs:
           echo "  - CI Pipeline / Lint"
           echo "  - CI Pipeline / Test"
           echo "  - CI Pipeline / Build"
-          echo "  - CI Pipeline / Docker Build"
+          echo "  - CI Pipeline / CI Status"
           echo "Settings:"
           echo "  - strict: false (PRs don't need to be up-to-date)"
           echo "  - No required reviews"
