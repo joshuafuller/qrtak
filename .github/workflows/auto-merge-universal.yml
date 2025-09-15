@@ -93,11 +93,11 @@ jobs:
           PR_NUMBER="${{ steps.pr-details.outputs.pr-number }}"
 
           # Check if all required status checks have passed
-          PR_STATUS=$(gh pr checks $PR_NUMBER --repo ${{ github.repository }} --json name,status,conclusion)
+          PR_STATUS=$(gh pr checks $PR_NUMBER --repo ${{ github.repository }} --json name,state,bucket)
 
           # Check for any failing or pending required checks
-          FAILED_CHECKS=$(echo "$PR_STATUS" | jq '[.[] | select(.status == "COMPLETED" and .conclusion != "SUCCESS" and .conclusion != "SKIPPED")] | length')
-          PENDING_CHECKS=$(echo "$PR_STATUS" | jq '[.[] | select(.status != "COMPLETED")] | length')
+          FAILED_CHECKS=$(echo "$PR_STATUS" | jq '[.[] | select(.state == "FAILURE" or .state == "ERROR")] | length')
+          PENDING_CHECKS=$(echo "$PR_STATUS" | jq '[.[] | select(.state == "PENDING" or .state == "QUEUED")] | length')
 
           if [[ "$FAILED_CHECKS" -gt 0 ]]; then
             echo "PR has failing checks"
