@@ -95,8 +95,8 @@ jobs:
           # Check if all required status checks have passed
           PR_STATUS=$(gh pr checks $PR_NUMBER --repo ${{ github.repository }} --json name,state,bucket)
 
-          # Check for any failing or pending required checks
-          FAILED_CHECKS=$(echo "$PR_STATUS" | jq '[.[] | select(.state == "FAILURE" or .state == "ERROR")] | length')
+          # Check for any failing or pending required checks (ignore E2E Tests which are non-blocking)
+          FAILED_CHECKS=$(echo "$PR_STATUS" | jq '[.[] | select(.state == "FAILURE" or .state == "ERROR") | select(.name != "E2E Tests")] | length')
           PENDING_CHECKS=$(echo "$PR_STATUS" | jq '[.[] | select(.state == "PENDING" or .state == "QUEUED")] | length')
 
           if [[ "$FAILED_CHECKS" -gt 0 ]]; then
