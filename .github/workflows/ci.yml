@@ -165,7 +165,7 @@ jobs:
           path: dist/
 
       - name: Run E2E tests
-        run: npm run test:e2e
+        run: npm run e2e
 
       - name: Upload test results
         if: always()
