@@ -1,180 +1,107 @@
-name: Build and Test
+name: Deploy
 
 on:
+  workflow_run:
+    workflows: ["CI Pipeline"]
+    types: [completed]
+    branches: [main, develop]
+  release:
+    types: [published]
   workflow_dispatch:
-  push:
-    branches: [ main, develop, 'release-please--**' ]
-  pull_request:
-    branches: [ main, develop ]
+    inputs:
+      environment:
+        description: 'Deployment environment'
+        required: true
+        type: choice
+        options:
+          - staging
+          - production
 
-# Default permissions - override at job level as needed
 permissions:
-  contents: read
-
-env:
-  REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
+  contents: write
+  pages: write
+  id-token: write
 
 jobs:
-  # Security and quality gates
-  security-checks:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      security-events: write
-    steps:
-    - name: Checkout
-      uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
-      
-    - name: Setup Node.js
-      uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af  # v4.1.0
-      with:
-        node-version: '20'
-        cache: 'npm'
-        
-    - name: Install dependencies
-      run: npm ci
-      env:
-        PUPPETEER_SKIP_DOWNLOAD: true
-      
-    # Quick security check (detailed scanning in security.yml workflow)
-    - name: Run security audit
-      run: npm audit --audit-level=critical || true
-
-  # Testing
-  test:
-    runs-on: ubuntu-latest
-    needs: security-checks
-    permissions:
-      contents: read
-    steps:
-    - name: Checkout
-      uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
-      
-    - name: Setup Node.js
-      uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af  # v4.1.0
-      with:
-        node-version: '20'
-        cache: 'npm'
-        
-    - name: Install dependencies
-      run: npm ci
-      env:
-        PUPPETEER_SKIP_DOWNLOAD: true
-      
-    - name: Run tests
-      run: npm test
-      
-    - name: Run tests with coverage
-      run: npm test -- --coverage
-
-  # Build and test Docker image (without pushing)
-  build-docker:
-    runs-on: ubuntu-latest
-    needs: [security-checks, test]
-    permissions:
-      contents: read
-    steps:
-    - name: Checkout
-      uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
-      
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@c47758b77c9736f4b2ef4073d4d51994fabfe349  # v3.7.1
-        
-    - name: Get version
-      id: version
-      run: |
-        VERSION=$(node -p "require('./package.json').version")
-        echo "version=$VERSION" >> $GITHUB_OUTPUT
-          
-    - name: Build Docker image
-      uses: docker/build-push-action@48aba3b46d1b1fec4febb7c5d0c644b249a11355  # v6.10.0
-      with:
-        context: .
-        platforms: linux/amd64
-        push: false
-        tags: |
-          ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:test
-        cache-from: type=gha
-        cache-to: type=gha,mode=max
-        build-args: |
-          VERSION=${{ steps.version.outputs.version }}
-          BUILD_DATE=$(date -u +%Y-%m-%dT%H:%M:%SZ)
-          VCS_REF=${{ github.sha }}
-
-  # Build application
-  build:
-    runs-on: ubuntu-latest
-    needs: [security-checks, test]
-    permissions:
-      contents: read
-    steps:
-    - name: Checkout
-      uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
-      
-    - name: Setup Node.js
-      uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af  # v4.1.0
-      with:
-        node-version: '20'
-        cache: 'npm'
-        
-    - name: Install dependencies
-      run: npm ci
-      env:
-        PUPPETEER_SKIP_DOWNLOAD: true
-      
-    - name: Build
-      run: npm run build
-      
-    - name: Upload build artifacts
-      uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b  # v4.5.0
-      with:
-        name: dist-files
-        path: dist/
-        retention-days: 30
-
-  # Deploy to staging (develop branch)
+  # Deploy to staging (develop branch or manual)
   deploy-staging:
     runs-on: ubuntu-latest
-    needs: [build, build-docker]
-    if: github.ref == 'refs/heads/develop'
-    environment: staging
-    permissions:
-      contents: write  # Required for gh-pages deployment
+    if: |
+      (github.event_name == 'workflow_run' &&
+       github.event.workflow_run.conclusion == 'success' &&
+       github.event.workflow_run.head_branch == 'develop') ||
+      (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'staging')
+    environment:
+      name: staging
+      url: https://staging.qrtak.app
     steps:
-    - name: Download build artifacts
-      uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16  # v4.1.8
-      with:
-        name: dist-files
-        path: dist/
-        
-    - name: Deploy to staging
-      uses: peaceiris/actions-gh-pages@4f9cc6602d3f66b9c108549d475ec49e8ef4d45e  # v4.0.0
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./dist
-        publish_branch: staging
-        destination_dir: staging
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_branch || github.ref }}
 
-  # Deploy to production (main branch)
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install and Build
+        run: |
+          npm ci
+          npm run build
+        env:
+          PUPPETEER_SKIP_DOWNLOAD: true
+
+      - name: Deploy to staging branch
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
+          publish_branch: staging
+          force_orphan: true
+          commit_message: 'Deploy to staging from ${{ github.sha }}'
+
+  # Deploy to production (main branch releases or manual)
   deploy-production:
     runs-on: ubuntu-latest
-    needs: [build, build-docker]
-    if: github.ref == 'refs/heads/main'
-    environment: production
-    permissions:
-      contents: write  # Required for gh-pages deployment
+    if: |
+      github.event_name == 'release' ||
+      (github.event_name == 'workflow_run' &&
+       github.event.workflow_run.conclusion == 'success' &&
+       github.event.workflow_run.head_branch == 'main') ||
+      (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'production')
+    environment:
+      name: production
+      url: https://qrtak.app
     steps:
-    - name: Download build artifacts
-      uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16  # v4.1.8
-      with:
-        name: dist-files
-        path: dist/
-        
-    - name: Deploy to GitHub Pages
-      uses: peaceiris/actions-gh-pages@4f9cc6602d3f66b9c108549d475ec49e8ef4d45e  # v4.0.0
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./dist
-        publish_branch: gh-pages
-        # cname: qrtak.app  # Uncomment if you get a custom domain 
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_branch || github.ref }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install and Build
+        run: |
+          npm ci
+          npm run build
+        env:
+          PUPPETEER_SKIP_DOWNLOAD: true
+          NODE_ENV: production
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./dist
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
