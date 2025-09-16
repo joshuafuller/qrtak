@@ -2861,12 +2861,28 @@ const ProfileManager = (function () {
    */
   function openSaveProfileModal () {
     const modalTitle = document.getElementById('modal-title');
-    const profileName = document.getElementById('profile-name');
-    const profileDescription = document.getElementById('profile-description');
+    const modalBody = document.querySelector('.modal-body');
 
     if (modalTitle) {
       modalTitle.textContent = 'Save Profile';
     }
+
+    // Restore save profile form if it was replaced by load profile list
+    if (modalBody && !document.getElementById('profile-name')) {
+      modalBody.innerHTML = `
+        <div class="form-group">
+          <label for="profile-name">Profile Name:</label>
+          <input type="text" id="profile-name" placeholder="e.g., Fire Department Config">
+        </div>
+        <div class="form-group">
+          <label for="profile-description">Description (optional):</label>
+          <textarea id="profile-description" placeholder="Brief description of this configuration"></textarea>
+        </div>
+      `;
+    }
+
+    const profileName = document.getElementById('profile-name');
+    const profileDescription = document.getElementById('profile-description');
 
     // Pre-fill with current form data
     const currentData = getCurrentFormData();
