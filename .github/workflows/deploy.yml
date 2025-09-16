@@ -88,7 +88,7 @@ jobs:
 
       - name: Install and Build
         run: |
-          npm ci
+          npm ci --include=dev
           npm run build
         env:
           PUPPETEER_SKIP_DOWNLOAD: true
