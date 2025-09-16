@@ -35,7 +35,7 @@ jobs:
             arch: arm64
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up QEMU
         if: matrix.arch != 'amd64'
