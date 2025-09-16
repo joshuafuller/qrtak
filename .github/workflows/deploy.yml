@@ -33,7 +33,7 @@ jobs:
       (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'staging')
     environment:
       name: staging
-      url: https://staging.qrtak.app
+      url: https://joshuafuller.github.io/qrtak/staging
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -73,7 +73,7 @@ jobs:
       (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'production')
     environment:
       name: production
-      url: https://qrtak.app
+      url: https://joshuafuller.github.io/qrtak/
     steps:
       - name: Checkout
         uses: actions/checkout@v4
