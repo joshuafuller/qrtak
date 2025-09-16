@@ -35,7 +35,7 @@ jobs:
 
       - name: Setup Node.js
         if: ${{ steps.release.outputs.release_created }}
-        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.0.1
+        uses: actions/setup-node@cd2651c46231bc0d6f48d6b34433b845331235fe # v4.0.1
         with:
           node-version: '20'
           cache: 'npm'
