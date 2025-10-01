@@ -453,24 +453,29 @@ const BulkUsers = (function () {
       }
       const text = await file.text();
       users = parseTakUsers(text);
-      const nameEl = document.getElementById('bulk-file-name');
-      if (nameEl) {
-        nameEl.textContent = `Loaded: ${file.name}`;
+
+      // Only show success and session if users were actually parsed
+      if (users.length > 0) {
+        const nameEl = document.getElementById('bulk-file-name');
+        if (nameEl) {
+          nameEl.textContent = `Loaded: ${file.name}`;
+        }
+        currentIndex = 0;
+        renderUserList();
+        const session = document.getElementById('bulk-session');
+        if (session) {
+          session.style.display = '';
+        }
+        UIController.showNotification(`Loaded ${users.length} users`, 'success');
+        renderCurrent();
+        // Hide example loader once a real file is loaded
+        if (loadExampleBtn) {
+          loadExampleBtn.style.display = 'none';
+        }
+        // Mark host as required/invalid until provided
+        validateBulkHost();
       }
-      currentIndex = 0;
-      renderUserList();
-      const session = document.getElementById('bulk-session');
-      if (session) {
-        session.style.display = '';
-      }
-      UIController.showNotification(`Loaded ${users.length} users`, 'success');
-      renderCurrent();
-      // Hide example loader once a real file is loaded
-      if (loadExampleBtn) {
-        loadExampleBtn.style.display = 'none';
-      }
-      // Mark host as required/invalid until provided
-      validateBulkHost();
+      // If users.length is 0, parseTakUsers already showed an error notification
     });
 
     // Load example from known paths, try multiple, parse only when valid JSON
@@ -790,13 +795,18 @@ const BulkUsers = (function () {
     try {
       const data = JSON.parse(text);
       if (Array.isArray(data)) {
-        return data
+        const parsed = data
           .map((item) => {
             const username = String(item.username ?? item.user ?? '').trim();
             const token = String(item.password ?? item.token ?? '').trim();
             return { username, token };
           })
           .filter(u => u.username && u.token);
+
+        // Check if we got any valid users after parsing
+        if (parsed.length > 0) {
+          return parsed;
+        }
       }
     } catch {
       // Fall back to empty to force user to provide proper file
@@ -805,7 +815,38 @@ const BulkUsers = (function () {
     return [];
   }
 
-  return { init };
+  // Reset state for testing
+  function reset () {
+    users = [];
+    currentIndex = 0;
+  }
+
+  // Getters for testing
+  function getUsers () {
+    return [...users];
+  }
+
+  function getCurrentIndex () {
+    return currentIndex;
+  }
+
+  function setUsers (newUsers) {
+    users = newUsers;
+    currentIndex = 0;
+  }
+
+  // Expose internal functions for testing
+  return {
+    init,
+    reset,
+    getUsers,
+    getCurrentIndex,
+    setUsers,
+    parseTakUsers,
+    validateBulkHost,
+    renderUserList,
+    renderCurrent
+  };
 })();
 
 // ============================================================================
@@ -3643,3 +3684,4 @@ window.UIController = UIController;
 window.showDataStatus = UIController.showDataStatus;
 window.switchTab = TabManager.switchTab;
 window.TAKConfigManager = TAKConfigManager;
+window.BulkUsers = BulkUsers;

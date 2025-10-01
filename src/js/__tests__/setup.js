@@ -51,3 +51,15 @@ Object.defineProperty(navigator, 'clipboard', {
 // Mock URL.createObjectURL
 global.URL.createObjectURL = jest.fn(() => 'mock-blob-url');
 global.URL.revokeObjectURL = jest.fn();
+
+// Polyfill File.prototype.text() for jsdom (not available by default)
+if (typeof File !== 'undefined' && !File.prototype.text) {
+  File.prototype.text = function () {
+    return new Promise((resolve, reject) => {
+      const reader = new window.FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsText(this);
+    });
+  };
+}
