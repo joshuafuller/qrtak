@@ -114,9 +114,9 @@ test('Load Example succeeds even if /tak_users.txt returns HTML (fallback to bun
 });
 
 test('Load Example shows error if all paths fail', async ({ page }) => {
-  // Fail both primary paths
-  await page.route('/tak_users.txt', (route) => route.fulfill({ status: 404 }));
-  await page.route('/examples/tak_users.txt', (route) => route.fulfill({ status: 404 }));
+  // Fail all three paths that the loadExample button tries
+  await page.route('**/examples/tak_users.txt', (route) => route.fulfill({ status: 404 }));
+  await page.route('**/tak_users.txt', (route) => route.fulfill({ status: 404 }));
 
   const loadExample = page.locator('#bulk-load-example');
   if (await loadExample.count()) {
