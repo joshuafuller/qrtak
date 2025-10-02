@@ -81,10 +81,16 @@ jobs:
             SHOULD_MERGE=true
           fi
 
-          # Manual auto-merge label
+          # Manual auto-merge label (only for repository owner/maintainers)
           if [[ "$PR_LABELS" == *"automerge"* ]]; then
-            echo "Manual automerge label detected"
-            SHOULD_MERGE=true
+            # Only allow automerge label for PRs from repository owner
+            REPO_OWNER=$(echo "${{ github.repository }}" | cut -d'/' -f1)
+            if [[ "$PR_AUTHOR" == "$REPO_OWNER" ]] || [[ "$PR_AUTHOR" == "github-actions[bot]" ]]; then
+              echo "Manual automerge label detected from trusted author: $PR_AUTHOR"
+              SHOULD_MERGE=true
+            else
+              echo "Ignoring automerge label from untrusted author: $PR_AUTHOR"
+            fi
           fi
 
           echo "should-merge=$SHOULD_MERGE" >> $GITHUB_OUTPUT
