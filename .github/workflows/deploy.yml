@@ -36,7 +36,7 @@ jobs:
       url: https://joshuafuller.github.io/qrtak/staging
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           ref: ${{ github.event.workflow_run.head_branch || github.ref }}
 
@@ -76,7 +76,7 @@ jobs:
       url: https://joshuafuller.github.io/qrtak/
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           ref: ${{ github.event.workflow_run.head_branch || github.ref }}
 
