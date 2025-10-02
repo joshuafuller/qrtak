@@ -16,6 +16,20 @@
 * **deps:** bump renovatebot/github-action from 43.0.9 to 43.0.14 ([#142](https://github.com/joshuafuller/qrtak/issues/142)) ([b29c40f](https://github.com/joshuafuller/qrtak/commit/b29c40fc4ec89b9c0c1ed387527a19b55b316258))
 * **deps:** bump trufflesecurity/trufflehog from 3.90.5 to 3.90.8 ([#141](https://github.com/joshuafuller/qrtak/issues/141)) ([1ffcf61](https://github.com/joshuafuller/qrtak/commit/1ffcf619b28aef552ebf54661cad0f9ed091dedf))
 
+## [3.0.1](https://github.com/joshuafuller/qrtak/compare/qrtak-v3.0.0...qrtak-v3.0.1) (2025-10-02)
+
+
+### Bug Fixes
+
+* add test:watch script for development convenience ([c3e216a](https://github.com/joshuafuller/qrtak/commit/c3e216a2a97ab7d5c0b8e64baa99705e905b5940))
+* **ci:** add debug output for Release-Please troubleshooting ([c84b857](https://github.com/joshuafuller/qrtak/commit/c84b857171e64ec07a16bb9a9a4dc34a9df517f7))
+* **ci:** Document continuous deployment pipeline in dependabot config ([722ff25](https://github.com/joshuafuller/qrtak/commit/722ff2578fb5b99891339b5e7c69ff0919ec277c))
+* **ci:** force Release-Please to create v3.0.1 ([fd5f3c2](https://github.com/joshuafuller/qrtak/commit/fd5f3c2a2380efc61c587d6d3c34cb544e2c98d5))
+* **ci:** set bootstrap SHA to force Release-Please commit detection ([3082a66](https://github.com/joshuafuller/qrtak/commit/3082a66fbc802b29185e02df81d5913222941458))
+* **ci:** standardize Docker image tags and fix SBOM generation ([14e5ff0](https://github.com/joshuafuller/qrtak/commit/14e5ff00f1687bb19a2e877ade81ec8133ad9bcb))
+* **docs:** correct CHANGELOG ordering - v3.0.0 should be first ([03649a8](https://github.com/joshuafuller/qrtak/commit/03649a8348ca7f9b9e871f16bffe96011f6c9730))
+* **release:** include non-dependency fixes in changelog ([3a03671](https://github.com/joshuafuller/qrtak/commit/3a03671a1445d5ea5c32e6169be2570f76de37ea))
+
 ## [1.6.1](https://github.com/joshuafuller/qrtak/compare/v1.6.0...v1.6.1) (2025-09-07)
 
 ### Bug Fixes
