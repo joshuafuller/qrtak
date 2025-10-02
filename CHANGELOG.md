@@ -139,6 +139,24 @@
 * simplify Snyk integration in security workflow ([ab241f9](https://github.com/joshuafuller/qrtak/commit/ab241f949dc6eaa78c8c575a52817a3c400f405e))
 * streamline README layout and update shield presentation ([515b548](https://github.com/joshuafuller/qrtak/commit/515b5489575fbeef00c3e1cf0b4e515fff0580a5))
 
+## [3.0.0](https://github.com/joshuafuller/qrtak/compare/qrtak-v2.0.0...qrtak-v3.0.0) (2025-10-02)
+
+
+### ⚠ BREAKING CHANGES
+
+* **ci:** CI job names have changed, branch protection will auto-update
+
+### Features
+
+* **ci:** Complete CI/CD pipeline revamp ([#120](https://github.com/joshuafuller/qrtak/issues/120)) ([6685138](https://github.com/joshuafuller/qrtak/commit/66851380aeee740543de52c971f1882dfd550d91))
+* **ci:** implement continuous deployment automation ([cfc463d](https://github.com/joshuafuller/qrtak/commit/cfc463de4395750844ab9e8ecb462078fef1bba2))
+
+
+### Dependency Updates
+
+* **deps:** bump renovatebot/github-action from 43.0.9 to 43.0.14 ([#142](https://github.com/joshuafuller/qrtak/issues/142)) ([b29c40f](https://github.com/joshuafuller/qrtak/commit/b29c40fc4ec89b9c0c1ed387527a19b55b316258))
+* **deps:** bump trufflesecurity/trufflehog from 3.90.5 to 3.90.8 ([#141](https://github.com/joshuafuller/qrtak/issues/141)) ([1ffcf61](https://github.com/joshuafuller/qrtak/commit/1ffcf619b28aef552ebf54661cad0f9ed091dedf))
+
 ## [1.6.1](https://github.com/joshuafuller/qrtak/compare/v1.6.0...v1.6.1) (2025-09-07)
 
 ### Bug Fixes
