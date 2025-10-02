@@ -70,9 +70,9 @@ jobs:
             SHOULD_MERGE=true
           fi
 
-          # GitHub Actions (Release Please) PRs
-          if [[ "$PR_AUTHOR" == "github-actions[bot]" ]] && [[ "$PR_LABELS" == *"autorelease"* ]]; then
-            echo "Release Please PR detected"
+          # Release Please PRs (author can be github-actions[bot] or PAT user)
+          if [[ "$PR_LABELS" == *"autorelease"* ]]; then
+            echo "Release Please PR detected (label: autorelease)"
             SHOULD_MERGE=true
           fi
 
@@ -130,6 +130,7 @@ jobs:
         run: |
           PR_NUMBER="${{ steps.pr-details.outputs.pr-number }}"
           PR_AUTHOR="${{ steps.pr-details.outputs.pr-author }}"
+          PR_LABELS="${{ steps.pr-details.outputs.pr-labels }}"
 
           echo "Enabling auto-merge for PR #$PR_NUMBER by $PR_AUTHOR"
 
@@ -137,7 +138,7 @@ jobs:
           if [[ "$PR_AUTHOR" == "dependabot[bot]" ]]; then
             # Squash merge for dependabot updates
             MERGE_METHOD="--squash"
-          elif [[ "$PR_AUTHOR" == "github-actions[bot]" ]]; then
+          elif [[ "$PR_LABELS" == *"autorelease"* ]]; then
             # Merge commit for release PRs to preserve history
             MERGE_METHOD="--merge"
           else
