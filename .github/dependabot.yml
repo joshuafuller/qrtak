@@ -1,4 +1,5 @@
 version: 2
+# Trigger immediate check for updates
 updates:
   # Enable version updates for npm
   - package-ecosystem: "npm"
