@@ -10,6 +10,9 @@ on:
       - 'package.json'
       - 'package-lock.json'
       - 'Dockerfile'
+      - '.github/workflows/**'
+      - 'vite.config.js'
+      - 'vite.config.ts'
       - '.github/workflows/security.yml'
   schedule:
     # Weekly comprehensive scan
