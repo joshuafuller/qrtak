@@ -16,6 +16,13 @@
 * **deps:** bump renovatebot/github-action from 43.0.9 to 43.0.14 ([#142](https://github.com/joshuafuller/qrtak/issues/142)) ([b29c40f](https://github.com/joshuafuller/qrtak/commit/b29c40fc4ec89b9c0c1ed387527a19b55b316258))
 * **deps:** bump trufflesecurity/trufflehog from 3.90.5 to 3.90.8 ([#141](https://github.com/joshuafuller/qrtak/issues/141)) ([1ffcf61](https://github.com/joshuafuller/qrtak/commit/1ffcf619b28aef552ebf54661cad0f9ed091dedf))
 
+## [3.0.3](https://github.com/joshuafuller/qrtak/compare/qrtak-v3.0.2...qrtak-v3.0.3) (2025-10-02)
+
+
+### Bug Fixes
+
+* **ci:** use GitHub API to trigger Release-Please workflow ([d0cd8e4](https://github.com/joshuafuller/qrtak/commit/d0cd8e4c717ada90bb81d00e1269d4354c00fff4))
+
 ## [3.0.2](https://github.com/joshuafuller/qrtak/compare/qrtak-v3.0.1...qrtak-v3.0.2) (2025-10-02)
 
 
