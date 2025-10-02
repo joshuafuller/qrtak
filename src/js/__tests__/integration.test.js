@@ -248,6 +248,80 @@ describe('TAK Config Integration Tests', () => {
       // Restore original createElement
       document.createElement.mockRestore();
     });
+
+    test('Download PNG should use username when available', async () => {
+      const hostInput = document.getElementById('tak-host');
+      const usernameInput = document.getElementById('tak-username');
+
+      // Set host and username
+      hostInput.value = 'tak.example.com';
+      usernameInput.value = 'testuser123';
+      hostInput.dispatchEvent(new Event('input'));
+
+      // Wait for QR to be generated
+      await new Promise(resolve => setTimeout(resolve, 300));
+
+      // Mock createElement to capture the download link
+      const originalCreateElement = document.createElement.bind(document);
+      let downloadLink = null;
+      jest.spyOn(document, 'createElement').mockImplementation((tagName) => {
+        const element = originalCreateElement(tagName);
+        if (tagName === 'a') {
+          downloadLink = element;
+          element.click = jest.fn();
+        }
+        return element;
+      });
+
+      // Call UIController.downloadQR directly
+      if (window.UIController && window.UIController.downloadQR) {
+        window.UIController.downloadQR('tak');
+      }
+
+      // Verify the download filename uses username
+      expect(downloadLink).not.toBeNull();
+      expect(downloadLink.download).toBe('testuser123.png');
+
+      // Restore original createElement
+      document.createElement.mockRestore();
+    });
+
+    test('Download PNG should fallback to generic name when username is empty', async () => {
+      const hostInput = document.getElementById('tak-host');
+      const usernameInput = document.getElementById('tak-username');
+
+      // Set host but leave username empty
+      hostInput.value = 'tak.example.com';
+      usernameInput.value = '';
+      hostInput.dispatchEvent(new Event('input'));
+
+      // Wait for QR to be generated
+      await new Promise(resolve => setTimeout(resolve, 300));
+
+      // Mock createElement to capture the download link
+      const originalCreateElement = document.createElement.bind(document);
+      let downloadLink = null;
+      jest.spyOn(document, 'createElement').mockImplementation((tagName) => {
+        const element = originalCreateElement(tagName);
+        if (tagName === 'a') {
+          downloadLink = element;
+          element.click = jest.fn();
+        }
+        return element;
+      });
+
+      // Call UIController.downloadQR directly
+      if (window.UIController && window.UIController.downloadQR) {
+        window.UIController.downloadQR('tak');
+      }
+
+      // Verify the download filename uses generic format
+      expect(downloadLink).not.toBeNull();
+      expect(downloadLink.download).toBe('tak-tak-config.png');
+
+      // Restore original createElement
+      document.createElement.mockRestore();
+    });
   });
 
   describe('QR Code Generation Edge Cases', () => {
