@@ -1,5 +1,6 @@
 version: 2
 # Continuous deployment pipeline: Dependabot → Auto-merge → Release-Please → Auto-merge → Release
+# Trigger: Check for @babel/core 7.28.3 → 7.28.4 update
 updates:
   # Enable version updates for npm
   - package-ecosystem: "npm"
