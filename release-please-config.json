@@ -24,9 +24,9 @@
   },
   "changelog-sections": [
     {"type": "feat", "section": "Features"},
-    {"type": "fix", "section": "Bug Fixes", "scope": "!deps"},
     {"type": "fix", "section": "Dependency Updates", "scope": "deps"},
     {"type": "fix", "section": "Development Dependency Updates", "scope": "deps-dev"},
+    {"type": "fix", "section": "Bug Fixes"},
     {"type": "perf", "section": "Performance Improvements"},
     {"type": "docs", "section": "Documentation"},
     {"type": "chore", "section": "Miscellaneous Chores", "hidden": true},
