@@ -127,17 +127,15 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            type=raw,value=latest,enable={{is_default_branch}}
-            type=ref,event=tag
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=semver,pattern={{major}}
-            type=raw,value={{tag}},enable=${{ github.event_name == 'workflow_dispatch' }}
+            # For release events: create standard version tags
+            type=semver,pattern={{version}},value=${{ github.event.release.tag_name }},enable=${{ github.event_name == 'release' }}
+            type=semver,pattern={{major}}.{{minor}},value=${{ github.event.release.tag_name }},enable=${{ github.event_name == 'release' }}
+            type=semver,pattern={{major}},value=${{ github.event.release.tag_name }},enable=${{ github.event_name == 'release' }}
+            type=semver,pattern=v{{version}},value=${{ github.event.release.tag_name }},enable=${{ github.event_name == 'release' }}
+            type=raw,value=latest,enable=${{ github.event_name == 'release' }}
+            # For manual dispatch: use input version
+            type=raw,value=${{ inputs.version }},enable=${{ github.event_name == 'workflow_dispatch' }}
             type=raw,value=v${{ inputs.version }},enable=${{ github.event_name == 'workflow_dispatch' }}
-            # Also publish non-v tags when manually dispatched
-            type=raw,value=${{ steps.v.outputs.full }},enable=${{ github.event_name == 'workflow_dispatch' }}
-            type=raw,value=${{ steps.v.outputs.major }}.${{ steps.v.outputs.minor }},enable=${{ github.event_name == 'workflow_dispatch' }}
-            type=raw,value=${{ steps.v.outputs.major }},enable=${{ github.event_name == 'workflow_dispatch' }}
           labels: |
             org.opencontainers.image.title=qrtak
             org.opencontainers.image.description=Generate TAK client configuration QR codes instantly
@@ -159,10 +157,18 @@ jobs:
     runs-on: ubuntu-latest
     needs: merge
     steps:
+      - name: Log in to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Generate SBOM
         uses: anchore/sbom-action@v0
         with:
-          image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.event.release.tag_name || format('v{0}', inputs.version) }}
+          # Use 'latest' tag which is guaranteed to exist after merge job
+          image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
           format: spdx-json
           output-file: sbom.spdx.json
 
