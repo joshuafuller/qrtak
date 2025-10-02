@@ -28,7 +28,9 @@ jobs:
         with:
           config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
-          token: ${{ secrets.GITHUB_TOKEN }}
+          # Use PAT to trigger CI workflows on Release PRs
+          # See: https://github.com/googleapis/release-please-action#github-credentials
+          token: ${{ secrets.RELEASE_PLEASE_TOKEN }}
 
       # If a release was created, build and sign artifacts
       - name: Checkout
