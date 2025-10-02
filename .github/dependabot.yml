@@ -1,5 +1,5 @@
 version: 2
-# Trigger immediate check for updates
+# Continuous deployment pipeline: Dependabot → Auto-merge → Release-Please → Auto-merge → Release
 updates:
   # Enable version updates for npm
   - package-ecosystem: "npm"
