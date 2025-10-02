@@ -160,4 +160,10 @@ jobs:
               --repo ${{ github.repository }} \
               $MERGE_METHOD \
               --delete-branch || echo "Could not merge immediately, auto-merge is enabled"
+
+            # If this was a Release PR, trigger Release-Please to publish the release
+            if [[ "$PR_LABELS" == *"autorelease"* ]]; then
+              echo "Release PR merged, triggering Release-Please to publish release"
+              gh workflow run release-please.yml
+            fi
           fi
