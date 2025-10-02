@@ -16,6 +16,14 @@
 * **deps:** bump renovatebot/github-action from 43.0.9 to 43.0.14 ([#142](https://github.com/joshuafuller/qrtak/issues/142)) ([b29c40f](https://github.com/joshuafuller/qrtak/commit/b29c40fc4ec89b9c0c1ed387527a19b55b316258))
 * **deps:** bump trufflesecurity/trufflehog from 3.90.5 to 3.90.8 ([#141](https://github.com/joshuafuller/qrtak/issues/141)) ([1ffcf61](https://github.com/joshuafuller/qrtak/commit/1ffcf619b28aef552ebf54661cad0f9ed091dedf))
 
+## [3.0.6](https://github.com/joshuafuller/qrtak/compare/qrtak-v3.0.5...qrtak-v3.0.6) (2025-10-02)
+
+
+### Bug Fixes
+
+* **ci:** improve auto-merge workflow_run trigger reliability ([#161](https://github.com/joshuafuller/qrtak/issues/161)) ([8d242d5](https://github.com/joshuafuller/qrtak/commit/8d242d542c5e3dee2d074dcb7b2c6e00c62de7d0))
+* **ui:** use username in QR code download filenames ([#159](https://github.com/joshuafuller/qrtak/issues/159)) ([0a2f5b8](https://github.com/joshuafuller/qrtak/commit/0a2f5b864609908b33e089936819fd46a523dddf)), closes [#158](https://github.com/joshuafuller/qrtak/issues/158)
+
 ## [3.0.5](https://github.com/joshuafuller/qrtak/compare/qrtak-v3.0.4...qrtak-v3.0.5) (2025-10-02)
 
 
