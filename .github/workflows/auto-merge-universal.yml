@@ -164,6 +164,6 @@ jobs:
             # If this was a Release PR, trigger Release-Please to publish the release
             if [[ "$PR_LABELS" == *"autorelease"* ]]; then
               echo "Release PR merged, triggering Release-Please to publish release"
-              gh workflow run release-please.yml
+              gh api -X POST repos/${{ github.repository }}/actions/workflows/release-please.yml/dispatches -f ref=main
             fi
           fi
