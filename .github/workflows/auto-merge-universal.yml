@@ -22,7 +22,7 @@ jobs:
       github.event_name == 'pull_request_target' ||
       github.event_name == 'pull_request_review' ||
       (github.event_name == 'check_suite' && github.event.check_suite.conclusion == 'success') ||
-      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success')
+      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'pull_request')
 
     steps:
       - name: Get PR details
@@ -39,8 +39,13 @@ jobs:
             # Get PR from check suite
             PR_NUMBER=$(gh api repos/${{ github.repository }}/commits/${{ github.event.check_suite.head_sha }}/pulls --jq '.[0].number' || echo "")
           elif [[ "${{ github.event_name }}" == "workflow_run" ]]; then
-            # Get PR from workflow run
-            PR_NUMBER=$(gh api repos/${{ github.repository }}/commits/${{ github.event.workflow_run.head_sha }}/pulls --jq '.[0].number' || echo "")
+            # Get PR from workflow run - try pull_requests array first
+            PR_NUMBER=$(echo '${{ toJSON(github.event.workflow_run.pull_requests) }}' | jq -r '.[0].number // empty')
+
+            # Fallback: query by SHA if pull_requests array is empty
+            if [[ -z "$PR_NUMBER" ]]; then
+              PR_NUMBER=$(gh api repos/${{ github.repository }}/commits/${{ github.event.workflow_run.head_sha }}/pulls --jq '.[0].number' || echo "")
+            fi
           fi
 
           if [[ -z "$PR_NUMBER" ]]; then
@@ -76,10 +81,16 @@ jobs:
             SHOULD_MERGE=true
           fi
 
-          # Manual auto-merge label
+          # Manual auto-merge label (only for repository owner/maintainers)
           if [[ "$PR_LABELS" == *"automerge"* ]]; then
-            echo "Manual automerge label detected"
-            SHOULD_MERGE=true
+            # Only allow automerge label for PRs from repository owner
+            REPO_OWNER=$(echo "${{ github.repository }}" | cut -d'/' -f1)
+            if [[ "$PR_AUTHOR" == "$REPO_OWNER" ]] || [[ "$PR_AUTHOR" == "github-actions[bot]" ]]; then
+              echo "Manual automerge label detected from trusted author: $PR_AUTHOR"
+              SHOULD_MERGE=true
+            else
+              echo "Ignoring automerge label from untrusted author: $PR_AUTHOR"
+            fi
           fi
 
           echo "should-merge=$SHOULD_MERGE" >> $GITHUB_OUTPUT
