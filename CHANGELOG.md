@@ -16,6 +16,15 @@
 * **deps:** bump renovatebot/github-action from 43.0.9 to 43.0.14 ([#142](https://github.com/joshuafuller/qrtak/issues/142)) ([b29c40f](https://github.com/joshuafuller/qrtak/commit/b29c40fc4ec89b9c0c1ed387527a19b55b316258))
 * **deps:** bump trufflesecurity/trufflehog from 3.90.5 to 3.90.8 ([#141](https://github.com/joshuafuller/qrtak/issues/141)) ([1ffcf61](https://github.com/joshuafuller/qrtak/commit/1ffcf619b28aef552ebf54661cad0f9ed091dedf))
 
+## [3.0.2](https://github.com/joshuafuller/qrtak/compare/qrtak-v3.0.1...qrtak-v3.0.2) (2025-10-02)
+
+
+### Bug Fixes
+
+* **ci:** add actions:read permission for SBOM generation ([3eded93](https://github.com/joshuafuller/qrtak/commit/3eded93e85c3a32035200c6dc6e40d7c82048bac))
+* **ci:** remove debug overrides from release-please config ([edb35bb](https://github.com/joshuafuller/qrtak/commit/edb35bbfedbb9e91c98bef51a99c8e7fa46a605f))
+* **ci:** trigger Release-Please after Release PR merges ([c585bb5](https://github.com/joshuafuller/qrtak/commit/c585bb5ea2554cd9cf6fcefc6d57139bc1f87d57))
+
 ## [3.0.1](https://github.com/joshuafuller/qrtak/compare/qrtak-v3.0.0...qrtak-v3.0.1) (2025-10-02)
 
 
