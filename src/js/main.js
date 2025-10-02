@@ -654,6 +654,32 @@ const BulkUsers = (function () {
         btn.textContent = hidden ? 'Hide Password' : 'Show Password';
       }
     });
+
+    // Download button handler for bulk onboard
+    const downloadBtn = document.getElementById('bulk-download');
+    downloadBtn?.addEventListener('click', async () => {
+      const user = users[currentIndex];
+      if (!user) {
+        return;
+      }
+
+      const container = document.getElementById('bulk-user-qr');
+      const canvas = container?.querySelector('canvas');
+      if (!canvas) {
+        return;
+      }
+
+      try {
+        const link = document.createElement('a');
+        link.download = `${user.username}.png`;
+        link.href = canvas.toDataURL();
+        link.click();
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error(ERROR_MESSAGES.DOWNLOAD_ERROR, error);
+        UIController.showNotification(ERROR_MESSAGES.DOWNLOAD_ERROR, 'error');
+      }
+    });
   }
 
   function validateBulkHost () {
@@ -3098,8 +3124,18 @@ const UIController = (function () {
     }
 
     try {
+      let filename = `tak-${type}-config.png`;
+
+      // Use username if available for TAK config
+      if (type === 'tak') {
+        const username = document.getElementById('tak-username')?.value?.trim();
+        if (username) {
+          filename = `${username}.png`;
+        }
+      }
+
       const link = document.createElement('a');
-      link.download = `tak-${type}-config.png`;
+      link.download = filename;
       link.href = canvas.toDataURL();
       link.click();
     } catch (error) {
