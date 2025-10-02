@@ -10,8 +10,8 @@ updates:
       timezone: "UTC"
     open-pull-requests-limit: 10
     commit-message:
-      prefix: "chore"
-      prefix-development: "chore"
+      prefix: "fix"
+      prefix-development: "fix"
       include: "scope"
     labels:
       - "dependencies"
@@ -46,8 +46,8 @@ updates:
       timezone: "UTC"
     open-pull-requests-limit: 5
     commit-message:
-      prefix: "ci"
-      prefix-development: "ci"
+      prefix: "fix"
+      prefix-development: "fix"
       include: "scope"
     labels:
       - "dependencies"
@@ -63,8 +63,8 @@ updates:
       timezone: "UTC"
     open-pull-requests-limit: 5
     commit-message:
-      prefix: "ci"
-      prefix-development: "ci"
+      prefix: "fix"
+      prefix-development: "fix"
       include: "scope"
     labels:
       - "dependencies"
