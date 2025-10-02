@@ -161,9 +161,8 @@ jobs:
               $MERGE_METHOD \
               --delete-branch || echo "Could not merge immediately, auto-merge is enabled"
 
-            # If this was a Release PR, trigger Release-Please to publish the release
+            # If this was a Release PR, the merge push will trigger Release-Please to publish
             if [[ "$PR_LABELS" == *"autorelease"* ]]; then
-              echo "Release PR merged, triggering Release-Please to publish release"
-              gh api -X POST repos/${{ github.repository }}/actions/workflows/release-please.yml/dispatches -f ref=main
+              echo "Release PR merged, Release-Please will publish via push trigger (see .github/workflows/release-please.yml:4-9)"
             fi
           fi
