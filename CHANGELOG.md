@@ -16,6 +16,13 @@
 * **deps:** bump renovatebot/github-action from 43.0.9 to 43.0.14 ([#142](https://github.com/joshuafuller/qrtak/issues/142)) ([b29c40f](https://github.com/joshuafuller/qrtak/commit/b29c40fc4ec89b9c0c1ed387527a19b55b316258))
 * **deps:** bump trufflesecurity/trufflehog from 3.90.5 to 3.90.8 ([#141](https://github.com/joshuafuller/qrtak/issues/141)) ([1ffcf61](https://github.com/joshuafuller/qrtak/commit/1ffcf619b28aef552ebf54661cad0f9ed091dedf))
 
+## [3.0.5](https://github.com/joshuafuller/qrtak/compare/qrtak-v3.0.4...qrtak-v3.0.5) (2025-10-02)
+
+
+### Development Dependency Updates
+
+* **deps-dev:** bump @babel/core in the dev-dependencies group ([#146](https://github.com/joshuafuller/qrtak/issues/146)) ([f61484d](https://github.com/joshuafuller/qrtak/commit/f61484de919187cf905f53983fa2b358294f6c6c))
+
 ## [3.0.4](https://github.com/joshuafuller/qrtak/compare/qrtak-v3.0.3...qrtak-v3.0.4) (2025-10-02)
 
 
