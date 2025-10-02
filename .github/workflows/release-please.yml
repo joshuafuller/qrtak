@@ -32,6 +32,13 @@ jobs:
           # See: https://github.com/googleapis/release-please-action#github-credentials
           token: ${{ secrets.RELEASE_PLEASE_TOKEN }}
 
+      - name: Debug Release-Please outputs
+        run: |
+          echo "releases_created: ${{ steps.release.outputs.releases_created }}"
+          echo "prs_created: ${{ steps.release.outputs.prs_created }}"
+          echo "pr: ${{ steps.release.outputs.pr }}"
+          echo "prs: ${{ steps.release.outputs.prs }}"
+
       # If a release was created, build and sign artifacts
       - name: Checkout
         if: ${{ steps.release.outputs.release_created }}
