@@ -5,15 +5,7 @@ on:
     branches: [main, develop, 'release-please--**']
   pull_request:
     branches: [main, develop]
-    paths:
-      - 'src/**'
-      - 'package.json'
-      - 'package-lock.json'
-      - 'Dockerfile'
-      - '.github/workflows/**'
-      - 'vite.config.js'
-      - 'vite.config.ts'
-      - '.github/workflows/security.yml'
+    # No path filters - security scans run on ALL PRs for maximum security
   schedule:
     # Weekly comprehensive scan
     - cron: '0 2 * * 0'
