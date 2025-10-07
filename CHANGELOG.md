@@ -16,6 +16,21 @@
 * **deps:** bump renovatebot/github-action from 43.0.9 to 43.0.14 ([#142](https://github.com/joshuafuller/qrtak/issues/142)) ([b29c40f](https://github.com/joshuafuller/qrtak/commit/b29c40fc4ec89b9c0c1ed387527a19b55b316258))
 * **deps:** bump trufflesecurity/trufflehog from 3.90.5 to 3.90.8 ([#141](https://github.com/joshuafuller/qrtak/issues/141)) ([1ffcf61](https://github.com/joshuafuller/qrtak/commit/1ffcf619b28aef552ebf54661cad0f9ed091dedf))
 
+## [3.0.7](https://github.com/joshuafuller/qrtak/compare/qrtak-v3.0.6...qrtak-v3.0.7) (2025-10-07)
+
+
+### Dependency Updates
+
+* **deps:** bump renovatebot/github-action from 43.0.14 to 43.0.15 ([#167](https://github.com/joshuafuller/qrtak/issues/167)) ([b7ac37c](https://github.com/joshuafuller/qrtak/commit/b7ac37c543c7e60a388bef4fec62515360cf5760))
+* **deps:** bump snyk/actions from 0.4.0 to 1.0.0 ([#166](https://github.com/joshuafuller/qrtak/issues/166)) ([2e29ea6](https://github.com/joshuafuller/qrtak/commit/2e29ea67be51946c936657dbe2ca1dba1b150160))
+
+
+### Development Dependency Updates
+
+* **deps-dev:** bump eslint in the dev-dependencies group ([#163](https://github.com/joshuafuller/qrtak/issues/163)) ([0d669ca](https://github.com/joshuafuller/qrtak/commit/0d669ca0c2545244fcdb85aa6d6639645f2adaef))
+* **deps-dev:** bump fast-xml-parser from 5.2.5 to 5.3.0 ([#165](https://github.com/joshuafuller/qrtak/issues/165)) ([d9c1042](https://github.com/joshuafuller/qrtak/commit/d9c10426fb2742769563f6ecc54036aa44165032))
+* **deps-dev:** bump vite from 7.1.7 to 7.1.9 ([#164](https://github.com/joshuafuller/qrtak/issues/164)) ([640de10](https://github.com/joshuafuller/qrtak/commit/640de106bbef9ffbfa72347bc1bbbb700b3b70b0))
+
 ## [3.0.6](https://github.com/joshuafuller/qrtak/compare/qrtak-v3.0.5...qrtak-v3.0.6) (2025-10-02)
 
 
