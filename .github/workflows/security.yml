@@ -86,7 +86,7 @@ jobs:
           ./osv-scanner --format sarif . > osv-results.sarif || true
           
       - name: Upload OSV results
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@v4
         if: always() && hashFiles('osv-results.sarif') != ''
         with:
           sarif_file: osv-results.sarif
@@ -118,7 +118,7 @@ jobs:
           exit-code: '0'
 
       - name: Upload Trivy results
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@v4
         if: always()
         with:
           sarif_file: 'trivy-results.sarif'
@@ -135,7 +135,7 @@ jobs:
           output-format: sarif
 
       - name: Upload Grype results
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@v4
         if: always()
         with:
           sarif_file: ${{ steps.grype.outputs.sarif }}
