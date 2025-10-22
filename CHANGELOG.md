@@ -16,6 +16,38 @@
 * **deps:** bump renovatebot/github-action from 43.0.9 to 43.0.14 ([#142](https://github.com/joshuafuller/qrtak/issues/142)) ([b29c40f](https://github.com/joshuafuller/qrtak/commit/b29c40fc4ec89b9c0c1ed387527a19b55b316258))
 * **deps:** bump trufflesecurity/trufflehog from 3.90.5 to 3.90.8 ([#141](https://github.com/joshuafuller/qrtak/issues/141)) ([1ffcf61](https://github.com/joshuafuller/qrtak/commit/1ffcf619b28aef552ebf54661cad0f9ed091dedf))
 
+## [4.0.0](https://github.com/joshuafuller/qrtak/compare/qrtak-v3.0.7...qrtak-v4.0.0) (2025-10-22)
+
+
+### ⚠ BREAKING CHANGES
+
+* **packages:** Mission packages now use lowercase 'manifest.xml' instead of 'MANIFEST.xml' to match ATAK's hardcoded path expectation.
+
+### Dependency Updates
+
+* **deps:** bump actions/setup-node from 4 to 6 ([#174](https://github.com/joshuafuller/qrtak/issues/174)) ([56f3ac2](https://github.com/joshuafuller/qrtak/commit/56f3ac2ef05e777329a7d4f18406dd82b01ac378))
+* **deps:** bump anchore/scan-action from 7.0.0 to 7.0.2 ([#175](https://github.com/joshuafuller/qrtak/issues/175)) ([37a7308](https://github.com/joshuafuller/qrtak/commit/37a7308df9883342c09410b36d7ed1f4b9877b20))
+* **deps:** bump github/codeql-action from 3 to 4 ([#171](https://github.com/joshuafuller/qrtak/issues/171)) ([57dd997](https://github.com/joshuafuller/qrtak/commit/57dd997ccce3d2d66a8659b69dc894bcfb789d75))
+* **deps:** bump renovatebot/github-action from 43.0.15 to 43.0.17 ([#172](https://github.com/joshuafuller/qrtak/issues/172)) ([2422ed4](https://github.com/joshuafuller/qrtak/commit/2422ed4ad139597386cab42c56eda4ba0ac5a63b))
+* **deps:** bump renovatebot/github-action from 43.0.17 to 43.0.18 ([#176](https://github.com/joshuafuller/qrtak/issues/176)) ([5a1cb69](https://github.com/joshuafuller/qrtak/commit/5a1cb69483771c0b930405915cc03103b8f43912))
+* **deps:** bump trufflesecurity/trufflehog from 3.90.8 to 3.90.11 ([#173](https://github.com/joshuafuller/qrtak/issues/173)) ([1d25233](https://github.com/joshuafuller/qrtak/commit/1d25233dfc72cf3f3dda0ba927e6ce5dad7fff95))
+
+
+### Development Dependency Updates
+
+* **deps-dev:** bump @playwright/test from 1.55.1 to 1.56.0 ([#170](https://github.com/joshuafuller/qrtak/issues/170)) ([f527fcd](https://github.com/joshuafuller/qrtak/commit/f527fcde7678ec2f1b30d956e113694bb3f27c41))
+* **deps-dev:** bump @playwright/test from 1.56.0 to 1.56.1 ([#181](https://github.com/joshuafuller/qrtak/issues/181)) ([5589452](https://github.com/joshuafuller/qrtak/commit/558945271b91a40cafeda2ba58546b0f71434c77))
+* **deps-dev:** bump eslint in the dev-dependencies group ([#179](https://github.com/joshuafuller/qrtak/issues/179)) ([177c306](https://github.com/joshuafuller/qrtak/commit/177c3067875fd09a3e52901b8099e0dc92b1e7f2))
+* **deps-dev:** bump playwright from 1.55.1 to 1.56.0 ([#169](https://github.com/joshuafuller/qrtak/issues/169)) ([478e60a](https://github.com/joshuafuller/qrtak/commit/478e60a6035b45726068e4272de44a76a202530e))
+* **deps-dev:** bump playwright from 1.56.0 to 1.56.1 ([#177](https://github.com/joshuafuller/qrtak/issues/177)) ([b7f58f6](https://github.com/joshuafuller/qrtak/commit/b7f58f672b90be85ffce7a761ce5b3bda370a947))
+* **deps-dev:** bump vite from 7.1.9 to 7.1.11 ([#180](https://github.com/joshuafuller/qrtak/issues/180)) ([a2cd697](https://github.com/joshuafuller/qrtak/commit/a2cd6970f43864111e97f99f30b4d9674d23de6e))
+* **deps-dev:** bump vite-plugin-pwa from 1.0.3 to 1.1.0 ([#178](https://github.com/joshuafuller/qrtak/issues/178)) ([39792cd](https://github.com/joshuafuller/qrtak/commit/39792cd9bd13ac5300bd61de79ee0f82cb8def4a))
+
+
+### Bug Fixes
+
+* **packages:** correct manifest.xml filename casing in ATAK data packages ([#182](https://github.com/joshuafuller/qrtak/issues/182)) ([140c186](https://github.com/joshuafuller/qrtak/commit/140c186bbe89e00c64a3b47e53ff2fc72d0502d7))
+
 ## [3.0.7](https://github.com/joshuafuller/qrtak/compare/qrtak-v3.0.6...qrtak-v3.0.7) (2025-10-07)
 
 
