@@ -2031,7 +2031,7 @@ const PackageBuilder = (function () {
         if (deployment === 'soft-cert' && clientFile) {
           zip.file('clientCert.p12', clientFile);
         }
-        zip.folder('MANIFEST')?.file('MANIFEST.xml', manifestXml);
+        zip.folder('MANIFEST')?.file('manifest.xml', manifestXml);
       } else {
         zip.folder('certs')?.file('config.pref', prefXml);
         if (caFile) {
@@ -2040,7 +2040,7 @@ const PackageBuilder = (function () {
         if (deployment === 'soft-cert' && clientFile) {
           zip.folder('certs')?.file('clientCert.p12', clientFile);
         }
-        zip.folder('MANIFEST')?.file('MANIFEST.xml', manifestXml);
+        zip.folder('MANIFEST')?.file('manifest.xml', manifestXml);
       }
 
       // Add extra files preserving names

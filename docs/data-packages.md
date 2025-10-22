@@ -19,7 +19,7 @@ TAK data packages are compressed files containing configuration files, certifica
 
 At minimum, a data package requires:
 - `config.pref` - Configuration preferences file
-- `MANIFEST.xml` - Package manifest defining contents and metadata
+- `manifest.xml` - Package manifest defining contents and metadata
 - Certificate files (`.p12` format)
 
 ### 2.2 Directory Organization
@@ -31,7 +31,7 @@ dataPackage/
 │   ├── caCert.p12
 │   └── clientCert.p12 (soft-cert only)
 └── MANIFEST/
-    └── MANIFEST.xml
+    └── manifest.xml
 ```
 
 ---
@@ -104,9 +104,9 @@ dataPackage/
 
 ---
 
-## 4. Manifest File (MANIFEST.xml)
+## 4. Manifest File (manifest.xml)
 
-### 4.1 Soft-Certificate MANIFEST.xml
+### 4.1 Soft-Certificate manifest.xml
 
 ```xml
 <MissionPackageManifest version="2">
@@ -123,7 +123,7 @@ dataPackage/
 </MissionPackageManifest>
 ```
 
-### 4.2 Certificate Auto-Enrollment MANIFEST.xml
+### 4.2 Certificate Auto-Enrollment manifest.xml
 
 ```xml
 <MissionPackageManifest version="2">
@@ -170,10 +170,10 @@ dataPackage/
 │   ├── DataSync-1.1.0.0-4.7.0.163
 │   └── TAKChat-1.0.0.0-4.7.0.163
 └── MANIFEST/
-    └── MANIFEST.xml
+    └── manifest.xml
 ```
 
-Updated MANIFEST.xml with additional content:
+Updated manifest.xml with additional content:
 
 ```xml
 <MissionPackageManifest version="2">
@@ -255,9 +255,9 @@ where `PROTOCOL` is `ssl` (HTTPS) or `tcp` (HTTP). QUIC is not supported in iTAK
 ### 7.1 Creating the Package
 
 1. **Organize Files**: Create the directory structure with all required files
-2. **Generate UUID**: Create a unique UID for the MANIFEST.xml
+2. **Generate UUID**: Create a unique UID for the manifest.xml
 3. **Compress**: Select all folders/files and create a ZIP archive
-4. **Rename**: Name the compressed file to match the `name` parameter in MANIFEST.xml
+4. **Rename**: Name the compressed file to match the `name` parameter in manifest.xml
 
 ### 7.2 Deployment Methods
 
@@ -296,7 +296,7 @@ where `PROTOCOL` is `ssl` (HTTPS) or `tcp` (HTTP). QUIC is not supported in iTAK
 
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Import fails | Incorrect file paths in MANIFEST.xml | Verify zipEntry paths match actual file structure |
+| Import fails | Incorrect file paths in manifest.xml | Verify zipEntry paths match actual file structure |
 | Certificate errors | Wrong certificate format or password | Ensure .p12 format and correct passwords |
 | Connection failures | Incorrect connectString format | Verify `HOST:PORT:PROTOCOL` format |
 
@@ -304,9 +304,9 @@ where `PROTOCOL` is `ssl` (HTTPS) or `tcp` (HTTP). QUIC is not supported in iTAK
 
 - [ ] Unique UID generated and used
 - [ ] All required files included in package
-- [ ] File paths in MANIFEST.xml match actual structure
+- [ ] File paths in manifest.xml match actual structure
 - [ ] Certificate passwords correctly specified
-- [ ] Package name matches MANIFEST.xml name parameter
+- [ ] Package name matches manifest.xml name parameter
 - [ ] Package tested with target TAK client version
 
 ---
