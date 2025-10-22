@@ -118,6 +118,22 @@ function setFieldValidationState (field, state) {
   }
 }
 
+/**
+ * Escape HTML entities to prevent XSS in attributes
+ * @param {string} text - Text to escape
+ * @returns {string} Escaped text
+ */
+function escapeHtml (text) {
+  const map = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    '\'': '&#39;'
+  };
+  return String(text).replace(/[&<>"']/g, m => map[m]);
+}
+
 // Tab Manager Module
 // ============================================================================
 
@@ -175,13 +191,14 @@ const TabManager = (function () {
     }
 
     // Handle legacy tab references
+    const originalTabName = tabName;
     if (tabName === CONFIG.TABS.ATAK || tabName === CONFIG.TABS.ITAK) {
       tabName = CONFIG.TABS.TAK_CONFIG;
     }
 
     currentTab = tabName;
-    if ([CONFIG.TABS.ATAK, CONFIG.TABS.ITAK, CONFIG.TABS.IMPORT].includes(tabName)) {
-      lastConfigTab = tabName;
+    if ([CONFIG.TABS.ATAK, CONFIG.TABS.ITAK, CONFIG.TABS.IMPORT, CONFIG.TABS.TAK_CONFIG].includes(originalTabName)) {
+      lastConfigTab = originalTabName;
     }
   }
 
@@ -1337,6 +1354,18 @@ const TAKConfigManager = (function () {
 const PackageBuilder = (function () {
   let extraFiles = [];
 
+  /**
+   * Generate UUID v4 fallback for browsers without crypto.randomUUID
+   * @returns {string} UUID v4 string
+   */
+  function generateUUIDv4Fallback () {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+      const r = Math.random() * 16 | 0;
+      const v = c === 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+    });
+  }
+
   function init () {
     const form = document.getElementById('package-form');
     if (!form) {
@@ -2133,7 +2162,8 @@ const PackageBuilder = (function () {
   }
 
   function buildManifest ({ name, includeClient, includeCA, client }) {
-    const uid = window.crypto.randomUUID ? window.crypto.randomUUID() : '00000000-0000-4000-8000-000000000000';
+    // Generate UUID v4 with proper fallback for older browsers
+    const uid = window.crypto.randomUUID ? window.crypto.randomUUID() : generateUUIDv4Fallback();
     const isITAK = client === 'itak';
     const caPath = isITAK ? 'caCert.p12' : 'certs/caCert.p12';
     const clientPath = isITAK ? 'clientCert.p12' : 'certs/clientCert.p12';
@@ -2390,7 +2420,7 @@ const PreferenceBuilder = (function () {
       <div class="pref-row-grid">
         <div class="pref-field-with-hint">
           <label>Key ${index}</label>
-          <input type="text" data-pref="key" placeholder="e.g., locationCallsign" value="${presetKey}" />
+          <input type="text" data-pref="key" placeholder="e.g., locationCallsign" value="${escapeHtml(presetKey)}" />
           <div class="pref-key-hint" data-pref="key-label"></div>
           <div class="pref-description" data-pref="description"></div>
         </div>
@@ -2405,7 +2435,7 @@ const PreferenceBuilder = (function () {
         </div>
         <div class="pref-value-field">
           <label>Value ${index}</label>
-          <input type="text" data-pref="value" placeholder="${placeholder}" value="${presetKey ? defaultValue : ''}" />
+          <input type="text" data-pref="value" placeholder="${escapeHtml(placeholder)}" value="${escapeHtml(presetKey ? defaultValue : '')}" />
           <div class="pref-value-hint" data-pref="value-hint"></div>
         </div>
         <button class="btn btn-secondary pref-remove-btn" type="button">Remove</button>

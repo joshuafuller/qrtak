@@ -43,6 +43,7 @@
   "devDependencies": {
     "@axe-core/playwright": "^4.9.1",
     "@babel/core": "^7.28.4",
+    "@eslint/js": "^9.17.0",
     "@playwright/test": "^1.56.1",
     "babel-jest": "^30.2.0",
     "eslint": "^9.38.0",
