@@ -234,7 +234,7 @@ describe('PackageBuilder', () => {
       // Verify ZIP structure for ATAK (files in certs folder)
       expect(mockZipFolder).toHaveBeenCalledWith('certs');
       expect(mockZipFile).toHaveBeenCalledWith(
-        'MANIFEST.xml',
+        'manifest.xml',
         expect.stringContaining('<MissionPackageManifest')
       );
 
@@ -276,7 +276,7 @@ describe('PackageBuilder', () => {
 
       // Verify ZIP structure for iTAK (files in root, not in certs folder)
       expect(mockZipFile).toHaveBeenCalledWith(
-        'MANIFEST.xml',
+        'manifest.xml',
         expect.stringContaining('<MissionPackageManifest')
       );
 
