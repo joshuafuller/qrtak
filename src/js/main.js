@@ -1506,25 +1506,24 @@ const PackageBuilder = (function () {
       }
     });
 
-    // Toggle show/hide
-    let isHidden = false;
+    // Toggle show/hide (expand/collapse rows)
+    let isCollapsed = false;
     showBtn?.addEventListener('click', () => {
       if (!textarea) {
         return;
       }
 
-      if (isHidden) {
-        // Show the full content
-        textarea.style.display = 'block';
+      if (isCollapsed) {
+        // Expand to show full content
         textarea.rows = 8;
-        isHidden = false;
+        isCollapsed = false;
         if (showBtn.querySelector('.btn-icon')) {
           showBtn.querySelector('.btn-icon').textContent = '👁️';
         }
       } else {
-        // Hide (collapse) the content
+        // Collapse to show minimal content
         textarea.rows = 2;
-        isHidden = true;
+        isCollapsed = true;
         if (showBtn.querySelector('.btn-icon')) {
           showBtn.querySelector('.btn-icon').textContent = '👁️‍🗨️';
         }
