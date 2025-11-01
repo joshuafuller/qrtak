@@ -456,4 +456,76 @@ describe('PackageBuilder', () => {
       expect(configPrefCall[1]).toContain('tak.example.com:8089:quic');
     });
   });
+
+  describe('MDM Base64 Export', () => {
+    beforeEach(() => {
+      // Add MDM deployment section to DOM
+      document.body.innerHTML += `
+        <div id="mdm-deployment-section" style="display: none;">
+          <textarea id="mdm-base64"></textarea>
+          <div id="mdm-char-count"></div>
+          <button id="mdm-copy-base64">Copy</button>
+          <button id="mdm-show-base64">Show/Hide</button>
+        </div>
+      `;
+      window.PackageBuilder.init();
+    });
+
+    it('should have MDM deployment UI elements', () => {
+      // Verify all MDM elements exist
+      expect(document.getElementById('mdm-deployment-section')).toBeTruthy();
+      expect(document.getElementById('mdm-base64')).toBeTruthy();
+      expect(document.getElementById('mdm-char-count')).toBeTruthy();
+      expect(document.getElementById('mdm-copy-base64')).toBeTruthy();
+      expect(document.getElementById('mdm-show-base64')).toBeTruthy();
+    });
+
+    it('should hide MDM section on reset', () => {
+      const mdmSection = document.getElementById('mdm-deployment-section');
+      const mdmTextarea = document.getElementById('mdm-base64');
+
+      // Show section and add content
+      mdmSection.style.display = 'block';
+      mdmTextarea.value = 'test-base64-string';
+
+      // Click reset button
+      const resetBtn = document.getElementById('package-reset');
+      resetBtn.click();
+
+      // Verify MDM section is hidden and cleared
+      expect(mdmSection.style.display).toBe('none');
+      expect(mdmTextarea.value).toBe('');
+    });
+
+    it('should copy base64 to clipboard when copy button is clicked', async () => {
+      const mdmTextarea = document.getElementById('mdm-base64');
+      mdmTextarea.value = 'test-base64-string';
+
+      // Click copy button
+      const copyBtn = document.getElementById('mdm-copy-base64');
+      copyBtn.click();
+
+      // Wait for async operation
+      await new Promise(resolve => setTimeout(resolve, 100));
+
+      // Verify clipboard was called with correct value (clipboard is mocked in setup.js)
+      expect(navigator.clipboard.writeText).toHaveBeenCalledWith('test-base64-string');
+    });
+
+    it('should toggle textarea visibility when show/hide button is clicked', () => {
+      const showBtn = document.getElementById('mdm-show-base64');
+      const textarea = document.getElementById('mdm-base64');
+
+      // Initial state - expanded
+      textarea.rows = 8;
+
+      // Click to hide
+      showBtn.click();
+      expect(textarea.rows).toBe(2);
+
+      // Click to show
+      showBtn.click();
+      expect(textarea.rows).toBe(8);
+    });
+  });
 });

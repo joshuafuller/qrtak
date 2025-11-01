@@ -422,6 +422,29 @@
                                     <button type="button" id="package-reset" class="btn btn-secondary">Reset</button>
                                 </div>
                             </form>
+
+                            <!-- MDM Deployment Section -->
+                            <div id="mdm-deployment-section" class="form-section" style="display: none;">
+                                <h3>📦 MDM Deployment (Base64)</h3>
+                                <p class="form-description">For Android Managed Configurations - Copy this base64-encoded string into your MDM's <code>enterpriseConfigurationDataPackage</code> field</p>
+                                
+                                <div class="form-group">
+                                    <label for="mdm-base64">Base64-Encoded Data Package:</label>
+                                    <textarea id="mdm-base64" readonly rows="8" class="mdm-base64-textarea" aria-label="Base64-encoded data package"></textarea>
+                                    <div class="help-text" id="mdm-char-count">0 characters</div>
+                                </div>
+
+                                <div class="qr-actions">
+                                    <button type="button" id="mdm-copy-base64" class="btn btn-primary">
+                                        <span class="btn-icon">📋</span>
+                                        Copy to Clipboard
+                                    </button>
+                                    <button type="button" id="mdm-show-base64" class="btn btn-secondary">
+                                        <span class="btn-icon">👁️</span>
+                                        Show/Hide
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -645,20 +668,22 @@
                                     </div>
                                     <div class="help-tab-item">
                                         <h4>Data Package Builder</h4>
+                                        <p>Build ATAK/WinTAK/iTAK packages with <code>config.pref</code> and <code>manifest.xml</code>. When <strong>client = iTAK</strong>, protocol tokens are <code>ssl</code> (HTTPS) and <code>tcp</code> (HTTP); QUIC is hidden.</p>
+                                        <p><strong>MDM Deployment:</strong> After building a package, a base64-encoded string is automatically generated for use with Mobile Device Management systems (ATAK v5.0+). Copy the base64 string and paste it into your MDM's <code>enterpriseConfigurationDataPackage</code> field to push ATAK configuration to managed devices.</p>
+                                        <div class="help-features">
+                                            <span class="feature-tag">Packages</span>
+                                            <span class="feature-tag">ATAK/WinTAK/iTAK</span>
+                                            <span class="feature-tag">ZIP</span>
+                                            <span class="feature-tag">MDM</span>
+                                        </div>
+                                    </div>
+                                    <div class="help-tab-item">
+                                        <h4>URL Import</h4>
                                         <p>Create an import URI for data packages/config files at a URL. Red/green validation ensures a well‑formed URL before actions enable.</p>
                                         <div class="help-features">
                                             <span class="feature-tag">Import</span>
                                             <span class="feature-tag">Validation</span>
                                             <span class="feature-tag">QR Code</span>
-                                        </div>
-                                    </div>
-                                    <div class="help-tab-item">
-                                        <h4>URL Import</h4>
-                                        <p>Build ATAK/WinTAK/iTAK packages with <code>config.pref</code> and <code>manifest.xml</code>. When <strong>client = iTAK</strong>, protocol tokens are <code>ssl</code> (HTTPS) and <code>tcp</code> (HTTP); QUIC is hidden.</p>
-                                        <div class="help-features">
-                                            <span class="feature-tag">Packages</span>
-                                            <span class="feature-tag">ATAK/WinTAK/iTAK</span>
-                                            <span class="feature-tag">ZIP</span>
                                         </div>
                                     </div>
                                     <div class="help-tab-item">
@@ -692,6 +717,15 @@
                                             <li>📋 <strong>Profiles:</strong> Create standardized profiles for each team/role</li>
                                             <li>🖨️ <strong>Print Handouts:</strong> Generate printed QR codes for field deployment</li>
                                             <li>📱 <strong>Kiosk Mode:</strong> Use large displays for group onboarding</li>
+                                        </ul>
+                                    </div>
+                                    <div class="practice-item">
+                                        <h4>MDM Deployment (ATAK v5.0+)</h4>
+                                        <ul>
+                                            <li>📦 <strong>Base64 Export:</strong> After building a data package, copy the base64 string for MDM deployment</li>
+                                            <li>🔧 <strong>MDM Configuration:</strong> Paste the base64 string into your MDM's <code>enterpriseConfigurationDataPackage</code> field</li>
+                                            <li>✅ <strong>Character Count:</strong> Use the displayed character count to validate MDM field limits</li>
+                                            <li>🔄 <strong>Automatic Push:</strong> MDM will push the configuration to managed devices automatically</li>
                                         </ul>
                                     </div>
                                     <div class="practice-item">

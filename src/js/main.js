@@ -1457,15 +1457,79 @@ const PackageBuilder = (function () {
       updateFilesList();
       form.reset();
       updatePackageNamePreview(); // Update preview after reset
+
+      // Hide MDM deployment section
+      const mdmSection = document.getElementById('mdm-deployment-section');
+      if (mdmSection) {
+        mdmSection.style.display = 'none';
+      }
+      const mdmTextarea = document.getElementById('mdm-base64');
+      if (mdmTextarea) {
+        mdmTextarea.value = '';
+      }
     });
 
     document.getElementById('package-build')?.addEventListener('click', buildPackage);
+
+    // Set up MDM deployment event handlers
+    setupMDMDeploymentHandlers();
 
     // Set up dynamic package name preview
     setupDynamicNaming();
 
     // Set up QUIC port auto-switching for package form
     setupPackageQuicSwitching();
+  }
+
+  /**
+   * Setup event handlers for MDM deployment section
+   */
+  function setupMDMDeploymentHandlers () {
+    const copyBtn = document.getElementById('mdm-copy-base64');
+    const showBtn = document.getElementById('mdm-show-base64');
+    const textarea = document.getElementById('mdm-base64');
+
+    // Copy to clipboard
+    copyBtn?.addEventListener('click', async () => {
+      const base64String = textarea?.value || '';
+      if (!base64String) {
+        return;
+      }
+
+      try {
+        await navigator.clipboard.writeText(base64String);
+        (window.UIController || UIController).showNotification('Base64 string copied to clipboard!', 'success');
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error('Error copying to clipboard:', error);
+        (window.UIController || UIController).showNotification('Error copying to clipboard', 'error');
+      }
+    });
+
+    // Toggle show/hide
+    let isHidden = false;
+    showBtn?.addEventListener('click', () => {
+      if (!textarea) {
+        return;
+      }
+
+      if (isHidden) {
+        // Show the full content
+        textarea.style.display = 'block';
+        textarea.rows = 8;
+        isHidden = false;
+        if (showBtn.querySelector('.btn-icon')) {
+          showBtn.querySelector('.btn-icon').textContent = '👁️';
+        }
+      } else {
+        // Hide (collapse) the content
+        textarea.rows = 2;
+        isHidden = true;
+        if (showBtn.querySelector('.btn-icon')) {
+          showBtn.querySelector('.btn-icon').textContent = '👁️‍🗨️';
+        }
+      }
+    });
   }
 
   /**
@@ -2060,11 +2124,55 @@ const PackageBuilder = (function () {
       document.body.removeChild(a);
       URL.revokeObjectURL(a.href);
 
+      // Generate base64 for MDM deployment
+      await generateBase64ForMDM(blob);
+
       (window.UIController || UIController).showNotification(`Package "${filename}" downloaded successfully!`, 'success');
     } catch (e) {
       // eslint-disable-next-line no-console
       console.error(e);
       (window.UIController || UIController).showNotification('Error building data package', 'error');
+    }
+  }
+
+  /**
+   * Generate base64 encoding of the package for MDM deployment
+   * @param {Blob} blob - The ZIP file blob
+   */
+  async function generateBase64ForMDM (blob) {
+    try {
+      // Convert blob to ArrayBuffer
+      const arrayBuffer = await blob.arrayBuffer();
+
+      // Convert ArrayBuffer to base64
+      const uint8Array = new Uint8Array(arrayBuffer);
+      let binaryString = '';
+      const chunkSize = 0x8000; // Process in 32KB chunks to avoid call stack size exceeded
+
+      for (let i = 0; i < uint8Array.length; i += chunkSize) {
+        const chunk = uint8Array.subarray(i, Math.min(i + chunkSize, uint8Array.length));
+        binaryString += String.fromCharCode.apply(null, chunk);
+      }
+
+      const base64String = window.btoa(binaryString);
+
+      // Display the base64 string
+      const mdmSection = document.getElementById('mdm-deployment-section');
+      const mdmTextarea = document.getElementById('mdm-base64');
+      const mdmCharCount = document.getElementById('mdm-char-count');
+
+      if (mdmSection && mdmTextarea && mdmCharCount) {
+        mdmTextarea.value = base64String;
+        mdmCharCount.textContent = `${base64String.length.toLocaleString()} characters`;
+        mdmSection.style.display = 'block';
+
+        // Scroll to the MDM section
+        mdmSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('Error generating base64:', error);
+      (window.UIController || UIController).showNotification('Error generating base64 for MDM deployment', 'error');
     }
   }
 
