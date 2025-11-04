@@ -16,6 +16,26 @@
 * **deps:** bump renovatebot/github-action from 43.0.9 to 43.0.14 ([#142](https://github.com/joshuafuller/qrtak/issues/142)) ([b29c40f](https://github.com/joshuafuller/qrtak/commit/b29c40fc4ec89b9c0c1ed387527a19b55b316258))
 * **deps:** bump trufflesecurity/trufflehog from 3.90.5 to 3.90.8 ([#141](https://github.com/joshuafuller/qrtak/issues/141)) ([1ffcf61](https://github.com/joshuafuller/qrtak/commit/1ffcf619b28aef552ebf54661cad0f9ed091dedf))
 
+## [4.0.1](https://github.com/joshuafuller/qrtak/compare/qrtak-v4.0.0...qrtak-v4.0.1) (2025-11-04)
+
+
+### Dependency Updates
+
+* **deps:** bump actions/download-artifact from 4 to 6 ([#186](https://github.com/joshuafuller/qrtak/issues/186)) ([caff458](https://github.com/joshuafuller/qrtak/commit/caff45852f5aa104f606da9843a75fbf94343f2f))
+* **deps:** bump anchore/scan-action from 7.0.2 to 7.1.0 ([#192](https://github.com/joshuafuller/qrtak/issues/192)) ([1f63d67](https://github.com/joshuafuller/qrtak/commit/1f63d6761b285fab15cd69444196b76cd980d764))
+* **deps:** bump node from 24-alpine to 25-alpine ([#188](https://github.com/joshuafuller/qrtak/issues/188)) ([3c2d012](https://github.com/joshuafuller/qrtak/commit/3c2d012923a533705016181071665fa43b0d808a))
+* **deps:** bump renovatebot/github-action from 43.0.18 to 43.0.19 ([#185](https://github.com/joshuafuller/qrtak/issues/185)) ([f066686](https://github.com/joshuafuller/qrtak/commit/f06668654c43c21c6aa326c1653fbd71a567d5a4))
+
+
+### Development Dependency Updates
+
+* **deps-dev:** bump @axe-core/playwright from 4.10.2 to 4.11.0 ([#190](https://github.com/joshuafuller/qrtak/issues/190)) ([1c628ee](https://github.com/joshuafuller/qrtak/commit/1c628ee5327f8aeb512a6571cf86aed9ea4fbc21))
+
+
+### Bug Fixes
+
+* Dockerfile to reduce vulnerabilities ([#194](https://github.com/joshuafuller/qrtak/issues/194)) ([761af20](https://github.com/joshuafuller/qrtak/commit/761af20083e0ec943031e0f87010bc8c52ae889b))
+
 ## [4.0.0](https://github.com/joshuafuller/qrtak/compare/qrtak-v3.0.7...qrtak-v4.0.0) (2025-10-22)
 
 
