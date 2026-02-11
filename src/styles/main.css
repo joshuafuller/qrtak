@@ -3039,6 +3039,52 @@ input[type="file"]:active::-webkit-file-upload-button {
 }
 
 /* ==========================================================================
+   MDM Deployment Section
+   ========================================================================== */
+.mdm-base64-textarea {
+  width: 100%;
+  padding: var(--spacing-md);
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius);
+  resize: vertical;
+  min-height: 150px;
+  word-break: break-all;
+  overflow-wrap: break-word;
+}
+
+.mdm-base64-textarea:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+[data-theme="dark"] .mdm-base64-textarea {
+  background-color: #1e293b;
+  border-color: #475569;
+  color: #e2e8f0;
+}
+
+#mdm-deployment-section {
+  margin-top: var(--spacing-2xl);
+  padding-top: var(--spacing-2xl);
+  border-top: 2px solid var(--color-border);
+}
+
+#mdm-deployment-section h3 {
+  color: var(--color-text-primary);
+  margin-bottom: var(--spacing-md);
+}
+
+#mdm-char-count {
+  font-weight: 500;
+  color: var(--color-text-secondary);
+}
+
+/* ==========================================================================
    Print Styles - Professional Print Layout
    ========================================================================== */
 @media print {
