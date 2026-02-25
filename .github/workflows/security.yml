@@ -49,7 +49,7 @@ jobs:
 
       # Secret Detection
       - name: TruffleHog Secret Scan
-        uses: trufflesecurity/trufflehog@f15cb8b37b9b70056bc82a8eb7151f75fad27a71 # v3.90.13
+        uses: trufflesecurity/trufflehog@aade3bff5594fe8808578dd4db3dfeae9bf2abdc # v3.91.1
         continue-on-error: true
         with:
           base: "${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before || github.event.repository.default_branch }}"
