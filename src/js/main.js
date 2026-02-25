@@ -1715,7 +1715,7 @@ const PackageBuilder = (function () {
       let isValid = false;
 
       if (field.type === 'file') {
-        isValid = field.files && field.files.length > 0;
+        isValid = field.files && field.files.length > 0 && field.files[0].name.endsWith('.p12');
       } else if (field.tagName === 'SELECT') {
         isValid = field.value && field.value.trim() !== '';
       } else {
@@ -1837,6 +1837,8 @@ const PackageBuilder = (function () {
           quicOption.disabled = false;
           quicOption.hidden = false;
         }
+        // Re-trigger protocol validation so CSS reflects the current value
+        protocolSelect.dispatchEvent(new Event('change'));
         updatePackageNamePreview();
       });
     }
