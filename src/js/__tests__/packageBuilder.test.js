@@ -616,4 +616,104 @@ describe('PackageBuilder', () => {
       expect(proto.classList.contains('field-invalid')).toBe(false);
     });
   });
+
+  describe('build gate file type validation', () => {
+    it('rejects non-.p12 CA certificate file', async () => {
+      document.getElementById('package-host').value = 'tak.example.com';
+      document.getElementById('package-port').value = '8089';
+      document.getElementById('package-protocol').value = 'ssl';
+      document.getElementById('package-deployment').value = 'auto-enroll';
+      document.getElementById('package-username').value = 'user1';
+      document.getElementById('package-password').value = 'pass1';
+      document.getElementById('package-ca-pass').value = 'capass';
+
+      // Wrong file type — .cer instead of .p12
+      const wrongTypeFile = new File(['cert-data'], 'ca.cer');
+      Object.defineProperty(document.getElementById('pkg-ca'), 'files', {
+        value: [wrongTypeFile],
+        configurable: true
+      });
+
+      const mockLink = document.createElement('a');
+      mockLink.click = jest.fn();
+      jest.spyOn(document, 'createElement').mockReturnValue(mockLink);
+
+      await window.PackageBuilder.buildPackage();
+
+      // Package should NOT have been built — wrong file type
+      expect(mockZipFile).not.toHaveBeenCalled();
+    });
+
+    it('rejects non-.p12 client certificate file for soft-cert deployment', async () => {
+      document.getElementById('package-host').value = 'tak.example.com';
+      document.getElementById('package-port').value = '8089';
+      document.getElementById('package-protocol').value = 'ssl';
+      document.getElementById('package-deployment').value = 'soft-cert';
+      document.getElementById('package-ca-pass').value = 'capass';
+      document.getElementById('package-client-pass').value = 'clientpass';
+
+      const mockCAFile = new File(['ca'], 'ca.p12');
+      Object.defineProperty(document.getElementById('pkg-ca'), 'files', {
+        value: [mockCAFile],
+        configurable: true
+      });
+
+      // Wrong file type for client cert
+      const wrongClientFile = new File(['client-data'], 'client.cer');
+      Object.defineProperty(document.getElementById('pkg-client'), 'files', {
+        value: [wrongClientFile],
+        configurable: true
+      });
+
+      const mockLink = document.createElement('a');
+      mockLink.click = jest.fn();
+      jest.spyOn(document, 'createElement').mockReturnValue(mockLink);
+
+      await window.PackageBuilder.buildPackage();
+
+      // Package should NOT have been built — wrong client cert file type
+      expect(mockZipFile).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('protocol revalidation on client change', () => {
+    function wrapInFormGroup (id) {
+      const el = document.getElementById(id);
+      if (!el.closest('.form-group')) {
+        const group = document.createElement('div');
+        group.className = 'form-group';
+        el.parentNode.insertBefore(group, el);
+        group.appendChild(el);
+      }
+      return el;
+    }
+
+    afterEach(() => {
+      jest.restoreAllMocks();
+      jest.useRealTimers();
+    });
+
+    it('marks protocol valid after switching client from iTAK to ATAK when quic was invalid', () => {
+      jest.useFakeTimers();
+
+      // iTAK + quic = invalid combination
+      document.getElementById('package-client').value = 'itak';
+      document.getElementById('package-protocol').value = 'quic';
+      const protoEl = wrapInFormGroup('package-protocol');
+
+      window.PackageBuilder.init();
+      jest.runAllTimers();
+
+      // quic is invalid for iTAK
+      expect(protoEl.classList.contains('field-invalid')).toBe(true);
+
+      // Switch to ATAK — quic becomes valid
+      document.getElementById('package-client').value = 'atak';
+      document.getElementById('package-client').dispatchEvent(new Event('change'));
+
+      // Protocol field must be revalidated and show valid
+      expect(protoEl.classList.contains('field-invalid')).toBe(false);
+      expect(protoEl.classList.contains('field-valid')).toBe(true);
+    });
+  });
 });
