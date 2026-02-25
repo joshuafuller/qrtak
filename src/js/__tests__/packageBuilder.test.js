@@ -562,4 +562,58 @@ describe('PackageBuilder', () => {
       expect(configPrefCall[1]).toContain('tak.example.com:8089:quic');
     });
   });
+
+  describe('protocol field validation', () => {
+    afterEach(() => {
+      jest.restoreAllMocks();
+      jest.useRealTimers();
+    });
+
+    function setupFormAndValidate ({ client = 'atak', protocol = 'ssl' } = {}) {
+      jest.useFakeTimers();
+      document.getElementById('package-client').value = client;
+      document.getElementById('package-protocol').value = protocol;
+      // Wrap in a div.form-group so validateField can find it
+      const protoEl = document.getElementById('package-protocol');
+      if (!protoEl.closest('.form-group')) {
+        const group = document.createElement('div');
+        group.className = 'form-group';
+        protoEl.parentNode.insertBefore(group, protoEl);
+        group.appendChild(protoEl);
+      }
+      window.PackageBuilder.init();
+      // Advance past the 100ms setTimeout that triggers initial validation
+      jest.runAllTimers();
+    }
+
+    it('ssl is valid for ATAK', () => {
+      setupFormAndValidate({ client: 'atak', protocol: 'ssl' });
+      const proto = document.getElementById('package-protocol');
+      expect(proto.classList.contains('field-invalid')).toBe(false);
+    });
+
+    it('tcp is valid for ATAK', () => {
+      setupFormAndValidate({ client: 'atak', protocol: 'tcp' });
+      const proto = document.getElementById('package-protocol');
+      expect(proto.classList.contains('field-invalid')).toBe(false);
+    });
+
+    it('quic is valid for ATAK', () => {
+      setupFormAndValidate({ client: 'atak', protocol: 'quic' });
+      const proto = document.getElementById('package-protocol');
+      expect(proto.classList.contains('field-invalid')).toBe(false);
+    });
+
+    it('ssl is valid for iTAK', () => {
+      setupFormAndValidate({ client: 'itak', protocol: 'ssl' });
+      const proto = document.getElementById('package-protocol');
+      expect(proto.classList.contains('field-invalid')).toBe(false);
+    });
+
+    it('tcp is valid for iTAK', () => {
+      setupFormAndValidate({ client: 'itak', protocol: 'tcp' });
+      const proto = document.getElementById('package-protocol');
+      expect(proto.classList.contains('field-invalid')).toBe(false);
+    });
+  });
 });
