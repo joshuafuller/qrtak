@@ -16,6 +16,13 @@
 * **deps:** bump renovatebot/github-action from 43.0.9 to 43.0.14 ([#142](https://github.com/joshuafuller/qrtak/issues/142)) ([b29c40f](https://github.com/joshuafuller/qrtak/commit/b29c40fc4ec89b9c0c1ed387527a19b55b316258))
 * **deps:** bump trufflesecurity/trufflehog from 3.90.5 to 3.90.8 ([#141](https://github.com/joshuafuller/qrtak/issues/141)) ([1ffcf61](https://github.com/joshuafuller/qrtak/commit/1ffcf619b28aef552ebf54661cad0f9ed091dedf))
 
+## [4.0.6](https://github.com/joshuafuller/qrtak/compare/qrtak-v4.0.5...qrtak-v4.0.6) (2026-02-25)
+
+
+### Bug Fixes
+
+* close two validation gaps in Data Package Builder ([#248](https://github.com/joshuafuller/qrtak/issues/248)) ([e0a0551](https://github.com/joshuafuller/qrtak/commit/e0a0551671d0e542df6af5e20a9dadcaf7a50600))
+
 ## [4.0.5](https://github.com/joshuafuller/qrtak/compare/qrtak-v4.0.4...qrtak-v4.0.5) (2026-02-25)
 
 
