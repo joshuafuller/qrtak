@@ -1632,7 +1632,7 @@ const PackageBuilder = (function () {
 
   function validateProtocol (value) {
     const client = document.getElementById('package-client')?.value || 'atak';
-    const allowed = client === 'itak' ? ['http', 'https'] : ['http', 'https', 'quic'];
+    const allowed = client === 'itak' ? ['ssl', 'tcp'] : ['ssl', 'tcp', 'quic'];
     return value && allowed.includes(value);
   }
 
