@@ -16,6 +16,59 @@
 * **deps:** bump renovatebot/github-action from 43.0.9 to 43.0.14 ([#142](https://github.com/joshuafuller/qrtak/issues/142)) ([b29c40f](https://github.com/joshuafuller/qrtak/commit/b29c40fc4ec89b9c0c1ed387527a19b55b316258))
 * **deps:** bump trufflesecurity/trufflehog from 3.90.5 to 3.90.8 ([#141](https://github.com/joshuafuller/qrtak/issues/141)) ([1ffcf61](https://github.com/joshuafuller/qrtak/commit/1ffcf619b28aef552ebf54661cad0f9ed091dedf))
 
+## [4.0.2](https://github.com/joshuafuller/qrtak/compare/qrtak-v4.0.1...qrtak-v4.0.2) (2026-02-25)
+
+
+### Dependency Updates
+
+* **deps:** bump actions/checkout from 5 to 6 ([#206](https://github.com/joshuafuller/qrtak/issues/206)) ([7279cb5](https://github.com/joshuafuller/qrtak/commit/7279cb5a6948b817592860fca86b4e1226270538))
+* **deps:** bump actions/upload-artifact from 4 to 5 ([#187](https://github.com/joshuafuller/qrtak/issues/187)) ([93503ae](https://github.com/joshuafuller/qrtak/commit/93503aedaf7bd372893c907d52822aec616992c8))
+* **deps:** bump anchore/scan-action from 7.1.0 to 7.2.0 ([#208](https://github.com/joshuafuller/qrtak/issues/208)) ([0d1174a](https://github.com/joshuafuller/qrtak/commit/0d1174a8f6885e8c9f5d2407451950ef12639f59))
+* **deps:** bump js-yaml ([#204](https://github.com/joshuafuller/qrtak/issues/204)) ([2b65c00](https://github.com/joshuafuller/qrtak/commit/2b65c00b3e7e4c8ccfbaa23f07f37824fb61b30a))
+* **deps:** bump renovatebot/github-action from 43.0.19 to 44.0.2 ([#198](https://github.com/joshuafuller/qrtak/issues/198)) ([fcf8b15](https://github.com/joshuafuller/qrtak/commit/fcf8b1513d73161b56071c80fe7719dc395d6ae8))
+* **deps:** bump renovatebot/github-action from 44.0.2 to 44.0.4 ([#207](https://github.com/joshuafuller/qrtak/issues/207)) ([ca685ff](https://github.com/joshuafuller/qrtak/commit/ca685ff5dced85e549101b15c15f4fd483e27cb2))
+* **deps:** bump trufflesecurity/trufflehog from 3.90.11 to 3.90.13 ([#197](https://github.com/joshuafuller/qrtak/issues/197)) ([60f07f4](https://github.com/joshuafuller/qrtak/commit/60f07f430b0690bf3705ee95145c2436983ffe07))
+* **deps:** bump trufflesecurity/trufflehog from 3.90.13 to 3.91.1 ([#209](https://github.com/joshuafuller/qrtak/issues/209)) ([a5987b8](https://github.com/joshuafuller/qrtak/commit/a5987b8b8114d90988d84be24fce869ccd953c96))
+
+
+### Development Dependency Updates
+
+* **deps-dev:** bump @axe-core/playwright from 4.11.0 to 4.11.1 ([#231](https://github.com/joshuafuller/qrtak/issues/231)) ([611e9e5](https://github.com/joshuafuller/qrtak/commit/611e9e5d4d0e35fbd8cc06326880bea368956e8d))
+* **deps-dev:** bump @babel/core in the dev-dependencies group ([#219](https://github.com/joshuafuller/qrtak/issues/219)) ([693058d](https://github.com/joshuafuller/qrtak/commit/693058d5c3a5b4f1b3ceef651421d7286e019343))
+* **deps-dev:** bump @babel/core in the dev-dependencies group ([#224](https://github.com/joshuafuller/qrtak/issues/224)) ([7e7d184](https://github.com/joshuafuller/qrtak/commit/7e7d1849bad2a3992044cea22e976d244c0957c7))
+* **deps-dev:** bump @playwright/test from 1.56.1 to 1.57.0 ([#210](https://github.com/joshuafuller/qrtak/issues/210)) ([2ce134f](https://github.com/joshuafuller/qrtak/commit/2ce134f7efcbaac0d351bf32c648046b689afde9))
+* **deps-dev:** bump @playwright/test from 1.57.0 to 1.58.0 ([#222](https://github.com/joshuafuller/qrtak/issues/222)) ([6afc1af](https://github.com/joshuafuller/qrtak/commit/6afc1af40f80fcc0464f89644e7a00ebc5c34d4e))
+* **deps-dev:** bump @playwright/test from 1.58.0 to 1.58.2 ([#229](https://github.com/joshuafuller/qrtak/issues/229)) ([7a4e8a0](https://github.com/joshuafuller/qrtak/commit/7a4e8a0abf32cc051405a7f45e7346d387111ac2))
+* **deps-dev:** bump eslint in the dev-dependencies group ([#214](https://github.com/joshuafuller/qrtak/issues/214)) ([62cc58b](https://github.com/joshuafuller/qrtak/commit/62cc58b85ef0abd992d24c075d31c07cc8ce3217))
+* **deps-dev:** bump fast-xml-parser from 5.3.0 to 5.3.2 ([#201](https://github.com/joshuafuller/qrtak/issues/201)) ([0de6c28](https://github.com/joshuafuller/qrtak/commit/0de6c28dc92f26b77d3220a5caee3b5f8e557340))
+* **deps-dev:** bump fast-xml-parser from 5.3.2 to 5.3.3 ([#216](https://github.com/joshuafuller/qrtak/issues/216)) ([da8caf5](https://github.com/joshuafuller/qrtak/commit/da8caf5ffcb6b0a87c6d0812048ed5e4a80fafd5))
+* **deps-dev:** bump fast-xml-parser from 5.3.3 to 5.3.4 ([#226](https://github.com/joshuafuller/qrtak/issues/226)) ([9565327](https://github.com/joshuafuller/qrtak/commit/95653277d1e9f73dc77c058b7fba718172095a40))
+* **deps-dev:** bump fast-xml-parser from 5.3.4 to 5.3.5 ([#230](https://github.com/joshuafuller/qrtak/issues/230)) ([f297d06](https://github.com/joshuafuller/qrtak/commit/f297d0641eef01a9c392bc26fc6beedb46258021))
+* **deps-dev:** bump fast-xml-parser from 5.3.5 to 5.3.6 ([#234](https://github.com/joshuafuller/qrtak/issues/234)) ([1181bf0](https://github.com/joshuafuller/qrtak/commit/1181bf0e252fde9a4165ad88c968efbdcb733f31))
+* **deps-dev:** bump fast-xml-parser from 5.3.6 to 5.3.7 ([#235](https://github.com/joshuafuller/qrtak/issues/235)) ([92595f1](https://github.com/joshuafuller/qrtak/commit/92595f1fbab93f43815e6d4abb543bf11d87bc4d))
+* **deps-dev:** bump lodash from 4.17.21 to 4.17.23 ([#220](https://github.com/joshuafuller/qrtak/issues/220)) ([f428938](https://github.com/joshuafuller/qrtak/commit/f4289384851ceec5ac766930a34f9c43c82d1f50))
+* **deps-dev:** bump playwright from 1.56.1 to 1.57.0 ([#212](https://github.com/joshuafuller/qrtak/issues/212)) ([5c59d01](https://github.com/joshuafuller/qrtak/commit/5c59d01df97f51e8c905615aa0063eb84829d1b3))
+* **deps-dev:** bump playwright from 1.57.0 to 1.58.0 ([#221](https://github.com/joshuafuller/qrtak/issues/221)) ([ae00e6d](https://github.com/joshuafuller/qrtak/commit/ae00e6d6a32ae2bd3bbc53a2c1c9ebc000d1d260))
+* **deps-dev:** bump playwright from 1.58.0 to 1.58.1 ([#225](https://github.com/joshuafuller/qrtak/issues/225)) ([15d0ff2](https://github.com/joshuafuller/qrtak/commit/15d0ff21698dd7ed2e714f292744fb27172a9bb6))
+* **deps-dev:** bump playwright from 1.58.1 to 1.58.2 ([#228](https://github.com/joshuafuller/qrtak/issues/228)) ([b5e6143](https://github.com/joshuafuller/qrtak/commit/b5e6143673709cf9a227007f532d276db04ff312))
+* **deps-dev:** bump the dev-dependencies group across 1 directory with 2 updates ([#196](https://github.com/joshuafuller/qrtak/issues/196)) ([acc5b38](https://github.com/joshuafuller/qrtak/commit/acc5b385e223bfdd8651ac81bee696476b4acc57))
+* **deps-dev:** bump vite from 7.1.11 to 7.2.2 ([#199](https://github.com/joshuafuller/qrtak/issues/199)) ([b755efe](https://github.com/joshuafuller/qrtak/commit/b755efe9de14894d0c4f1324145844d6bbc72556))
+* **deps-dev:** bump vite from 7.2.2 to 7.2.4 ([#205](https://github.com/joshuafuller/qrtak/issues/205)) ([80d36d4](https://github.com/joshuafuller/qrtak/commit/80d36d477d689c289f94a6d92d0c315a4681dead))
+* **deps-dev:** bump vite from 7.2.4 to 7.2.7 ([#213](https://github.com/joshuafuller/qrtak/issues/213)) ([e0513c2](https://github.com/joshuafuller/qrtak/commit/e0513c2b8f26a52c8243a776f61b1f977273049b))
+* **deps-dev:** bump vite from 7.2.7 to 7.3.0 ([#215](https://github.com/joshuafuller/qrtak/issues/215)) ([0f656f6](https://github.com/joshuafuller/qrtak/commit/0f656f628ff7b6cf2ccb29c19eac35b782482ebb))
+* **deps-dev:** bump vite from 7.3.0 to 7.3.1 ([#218](https://github.com/joshuafuller/qrtak/issues/218)) ([48c0830](https://github.com/joshuafuller/qrtak/commit/48c08303feaacb1f136af56d1ff9e7241c3c9454))
+
+
+### Bug Fixes
+
+* correct TAK protocol tokens and soft-cert config.pref key naming ([d5b4369](https://github.com/joshuafuller/qrtak/commit/d5b4369180d2d55d65ed1e5e3c9388a168d3138d))
+* use single quotes in main.js to satisfy ESLint ([#242](https://github.com/joshuafuller/qrtak/issues/242)) ([a629dfd](https://github.com/joshuafuller/qrtak/commit/a629dfd10c57168da788d890d8bcb13562156d94))
+
+
+### Documentation
+
+* correct tak:// enrollment URL documentation ([3d6bab0](https://github.com/joshuafuller/qrtak/commit/3d6bab03e8975c9573ec521ddf11a4e8d89dd499))
+
 ## [4.0.1](https://github.com/joshuafuller/qrtak/compare/qrtak-v4.0.0...qrtak-v4.0.1) (2025-11-04)
 
 
