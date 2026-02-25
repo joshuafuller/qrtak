@@ -1712,7 +1712,7 @@ const PackageBuilder = (function () {
       }
 
       // Check actual field values instead of CSS classes
-      let isValid = false;
+      let isValid;
 
       if (field.type === 'file') {
         isValid = field.files && field.files.length > 0 && field.files[0].name.endsWith('.p12');
