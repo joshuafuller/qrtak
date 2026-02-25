@@ -8,7 +8,7 @@ test('Data Package Builder: builds and downloads ZIP (auto-enroll)', async ({ pa
   // Fill required fields for auto-enroll
   await page.locator('#package-name').fill('E2E-Package');
   await page.locator('#package-host').fill('tak.example.com');
-  await page.locator('#package-protocol').selectOption('https');
+  await page.locator('#package-protocol').selectOption('ssl');
   await page.locator('#package-port').fill('8089');
   await page.locator('#package-username').fill('demo');
   await page.locator('#package-password').fill('secret');
