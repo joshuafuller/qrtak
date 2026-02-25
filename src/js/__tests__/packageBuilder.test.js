@@ -65,9 +65,9 @@ describe('PackageBuilder', () => {
         <input id="package-host" placeholder="Server hostname" />
         <input id="package-port" value="8089" />
         <select id="package-protocol">
-          <option value="https">HTTPS</option>
-          <option value="http">HTTP</option>
-          <option value="quic">QUIC</option>
+          <option value="ssl">TCP+TLS (SSL)</option>
+          <option value="tcp">TCP (Unencrypted)</option>
+          <option value="quic">QUIC (UDP+TLS)</option>
         </select>
         <input id="package-username" placeholder="Username" />
         <input id="package-password" placeholder="Password" />
@@ -193,6 +193,112 @@ describe('PackageBuilder', () => {
     });
   });
 
+  describe('config.pref preference key naming', () => {
+    // These tests verify that all per-connection keys in cot_streams use the
+    // indexed suffix (e.g. caPassword0) that ATAK requires.
+    // Source: PreferenceControl.java:537-569 — reads every cert key as
+    // mapping.get("caPassword" + j), mapping.get("caLocation" + j), etc.
+    beforeEach(() => {
+      window.PackageBuilder.init();
+    });
+
+    afterEach(() => {
+      jest.restoreAllMocks();
+    });
+
+    function setupSoftCertForm () {
+      document.getElementById('package-client').value = 'atak';
+      document.getElementById('package-deployment').value = 'soft-cert';
+      document.getElementById('package-host').value = 'tak.example.com';
+      document.getElementById('package-port').value = '8089';
+      document.getElementById('package-protocol').value = 'ssl';
+      document.getElementById('package-ca-pass').value = 'capass';
+      document.getElementById('package-client-pass').value = 'clientpass';
+
+      const mockCAFile = new File(['ca'], 'ca.p12');
+      const mockClientFile = new File(['client'], 'client.p12');
+      Object.defineProperty(document.getElementById('pkg-ca'), 'files', { value: [mockCAFile], configurable: true });
+      Object.defineProperty(document.getElementById('pkg-client'), 'files', { value: [mockClientFile], configurable: true });
+    }
+
+    function setupAutoEnrollForm () {
+      document.getElementById('package-client').value = 'atak';
+      document.getElementById('package-deployment').value = 'auto-enroll';
+      document.getElementById('package-host').value = 'tak.example.com';
+      document.getElementById('package-port').value = '8089';
+      document.getElementById('package-protocol').value = 'ssl';
+      document.getElementById('package-ca-pass').value = 'capass';
+      // auto-enroll requires username and password (validatePackageForm checks these)
+      document.getElementById('package-username').value = 'testuser';
+      document.getElementById('package-password').value = 'testpass';
+
+      const mockCAFile = new File(['ca'], 'ca.p12');
+      Object.defineProperty(document.getElementById('pkg-ca'), 'files', { value: [mockCAFile], configurable: true });
+      Object.defineProperty(document.getElementById('pkg-client'), 'files', { value: [], configurable: true });
+    }
+
+    function getConfigPref () {
+      const call = mockZipFile.mock.calls.find(c => c[0] === 'certs/config.pref' || c[0] === 'config.pref');
+      expect(call).toBeDefined();
+      return call[1];
+    }
+
+    it('soft-cert: caPassword uses indexed key caPassword0 (not caPassword)', async () => {
+      setupSoftCertForm();
+      await window.PackageBuilder.buildPackage();
+      const pref = getConfigPref();
+      expect(pref).toContain('key="caPassword0"');
+      expect(pref).not.toContain('key="caPassword"');
+    });
+
+    it('soft-cert: caLocation uses indexed key caLocation0 (not caLocation)', async () => {
+      setupSoftCertForm();
+      await window.PackageBuilder.buildPackage();
+      const pref = getConfigPref();
+      expect(pref).toContain('key="caLocation0"');
+      expect(pref).not.toContain('key="caLocation"');
+    });
+
+    it('soft-cert: clientPassword uses indexed key clientPassword0 (not clientPassword)', async () => {
+      setupSoftCertForm();
+      await window.PackageBuilder.buildPackage();
+      const pref = getConfigPref();
+      expect(pref).toContain('key="clientPassword0"');
+      expect(pref).not.toContain('key="clientPassword"');
+    });
+
+    it('soft-cert: certificateLocation uses indexed key certificateLocation0 (not certificateLocation)', async () => {
+      setupSoftCertForm();
+      await window.PackageBuilder.buildPackage();
+      const pref = getConfigPref();
+      expect(pref).toContain('key="certificateLocation0"');
+      expect(pref).not.toContain('key="certificateLocation"');
+    });
+
+    it('auto-enroll: caPassword0 and caLocation0 are present', async () => {
+      setupAutoEnrollForm();
+      await window.PackageBuilder.buildPackage();
+      const pref = getConfigPref();
+      expect(pref).toContain('key="caPassword0"');
+      expect(pref).toContain('key="caLocation0"');
+    });
+
+    it('auto-enroll: enrollForCertificateWithTrust0 is present', async () => {
+      setupAutoEnrollForm();
+      await window.PackageBuilder.buildPackage();
+      const pref = getConfigPref();
+      expect(pref).toContain('key="enrollForCertificateWithTrust0"');
+    });
+
+    it('auto-enroll: no clientPassword or certificateLocation keys present', async () => {
+      setupAutoEnrollForm();
+      await window.PackageBuilder.buildPackage();
+      const pref = getConfigPref();
+      expect(pref).not.toContain('key="clientPassword');
+      expect(pref).not.toContain('key="certificateLocation');
+    });
+  });
+
   describe('Package building', () => {
     beforeEach(() => {
       window.PackageBuilder.init();
@@ -204,7 +310,7 @@ describe('PackageBuilder', () => {
       document.getElementById('package-deployment').value = 'soft-cert';
       document.getElementById('package-host').value = 'tak.example.com';
       document.getElementById('package-port').value = '8089';
-      document.getElementById('package-protocol').value = 'https';
+      document.getElementById('package-protocol').value = 'ssl';
       document.getElementById('package-username').value = 'testuser';
       document.getElementById('package-password').value = 'testpass';
       document.getElementById('package-ca-pass').value = 'capass';
@@ -249,7 +355,7 @@ describe('PackageBuilder', () => {
       document.getElementById('package-deployment').value = 'auto-enroll';
       document.getElementById('package-host').value = 'tak.example.com';
       document.getElementById('package-port').value = '8089';
-      document.getElementById('package-protocol').value = 'https';
+      document.getElementById('package-protocol').value = 'ssl';
       document.getElementById('package-username').value = 'testuser';
       document.getElementById('package-password').value = 'testpass';
       document.getElementById('package-ca-pass').value = 'capass';
@@ -344,7 +450,7 @@ describe('PackageBuilder', () => {
       document.getElementById('package-deployment').value = 'soft-cert';
       document.getElementById('package-host').value = 'tak.example.com';
       document.getElementById('package-port').value = '8089';
-      document.getElementById('package-protocol').value = 'https';
+      document.getElementById('package-protocol').value = 'ssl';
       document.getElementById('package-ca-pass').value = 'atakatak';
       document.getElementById('package-client-pass').value = 'clientpass';
 

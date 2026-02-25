@@ -1796,13 +1796,15 @@ const PackageBuilder = (function () {
       const client = clientSelect?.value || 'atak';
 
       if (client === 'itak' && selectedProtocol === 'quic') {
-        protocolSelect.value = 'https';
+        protocolSelect.value = 'ssl';
       }
 
       if (protocolSelect.value === 'quic') {
         portInput.value = '8090';
-      } else if (protocolSelect.value === 'https' || protocolSelect.value === 'http') {
+      } else if (protocolSelect.value === 'ssl') {
         portInput.value = '8089';
+      } else if (protocolSelect.value === 'tcp') {
+        portInput.value = '8087';
       }
 
       // Update package name preview when protocol changes
@@ -1819,7 +1821,7 @@ const PackageBuilder = (function () {
         const quicOption = protocolSelect.querySelector('option[value="quic"]');
         if (isITAK) {
           if (protocolSelect.value === 'quic') {
-            protocolSelect.value = 'https';
+            protocolSelect.value = 'ssl';
             portInput.value = '8089';
           }
           if (quicOption) {
@@ -1850,7 +1852,7 @@ const PackageBuilder = (function () {
     const client = document.getElementById('package-client')?.value || 'atak';
     const team = document.getElementById('package-team')?.value?.trim() || '';
     const role = document.getElementById('package-role')?.value?.trim() || '';
-    const proto = document.getElementById('package-protocol')?.value || 'https';
+    const proto = document.getElementById('package-protocol')?.value || 'ssl';
     const port = document.getElementById('package-port')?.value?.trim() || '';
 
     // Generate dynamic name
@@ -1931,10 +1933,10 @@ const PackageBuilder = (function () {
       }
     }
 
-    // Add protocol indicator if it's not standard HTTPS
+    // Add protocol indicator if it's not standard TCP+TLS
     if (protocol === 'quic' && client !== 'itak') {
       parts.push('quic');
-    } else if (protocol === 'http') {
+    } else if (protocol === 'tcp') {
       parts.push('tcp');
     }
 
@@ -1989,14 +1991,8 @@ const PackageBuilder = (function () {
         return;
       }
 
-      // Map protocol to connection string token
-      let protocolToken;
-
-      if (client === 'itak') {
-        protocolToken = proto === 'https' ? 'ssl' : 'tcp';
-      } else {
-        protocolToken = proto === 'quic' ? 'quic' : (proto === 'https' ? 'ssl' : 'tcp');
-      }
+      // Protocol option values (ssl/tcp/quic) map directly to TAK connect string tokens
+      const protocolToken = proto;
 
       const connectString = `${host}:${port}:${protocolToken}`;
 
@@ -2079,25 +2075,26 @@ const PackageBuilder = (function () {
     // Authentication and credential entries
     const authEntries = [];
 
-    // Always include CA password
-    authEntries.push(`<entry key="caPassword${isSoft ? '' : '0'}" class="class java.lang.String">${sanitizeInput(caPass)}</entry>`);
+    // Always include CA password — all per-connection keys use index suffix per
+    // PreferenceControl.java:564-569 which reads mapping.get("caPassword" + j)
+    authEntries.push(`<entry key="caPassword0" class="class java.lang.String">${sanitizeInput(caPass)}</entry>`);
 
     // Add username/password if provided
     if (username) {
-      authEntries.push(`<entry key="username${isSoft ? '' : '0'}" class="class java.lang.String">${sanitizeInput(username)}</entry>`);
+      authEntries.push(`<entry key="username0" class="class java.lang.String">${sanitizeInput(username)}</entry>`);
     }
 
     // Add authentication settings
     if (username && password) {
-      authEntries.push(`<entry key="useAuth${isSoft ? '' : '0'}" class="class java.lang.Boolean">true</entry>`);
-      authEntries.push(`<entry key="cacheCreds${isSoft ? '' : '0'}" class="class java.lang.Boolean">${cacheCreds}</entry>`);
+      authEntries.push(`<entry key="useAuth0" class="class java.lang.Boolean">true</entry>`);
+      authEntries.push(`<entry key="cacheCreds0" class="class java.lang.Boolean">${cacheCreds}</entry>`);
       // Note: Password is not stored in prefs for security - provided during connection
     }
 
-    // Deployment-specific entries
+    // Deployment-specific entries — cert keys use index suffix (PreferenceControl.java:564-569)
     const extraSoftEntries = isSoft ?
-      `<entry key="clientPassword" class="class java.lang.String">${sanitizeInput(clientPass)}</entry>
-    <entry key="certificateLocation" class="class java.lang.String">${certPathPrefix ? `${certPathPrefix}/` : ''}clientCert.p12</entry>` :
+      `<entry key="clientPassword0" class="class java.lang.String">${sanitizeInput(clientPass)}</entry>
+    <entry key="certificateLocation0" class="class java.lang.String">${certPathPrefix ? `${certPathPrefix}/` : ''}clientCert.p12</entry>` :
       '<entry key="enrollForCertificateWithTrust0" class="class java.lang.Boolean">true</entry>';
 
     const allAuthEntries = authEntries.join('\n    ');
@@ -2122,7 +2119,7 @@ const PackageBuilder = (function () {
     <entry key="description0" class="class java.lang.String">TAK Server</entry>
     <entry key="enabled0" class="class java.lang.Boolean">true</entry>
     <entry key="connectString0" class="class java.lang.String">${sanitizeInput(connectString)}</entry>
-    <entry key="caLocation${isSoft ? '' : '0'}" class="class java.lang.String">${certPathPrefix ? `${certPathPrefix}/` : ''}caCert.p12</entry>
+    <entry key="caLocation0" class="class java.lang.String">${certPathPrefix ? `${certPathPrefix}/` : ''}caCert.p12</entry>
     ${allAuthEntries}
     ${extraSoftEntries}
   </preference>

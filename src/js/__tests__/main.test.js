@@ -219,9 +219,9 @@ describe('QUIC Protocol Support', () => {
       <input id="package-host" value="tak.example.com" />
       <input id="package-port" value="8089" />
       <select id="package-protocol">
-        <option value="https">HTTPS</option>
-        <option value="http">HTTP</option>
-        <option value="quic">QUIC</option>
+        <option value="ssl">TCP+TLS (SSL)</option>
+        <option value="tcp">TCP (Unencrypted)</option>
+        <option value="quic">QUIC (UDP+TLS)</option>
       </select>
     `;
   });

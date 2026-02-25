@@ -413,7 +413,7 @@ describe('Critical Missing Test Coverage', () => {
           <input id="package-host" value="" />
           <input id="package-port" value="8089" />
           <select id="package-protocol">
-            <option value="https" selected>HTTPS</option>
+            <option value="ssl" selected>TCP+TLS (SSL)</option>
           </select>
           <input id="pkg-ca" type="file" />
           <input id="package-ca-pass" value="" />
