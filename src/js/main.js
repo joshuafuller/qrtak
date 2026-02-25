@@ -2091,7 +2091,7 @@ const PackageBuilder = (function () {
 
     // Add authentication settings
     if (username && password) {
-      authEntries.push(`<entry key="useAuth0" class="class java.lang.Boolean">true</entry>`);
+      authEntries.push('<entry key="useAuth0" class="class java.lang.Boolean">true</entry>');
       authEntries.push(`<entry key="cacheCreds0" class="class java.lang.Boolean">${cacheCreds}</entry>`);
       // Note: Password is not stored in prefs for security - provided during connection
     }
