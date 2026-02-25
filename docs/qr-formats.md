@@ -24,9 +24,18 @@ ATAK 5.1+ supports QR code onboarding using the `tak://` URI scheme. There are t
 - **Fields:**
   | Name     | Description                | Acceptable Values         |
   |----------|----------------------------|--------------------------|
-  | host     | Target TAK Server          | [FQDN or IP address]     |
+  | host     | TAK Server — hostname/IP, or connect string `host:port` or `host:port:quic` | FQDN, IP, or connect string |
   | username | TAK credential to be used  | string                   |
   | token    | TAK token/password         | string                   |
+
+- **Connect string examples for `host`:**
+  ```
+  host=server.com                 → server.com:8089:ssl  (defaults)
+  host=server.com:8090            → server.com:8090:ssl
+  host=server.com:8090:quic       → server.com:8090:quic
+  ```
+  Only `quic` is accepted as an explicit protocol; all other values fall back to `ssl`.
+  Source: `CertificateEnrollmentClient.java:771-787` (ATAK CIV 5.5.0.0)
 
 - **Security Warning:** Credentials are passed in plaintext. Use only in controlled environments with proper SOPs and auditing.
 
@@ -94,7 +103,7 @@ iTAK does not use the `tak://` URI scheme for server onboarding. It scans a plai
   | description | Human-friendly server name     | UTF‑8; no commas; avoid control chars  |
   | host        | TAK server FQDN or IPv4        | IPv6 typically not supported via CSV   |
   | port        | Server port                    | Required; 1–65535                      |
-  | protocol    | Transport                      | ssl (HTTPS) or tcp (HTTP) only         |
+  | protocol    | Transport                      | `ssl` (SSL/TLS) or `tcp` (plain TCP)   |
 
 - **Important constraints:**
   - Exactly 4 comma-separated fields; no extra/missing fields.

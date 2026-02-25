@@ -52,13 +52,16 @@ if ("com.atakmap.app/enroll".equals(u.getHost() + u.getPath())) {
 ```
 
 **Parameters:**
-- `host` (required) - Server hostname or IP
+- `host` (required) - Server hostname/IP, **or connect string** in `host:port:protocol` format
 - `username` (required) - Username for authentication
 - `token` (required) - Password/token
 
-**Example:**
+The `host` value is passed directly to `CertificateEnrollmentClient.onEnrollmentOk()` which splits on `:` to extract host, port (default 8089), and protocol (only `quic` accepted; all else → `ssl`). Source: `CertificateEnrollmentClient.java:771-787` (ATAK CIV 5.5.0.0).
+
+**Examples:**
 ```
 tak://com.atakmap.app/enroll?host=server.example.com&username=user1&token=password123
+tak://com.atakmap.app/enroll?host=server.example.com:8090:quic&username=user1&token=password123
 ```
 
 ### 2. Import URL
@@ -200,21 +203,20 @@ public enum StreamingTransport {
 
 ### What CAN be specified in TAK:// URLs:
 1. **Enrollment (`/enroll`):**
-   - host
-   - username
-   - token
+   - `host` — hostname, or connect string `host:port:protocol` (e.g., `server.com:8090:quic`)
+   - `username`
+   - `token`
 
 2. **Import (`/import`):**
-   - url
+   - `url`
 
 3. **Preferences (`/preference`):**
    - Multiple key/value/type triplets
 
 ### What CANNOT be specified:
-1. **Port number** - Always defaults to 8089 for enrollment
-2. **Protocol** - Always defaults to SSL for enrollment
-3. **Certificate paths**
-4. **Advanced connection settings**
+1. **Certificate paths** — must use data packages for cert distribution
+2. **Advanced connection settings** (multiple servers, callsign, team, role) — use data packages
+3. **TCP protocol** — only `ssl` (default) and `quic` are supported via enrollment URL
 
 ## Connection String Format (Data Packages Only)
 

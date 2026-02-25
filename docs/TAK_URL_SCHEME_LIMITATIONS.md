@@ -11,20 +11,26 @@ The TAK enrollment URL format is:
 tak://com.atakmap.app/enroll?host=<host>&username=<username>&token=<token>
 ```
 
-**Supported Parameters (ONLY):**
-- `host` - Server hostname or IP address
+**Supported Parameters:**
+- `host` - Server hostname/IP, **or a full connect string** in `host:port:protocol` format
 - `username` - Username for authentication
 - `token` - Password/token for authentication
 
-**NOT Supported:**
-- `port` - Cannot specify custom port
-- `protocol` - Cannot specify protocol (SSL, TLS, QUIC)
-- Any other connection parameters
+### How the `host` Parameter Works
+The `host` parameter is passed directly to `CertificateEnrollmentClient.onEnrollmentOk()`, which parses it as a connect string:
+
+```
+host=server.com              → connects to server.com:8089:ssl
+host=server.com:8090         → connects to server.com:8090:ssl
+host=server.com:8090:quic    → connects to server.com:8090:quic
+```
+
+Only `quic` is explicitly accepted as a protocol value; all other values fall back to `ssl`.
 
 ### Default Connection Behavior
-When ATAK processes enrollment URLs (from `CertificateEnrollmentClient.java`):
-- **Default Port**: 8089
-- **Default Protocol**: "ssl"
+When ATAK processes enrollment URLs (from `CertificateEnrollmentClient.java:771-787`):
+- **Default Port**: 8089 (used if not specified in host)
+- **Default Protocol**: "ssl" (used unless "quic" explicitly specified)
 - **Connection String Format**: `host:port:protocol`
 
 ### Source Code Evidence
@@ -98,23 +104,28 @@ From TAK Server source code:
 
 ## Implications for QR Code Enrollment
 
-### Current Limitations
-1. **Cannot use QUIC via QR enrollment** - Always defaults to SSL on port 8089
-2. **Cannot specify custom ports** - Always uses 8089
-3. **Cannot use alternative protocols** - Always uses SSL
+### What Enrollment QR Codes Support
+Port and protocol CAN be specified via the `host` parameter as a connect string:
 
-### Workaround: Data Packages
-For QUIC or custom port connections, users MUST use data packages with proper connection strings:
+```
+tak://com.atakmap.app/enroll?host=server.com:8090:quic&username=user&token=pass
+```
+
+This is parsed by `CertificateEnrollmentClient.java:771-787`:
+- Port is extracted from the second `:` segment (defaults to 8089)
+- Protocol is extracted from the third `:` segment (only `quic` accepted; all else → `ssl`)
+
+### When to Use Data Packages Instead
+Data packages remain the better option when you need:
+- Pre-provisioned client certificates (soft-cert mode)
+- User profile settings (callsign, team, role)
+- Multiple server connections in one package
+- Non-QUIC alternative protocols (tcp)
 
 #### Data Package config.pref Format
 ```xml
-<preference name="connectString0" value="10.10.10.218:8090:quic"/>
+<entry key="connectString0" class="class java.lang.String">10.10.10.218:8090:quic</entry>
 ```
-
-This allows full specification of:
-- Custom host
-- Custom port (e.g., 8090 for QUIC)
-- Protocol (tcp, ssl, tls, quic)
 
 ## Version History
 - **ATAK 5.1.0.6**: Added "allow caller to specify protocol in connection string for Quick Connect"

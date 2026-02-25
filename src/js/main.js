@@ -1034,14 +1034,19 @@ const TAKConfigManager = (function () {
   /**
    * Update ATAK QR code
    *
-   * IMPORTANT: The tak://com.atakmap.app/enroll URL scheme ONLY supports:
-   * - host (server hostname/IP)
+   * IMPORTANT: The tak://com.atakmap.app/enroll URL scheme supports:
+   * - host (server hostname, OR connect string in host:port:protocol format)
    * - username
    * - token (password)
    *
-   * It does NOT support port or protocol parameters!
-   * ATAK defaults to port 8089 and SSL protocol.
-   * For QUIC or custom ports, users must use data packages.
+   * The 'host' parameter is parsed as a connect string by CertificateEnrollmentClient.java.
+   * Examples:
+   *   host=server.com              → server.com:8089:ssl (defaults)
+   *   host=server.com:8090         → server.com:8090:ssl
+   *   host=server.com:8090:quic    → server.com:8090:quic
+   *
+   * Only 'quic' is explicitly accepted as protocol; all other values fall back to 'ssl'.
+   * Source: CertificateEnrollmentClient.java:771-787 (ATAK CIV 5.5.0.0)
    */
   async function updateATAKQR () {
     const host = document.getElementById('tak-host')?.value || '';

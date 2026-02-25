@@ -25,7 +25,7 @@ TAK (Team Awareness Kit) offers multiple methods for onboarding clients to serve
 
 | Method | Best For | Key Limitation | Security Level |
 |--------|----------|----------------|----------------|
-| **QR Code Enrollment** | Quick field deployment | Port 8089/SSL only | Medium |
+| **QR Code Enrollment** | Quick field deployment | SSL or QUIC only (no TCP) | Medium |
 | **Data Package (Soft-Cert)** | Pre-configured clients | Manual cert distribution | High |
 | **Data Package (Auto-Enroll)** | Enterprise deployment | Requires enrollment server | High |
 | **Manual Configuration** | One-off setups | User complexity | Variable |
@@ -118,10 +118,15 @@ TAK (Team Awareness Kit) offers multiple methods for onboarding clients to serve
 **How it works**:
 1. User scans QR code with ATAK/iTAK
 2. App extracts server host, username, and password
-3. Connects to server on port 8089 using SSL
+3. The `host` parameter is parsed as a connect string (`host:port:protocol`):
+   - Default: port 8089, SSL protocol
+   - Custom port: `host=server.com:8090`
+   - QUIC: `host=server.com:8090:quic`
 4. Downloads CA certificate if needed
 5. Requests client certificate using provided credentials
 6. Stores certificates and establishes connection
+
+Source: `CertificateEnrollmentClient.java:771-787` (ATAK CIV 5.5.0.0)
 
 ### 2. Data Package Import
 **What it is**: A ZIP file containing complete configuration and certificates
