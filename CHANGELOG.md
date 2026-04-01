@@ -16,6 +16,40 @@
 * **deps:** bump renovatebot/github-action from 43.0.9 to 43.0.14 ([#142](https://github.com/joshuafuller/qrtak/issues/142)) ([b29c40f](https://github.com/joshuafuller/qrtak/commit/b29c40fc4ec89b9c0c1ed387527a19b55b316258))
 * **deps:** bump trufflesecurity/trufflehog from 3.90.5 to 3.90.8 ([#141](https://github.com/joshuafuller/qrtak/issues/141)) ([1ffcf61](https://github.com/joshuafuller/qrtak/commit/1ffcf619b28aef552ebf54661cad0f9ed091dedf))
 
+## [4.0.7](https://github.com/joshuafuller/qrtak/compare/qrtak-v4.0.6...qrtak-v4.0.7) (2026-04-01)
+
+
+### Dependency Updates
+
+* **deps:** bump actions/checkout from 5.0.1 to 6.0.2 ([#255](https://github.com/joshuafuller/qrtak/issues/255)) ([d510f69](https://github.com/joshuafuller/qrtak/commit/d510f6901a3bb585c220d9111e19bfb96c392b11))
+* **deps:** bump minimatch ([#251](https://github.com/joshuafuller/qrtak/issues/251)) ([2a06ef5](https://github.com/joshuafuller/qrtak/commit/2a06ef5d097db1d1b7884f0aac215967143afda5))
+* **deps:** bump picomatch ([#270](https://github.com/joshuafuller/qrtak/issues/270)) ([15ebb5f](https://github.com/joshuafuller/qrtak/commit/15ebb5fbef7c789195a2c557370132b8a97c7e73))
+* **deps:** bump renovatebot/github-action from 44.0.4 to 46.1.3 ([#257](https://github.com/joshuafuller/qrtak/issues/257)) ([0446d46](https://github.com/joshuafuller/qrtak/commit/0446d46682d8f37e60938c5ad8099ae455596cc5))
+* **deps:** bump rollup from 4.49.0 to 4.59.0 ([#252](https://github.com/joshuafuller/qrtak/issues/252)) ([94e1599](https://github.com/joshuafuller/qrtak/commit/94e1599c68760739c41bf2de9c9208f007279e39))
+
+
+### Development Dependency Updates
+
+* **deps-dev:** bump eslint in the dev-dependencies group ([#254](https://github.com/joshuafuller/qrtak/issues/254)) ([db0960a](https://github.com/joshuafuller/qrtak/commit/db0960adedee74d0522179626f2ceaa6c24dd32a))
+* **deps-dev:** bump eslint in the dev-dependencies group ([#261](https://github.com/joshuafuller/qrtak/issues/261)) ([3b05c72](https://github.com/joshuafuller/qrtak/commit/3b05c72b4ba51def7457bfe4bc5dc18b730ae8ad))
+* **deps-dev:** bump eslint in the dev-dependencies group ([#268](https://github.com/joshuafuller/qrtak/issues/268)) ([68d151d](https://github.com/joshuafuller/qrtak/commit/68d151dbc8a3666a2286501cdb26309d93082977))
+* **deps-dev:** bump fast-xml-parser from 5.3.7 to 5.3.8 ([#253](https://github.com/joshuafuller/qrtak/issues/253)) ([d2b8e74](https://github.com/joshuafuller/qrtak/commit/d2b8e749ec7de8b91de82b7f28c6383b0187f89a))
+* **deps-dev:** bump fast-xml-parser from 5.3.8 to 5.4.1 ([#256](https://github.com/joshuafuller/qrtak/issues/256)) ([ce14fb0](https://github.com/joshuafuller/qrtak/commit/ce14fb0d626ad71f1c5bee2597083a74878450db))
+* **deps-dev:** bump fast-xml-parser from 5.4.1 to 5.4.2 ([#262](https://github.com/joshuafuller/qrtak/issues/262)) ([af584e5](https://github.com/joshuafuller/qrtak/commit/af584e58dc4ff710a35f9ab49f1763b9ec61cca7))
+* **deps-dev:** bump fast-xml-parser from 5.4.2 to 5.5.5 ([#264](https://github.com/joshuafuller/qrtak/issues/264)) ([60dc605](https://github.com/joshuafuller/qrtak/commit/60dc605de23d808b40766ff5c60104b5776fefd6))
+* **deps-dev:** bump fast-xml-parser from 5.5.5 to 5.5.6 ([#265](https://github.com/joshuafuller/qrtak/issues/265)) ([b6fb908](https://github.com/joshuafuller/qrtak/commit/b6fb908f3fb39fa645af89d36a00fc9663a6e9af))
+* **deps-dev:** bump fast-xml-parser from 5.5.6 to 5.5.7 ([#266](https://github.com/joshuafuller/qrtak/issues/266)) ([be57efe](https://github.com/joshuafuller/qrtak/commit/be57efeba2ada2a002276c0bd447bbb138cf0709))
+* **deps-dev:** bump fast-xml-parser from 5.5.7 to 5.5.8 ([#269](https://github.com/joshuafuller/qrtak/issues/269)) ([e3c7d6e](https://github.com/joshuafuller/qrtak/commit/e3c7d6ec000a8eaba3a6834beb8da0cb53b33a4f))
+* **deps-dev:** bump fast-xml-parser from 5.5.8 to 5.5.9 ([#271](https://github.com/joshuafuller/qrtak/issues/271)) ([678ce96](https://github.com/joshuafuller/qrtak/commit/678ce96183ad0157a3f3ff216942e947340804c2))
+* **deps-dev:** bump flatted from 3.3.3 to 3.4.2 ([#267](https://github.com/joshuafuller/qrtak/issues/267)) ([79683fd](https://github.com/joshuafuller/qrtak/commit/79683fd602946aa6838abe5736497a6de988c138))
+* **deps-dev:** bump the dev-dependencies group across 1 directory with 2 updates ([#236](https://github.com/joshuafuller/qrtak/issues/236)) ([a0cd8ef](https://github.com/joshuafuller/qrtak/commit/a0cd8ef9b5003f3dfaf4c00aff63c89270e8da98))
+* **deps-dev:** bump the dev-dependencies group with 3 updates ([#263](https://github.com/joshuafuller/qrtak/issues/263)) ([0dbb613](https://github.com/joshuafuller/qrtak/commit/0dbb613166ca275d7787a587a419e6b96840525f))
+
+
+### Documentation
+
+* clean up README with accurate Docker docs and fix dead links ([a4369ab](https://github.com/joshuafuller/qrtak/commit/a4369abe90e3bd7b43728c2a6210112c94593475))
+
 ## [4.0.6](https://github.com/joshuafuller/qrtak/compare/qrtak-v4.0.5...qrtak-v4.0.6) (2026-02-25)
 
 
