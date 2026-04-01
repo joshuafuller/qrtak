@@ -2,9 +2,9 @@
 
 > Generate TAK client configuration QR codes instantly
 
-[![License](https://img.shields.io/badge/license-MIT-brightgreen)](LICENSE) [![E2E Tests](https://github.com/joshuafuller/qrtak/actions/workflows/e2e.yml/badge.svg)](https://github.com/joshuafuller/qrtak/actions/workflows/e2e.yml) [![Docker Version](https://img.shields.io/github/v/release/joshuafuller/qrtak?label=docker&color=brightgreen)](https://github.com/joshuafuller/qrtak/pkgs/container/qrtak) [![Node.js](https://img.shields.io/badge/Node.js-20.x-brightgreen)](https://nodejs.org/) [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/joshuafuller/qrtak)
+[![License](https://img.shields.io/badge/license-MIT-brightgreen)](LICENSE) [![Docker Version](https://img.shields.io/github/v/release/joshuafuller/qrtak?label=docker&color=brightgreen)](https://github.com/joshuafuller/qrtak/pkgs/container/qrtak) [![Node.js](https://img.shields.io/badge/Node.js-20.x-brightgreen)](https://nodejs.org/) [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/joshuafuller/qrtak)
 
-[![Known Vulnerabilities](https://snyk.io/test/github/joshuafuller/qrtak/badge.svg)](https://snyk.io/test/github/joshuafuller/qrtak) [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/10934/badge)](https://bestpractices.coreinfrastructure.org/projects/10934)
+[![Known Vulnerabilities](https://snyk.io/test/github/joshuafuller/qrtak/badge.svg)](https://snyk.io/test/github/joshuafuller/qrtak) [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/10934/badge)](https://bestpractices.coreinfrastructure.org/projects/10934) [![Dependabot](https://img.shields.io/badge/dependabot-enabled-brightgreen?logo=dependabot)](https://github.com/joshuafuller/qrtak/network/updates)
 
 ---
 
@@ -36,31 +36,22 @@ A Progressive Web App (PWA) for rapid TAK (Tactical Assault Kit) client deployme
 - 🔒 Secure - HTTPS only
 
 ### Option 2: Self-Host with Docker
-**Deploy your own instance in seconds:**
+**Run your own instance in one command — works on x86 and ARM (Raspberry Pi 4 and up):**
 
 ```bash
-# Run latest version
-docker run -d -p 8080:80 ghcr.io/joshuafuller/qrtak:latest
-
-# Or use docker-compose
-curl -O https://raw.githubusercontent.com/joshuafuller/qrtak/main/docker-compose.yml
-docker-compose up -d
+docker run -d -p 8080:80 --name qrtak ghcr.io/joshuafuller/qrtak:latest
 ```
 
-**Access at:** http://localhost:8080
+**Open http://localhost:8080** — that's it.
 
-**Why self-host?**
-- 🏢 Keep data on-premises
-- 🛡️ Control your own security
-- 🎨 Customize for your organization
-- 🚀 No external dependencies
+Docker automatically pulls the right image for your architecture (amd64 or arm64).
 
 ### Option 3: Local Development
 **For developers and customization:**
 
 **Prerequisites:**
-- Node.js 16+ 
-- npm or yarn
+- Node.js 20+ 
+- npm
 
 **Setup:**
 ```bash
@@ -79,103 +70,32 @@ npm run build
 npm run preview
 ```
 
-### Option 4: Quick Sharing
-**Share your local server with anyone:**
-```bash
-# Install ngrok
-npm install -g ngrok
+For additional deployment options (Netlify, Vercel, ngrok), see [DEPLOYMENT.md](docs/DEPLOYMENT.md).
 
-# Start your server
-npm run dev
+## Docker Details
 
-# In another terminal, create public tunnel
-ngrok http 3000
+Images are published to GitHub Container Registry on every release:
+
+```
+ghcr.io/joshuafuller/qrtak
 ```
 
-**Result**: Get a public URL like `https://abc123.ngrok.io` that anyone can access!
+**Architectures:** `linux/amd64`, `linux/arm64` (Raspberry Pi 4 and up, Apple Silicon, AWS Graviton)
 
-### Option 5: One-Click Deploy
-**Deploy to your own hosting:**
-- **[Netlify](https://netlify.com)** - Drag & drop the `dist` folder
-- **[Vercel](https://vercel.com)** - Run `vercel` command
-- **[GitHub Pages](https://pages.github.com)** - Enable in repository settings
+**Tags:** `latest` plus semver tags on every release (e.g. `4.0.6`, `4.0`, `4`, `v4.0.6`)
 
-**For detailed deployment options, see [DEPLOYMENT.md](docs/DEPLOYMENT.md)**
-
-### One-Command Deployment
-**Use our deployment script for instant deployment:**
-```bash
-# Make script executable (first time only)
-chmod +x deploy.sh
-
-# Deploy to different platforms
-./deploy.sh github-pages  # Prepare for GitHub Pages
-./deploy.sh netlify       # Prepare for Netlify
-./deploy.sh vercel        # Deploy to Vercel
-./deploy.sh serve         # Start local server
-./deploy.sh ngrok         # Start ngrok tunnel
-```
-
-## Docker Deployment
-
-### Quick Start
-
-```bash
-# Pull and run the latest version
-docker run -d -p 8080:80 --name qrtak ghcr.io/joshuafuller/qrtak:latest
-```
-
-### Using Docker Compose
+**Docker Compose:**
 
 ```yaml
-# docker-compose.yml
-version: '3.8'
 services:
   qrtak:
     image: ghcr.io/joshuafuller/qrtak:latest
     ports:
       - "8080:80"
     restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost/"]
-      interval: 30s
-      timeout: 3s
-      retries: 3
 ```
 
-### Available Tags
-
-- `latest` - Latest stable release
-- `v1.2.3` - Specific version
-- `1.2` - Latest patch of minor version
-- `1` - Latest minor/patch of major version
-- `main` - Latest commit from main branch
-- `main-abc123f` - Specific commit
-
-### Environment Variables
-
-```bash
-# Run with custom settings
-docker run -d -p 8080:80 \
-  -e APP_VERSION=custom \
-  ghcr.io/joshuafuller/qrtak:latest
-```
-
-### Multi-Architecture Support
-
-Images are available for:
-- `linux/amd64` - Intel/AMD processors
-- `linux/arm64` - Apple Silicon, AWS Graviton
-- `linux/arm/v7` - Raspberry Pi and other ARM devices
-
-Docker automatically selects the correct architecture.
-
-### Security Features
-
-- Runs as non-root user (nginx)
-- Security-hardened Alpine Linux base
-- Regular vulnerability scanning
-- Signed container images
+The image is ~97MB, runs as non-root (nginx), and is based on Alpine Linux.
 
 ## Usage
 
@@ -228,7 +148,7 @@ QR TAK implements comprehensive security scanning and best practices:
 #### Viewing Security Results
 - **[📊 Security Dashboard](docs/SECURITY-DASHBOARD.md)**: Comprehensive security overview and metrics
 - **[🛡️ GitHub Security](https://github.com/joshuafuller/qrtak/security)**: GitHub Security tab shows all scan results
-- **[✅ Workflow Status](https://github.com/joshuafuller/qrtak/actions/workflows/security-enhanced.yml)**: Live security scan status
+- **[✅ Workflow Status](https://github.com/joshuafuller/qrtak/actions/workflows/security.yml)**: Live security scan status
 - **[🔗 Dependency Graph](https://github.com/joshuafuller/qrtak/network/dependencies)**: View all dependencies
 - **[📋 Security Policy](SECURITY.md)**: Report vulnerabilities responsibly
 
