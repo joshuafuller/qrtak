@@ -16,6 +16,25 @@
 * **deps:** bump renovatebot/github-action from 43.0.9 to 43.0.14 ([#142](https://github.com/joshuafuller/qrtak/issues/142)) ([b29c40f](https://github.com/joshuafuller/qrtak/commit/b29c40fc4ec89b9c0c1ed387527a19b55b316258))
 * **deps:** bump trufflesecurity/trufflehog from 3.90.5 to 3.90.8 ([#141](https://github.com/joshuafuller/qrtak/issues/141)) ([1ffcf61](https://github.com/joshuafuller/qrtak/commit/1ffcf619b28aef552ebf54661cad0f9ed091dedf))
 
+## [4.0.8](https://github.com/joshuafuller/qrtak/compare/qrtak-v4.0.7...qrtak-v4.0.8) (2026-04-02)
+
+
+### Dependency Updates
+
+* **deps:** bump actions/attest-build-provenance from 3 to 4 ([#259](https://github.com/joshuafuller/qrtak/issues/259)) ([995b7df](https://github.com/joshuafuller/qrtak/commit/995b7dfe487165533c84c5056c953ff72d5bb6ed))
+* **deps:** bump actions/upload-artifact from 5 to 7 ([#258](https://github.com/joshuafuller/qrtak/issues/258)) ([5ca9dda](https://github.com/joshuafuller/qrtak/commit/5ca9dda8633d3a9c70d6bd47f275f24d64e67362))
+* **deps:** bump trufflesecurity/trufflehog from 3.91.1 to 3.93.6 ([#260](https://github.com/joshuafuller/qrtak/issues/260)) ([4bb9dc5](https://github.com/joshuafuller/qrtak/commit/4bb9dc5689b24b3c5e85061a258841a9c515a8ab))
+
+
+### Development Dependency Updates
+
+* **deps-dev:** bump lodash from 4.17.23 to 4.18.1 ([#274](https://github.com/joshuafuller/qrtak/issues/274)) ([e226f88](https://github.com/joshuafuller/qrtak/commit/e226f884c91f24d3556376a855e74ceaf1151977))
+
+
+### Bug Fixes
+
+* harden CI workflows against missing outputs ([#275](https://github.com/joshuafuller/qrtak/issues/275)) ([0e3a46c](https://github.com/joshuafuller/qrtak/commit/0e3a46c5466dee7fc0228be83348522e2093f7f5))
+
 ## [4.0.7](https://github.com/joshuafuller/qrtak/compare/qrtak-v4.0.6...qrtak-v4.0.7) (2026-04-01)
 
 
