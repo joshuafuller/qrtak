@@ -33,11 +33,16 @@ jobs:
           token: ${{ secrets.RELEASE_PLEASE_TOKEN }}
 
       - name: Debug Release-Please outputs
+        env:
+          RP_RELEASES_CREATED: ${{ steps.release.outputs.releases_created }}
+          RP_PRS_CREATED: ${{ steps.release.outputs.prs_created }}
+          RP_PR: ${{ steps.release.outputs.pr }}
+          RP_PRS: ${{ steps.release.outputs.prs }}
         run: |
-          echo "releases_created: ${{ steps.release.outputs.releases_created }}"
-          echo "prs_created: ${{ steps.release.outputs.prs_created }}"
-          echo "pr: ${{ steps.release.outputs.pr }}"
-          echo "prs: ${{ steps.release.outputs.prs }}"
+          echo "releases_created: $RP_RELEASES_CREATED"
+          echo "prs_created: $RP_PRS_CREATED"
+          echo "pr: $RP_PR"
+          echo "prs: $RP_PRS"
 
       # If a release was created, build and sign artifacts
       - name: Checkout
