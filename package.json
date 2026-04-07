@@ -44,7 +44,7 @@
     "@axe-core/playwright": "^4.11.1",
     "@babel/core": "^7.29.0",
     "@eslint/js": "^10.0.1",
-    "@playwright/test": "^1.58.2",
+    "@playwright/test": "^1.59.1",
     "babel-jest": "^30.3.0",
     "eslint": "^10.1.0",
     "eslint-plugin-security": "^4.0.0",
