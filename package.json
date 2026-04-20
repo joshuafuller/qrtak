@@ -41,7 +41,7 @@
   "author": "TAK Onboarding Platform Team",
   "license": "MIT",
   "devDependencies": {
-    "@axe-core/playwright": "^4.11.1",
+    "@axe-core/playwright": "^4.11.2",
     "@babel/core": "^7.29.0",
     "@eslint/js": "^10.0.1",
     "@playwright/test": "^1.59.1",
