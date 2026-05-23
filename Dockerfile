@@ -1,6 +1,6 @@
 # Multi-stage build optimized for caching and speed
 # Stage 1: Dependencies (cached separately from source)
-FROM node:25-alpine AS dependencies
+FROM node:25-alpine@sha256:bdf2cca6fe3dabd014ea60163eca3f0f7015fbd5c7ee1b0e9ccb4ced6eb02ef4 AS dependencies
 
 WORKDIR /app
 
@@ -13,7 +13,7 @@ RUN rm -rf node_modules package-lock.json && \
     npm install --omit=dev
 
 # Stage 2: Build dependencies (includes dev deps)
-FROM node:25-alpine AS build-dependencies
+FROM node:25-alpine@sha256:bdf2cca6fe3dabd014ea60163eca3f0f7015fbd5c7ee1b0e9ccb4ced6eb02ef4 AS build-dependencies
 
 WORKDIR /app
 
@@ -28,7 +28,7 @@ RUN rm -rf node_modules package-lock.json && \
     npm cache clean --force
 
 # Stage 3: Builder (source code and build)
-FROM node:25-alpine AS builder
+FROM node:25-alpine@sha256:bdf2cca6fe3dabd014ea60163eca3f0f7015fbd5c7ee1b0e9ccb4ced6eb02ef4 AS builder
 
 # Build arguments
 ARG VERSION=dev
@@ -51,7 +51,7 @@ COPY . .
 RUN npm run build
 
 # Stage 4: Production base (rarely changes)
-FROM nginx:1.29.5-alpine AS production-base
+FROM nginx:1.29.5-alpine@sha256:1eff5a5f3fcf8431a0abb7eddf5471fec24e5e1905a2581aeacdb07a4479b92b AS production-base
 
 # Install security updates and tools
 # This layer is cached unless base image updates
