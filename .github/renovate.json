@@ -4,5 +4,11 @@
   "assignees": ["joshuafuller"],
   "reviewers": ["joshuafuller"],
   "labels": ["dependencies", "renovate"],
-  "schedule": ["before 8am on monday"]
+  "schedule": ["before 8am on monday"],
+  "minimumReleaseAge": "5 days",
+  "internalChecksFilter": "strict",
+  "vulnerabilityAlerts": {
+    "minimumReleaseAge": "1 day",
+    "labels": ["security", "vulnerability"]
+  }
 }
