@@ -16,6 +16,7 @@ jobs:
     name: Scorecard analysis
     runs-on: ubuntu-latest
     permissions:
+      contents: read           # job-level perms REPLACE workflow-level — must re-grant read
       security-events: write   # upload SARIF to code scanning
       id-token: write          # publish results to the OpenSSF API
     steps:
