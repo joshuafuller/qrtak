@@ -73,7 +73,7 @@ jobs:
       # Dependency Scanning
       # Informational: surface all moderate+ advisories (non-blocking).
       - name: npm audit (report)
-        run: npm audit --production --audit-level=moderate || true
+        run: npm audit --audit-level=moderate || true
 
       # HARD GATE: fail the pipeline on a COMPROMISED dependency.
       # - Known-malicious packages are tagged CWE-506 (Embedded Malicious Code)
@@ -87,7 +87,7 @@ jobs:
           set -uo pipefail
           echo "Scanning dependency tree for malicious / critical advisories…"
           audit="$(npm audit --json 2>/dev/null || true)"
-          if printf '%s' "$audit" | grep -qiE '"CWE-506"|malicious package|"malware"'; then
+          if printf '%s' "$audit" | grep -qiE 'CWE-50[67]|malware|malicious (package|code|version|dependenc)'; then
             echo "::error title=Compromised dependency::A known-malicious package is in the dependency tree — failing the build."
             printf '%s' "$audit" | python3 -c "import sys,json; d=json.load(sys.stdin); [print('::error::', k, '->', v.get('severity'), [ (x.get('title') if isinstance(x,dict) else x) for x in v.get('via',[]) ]) for k,v in d.get('vulnerabilities',{}).items()]" 2>/dev/null || true
             exit 1
