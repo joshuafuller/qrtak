@@ -16,6 +16,18 @@
 * **deps:** bump renovatebot/github-action from 43.0.9 to 43.0.14 ([#142](https://github.com/joshuafuller/qrtak/issues/142)) ([b29c40f](https://github.com/joshuafuller/qrtak/commit/b29c40fc4ec89b9c0c1ed387527a19b55b316258))
 * **deps:** bump trufflesecurity/trufflehog from 3.90.5 to 3.90.8 ([#141](https://github.com/joshuafuller/qrtak/issues/141)) ([1ffcf61](https://github.com/joshuafuller/qrtak/commit/1ffcf619b28aef552ebf54661cad0f9ed091dedf))
 
+## [4.0.9](https://github.com/joshuafuller/qrtak/compare/qrtak-v4.0.8...qrtak-v4.0.9) (2026-05-23)
+
+
+### Bug Fixes
+
+* **ci:** repair broken container scan (trivy-action 0.33.1 → 0.36.0) ([#314](https://github.com/joshuafuller/qrtak/issues/314)) ([6eefce9](https://github.com/joshuafuller/qrtak/commit/6eefce97e8680a13f2929f3bf4d86225ed64ece9))
+
+
+### Documentation
+
+* **security:** layered supply-chain defense policy ([#319](https://github.com/joshuafuller/qrtak/issues/319)) ([8d5c44f](https://github.com/joshuafuller/qrtak/commit/8d5c44f7c094fc683cfba3cef536b1fdc96e33d5))
+
 ## [4.0.8](https://github.com/joshuafuller/qrtak/compare/qrtak-v4.0.7...qrtak-v4.0.8) (2026-05-23)
 
 
