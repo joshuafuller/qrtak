@@ -27,12 +27,12 @@ Two facts drive every control below:
 | # | Layer | Control | Defeats | Status |
 |---|-------|---------|---------|--------|
 | L1 | Dependency intake | **`minimumReleaseAge: 5 days`** + `internalChecksFilter: strict`; no un-aged auto-merge | Shai-Hulud, node-ipc, TeamPCP | ✅ shipped (PR #315) |
-| L1 | Dependency intake | `npm ci --ignore-scripts` (+ allowlist for build-script pkgs via `@lavamoat/allow-scripts`) | worm `postinstall` | ⏳ planned (needs lavamoat — esbuild/vite need scripts) |
+| L1 | Dependency intake | `@lavamoat/allow-scripts` (ignore-scripts + reviewed allowlist) | worm `postinstall` | ✅ shipped (PR #321) |
 | L1 | Dependency intake | npm audit · OSV · Snyk · typosquatting check | known-vuln / typosquat | ✅ existing (`security.yml`) |
 | L2 | CI/CD integrity | **All actions SHA-pinned** (immutable) | tj-actions, Megalodon tag hijack | ✅ shipped (PR #316) |
 | L2 | CI/CD integrity | Renovate `helpers:pinGitHubActionDigests` (auto-maintain pins) | drift | ⏳ planned |
 | L2 | CI/CD integrity | Least-privilege `permissions:` (read-only default) | token abuse | ◑ partial — `security.yml` scoped; audit the rest |
-| L2 | CI/CD integrity | **`step-security/harden-runner`** egress policy (audit→block) | exfiltration to C2 (all worms) | ⏳ planned |
+| L2 | CI/CD integrity | **`step-security/harden-runner`** egress (audit mode; →block next) | exfiltration to C2 (all worms) | ✅ shipped (PR #320) |
 | L3 | Artifact integrity | SBOM + build provenance + cosign signing | tampering | ✅ existing |
 | L3 | Artifact integrity | npm **trusted publishing (OIDC)** + verify tarball vs source | token theft; *but* TanStack forged provenance → pair with minimal release job | ⏳ planned |
 | L4 | Container/runtime | **Base images pinned by digest** | tag repush | ✅ shipped (PR #317) |
@@ -43,8 +43,10 @@ Two facts drive every control below:
 > **Self-hosted runners (homelab ARC):** a worm on a self-hosted runner = RCE
 > inside the cluster. Controls there: private-repos-only, ephemeral, no
 > cluster service-account (done), + **egress NetworkPolicy** on runner pods to
-> block reaching the k8s API / cloud metadata / lateral LAN targets (planned —
-> needs the Harbor allowlist decision).
+> block reaching cloud metadata / lateral LAN targets (PR #2729, **pending a
+> decision**: these runners are intentionally cluster-privileged for
+> auto-remediation, so an API-blocking policy needs that privilege model resolved
+> first — see the PR discussion).
 
 ## Why provenance alone is not enough
 
