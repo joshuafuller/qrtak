@@ -112,6 +112,8 @@ jobs:
       # GitHub-hosted runner (exits 1 right after resolving the version, before
       # any scan). v0.36.0 installs a working trivy build. exit-code 0 keeps
       # findings non-blocking (reported to code scanning via SARIF below).
+      # Cache left at default (enabled) — disabling it forces a DB re-download
+      # every run and raises rate-limit risk (per trivy-action v0.36.0 docs).
       - name: Run Trivy
         uses: aquasecurity/trivy-action@a9c7b0f06e461e9d4b4d1711f154ee024b8d7ab8 # v0.36.0
         with:
@@ -120,7 +122,6 @@ jobs:
           output: 'trivy-results.sarif'
           severity: 'CRITICAL,HIGH'
           exit-code: '0'
-          cache: 'false'
 
       - name: Upload Trivy results
         uses: github/codeql-action/upload-sarif@v4
