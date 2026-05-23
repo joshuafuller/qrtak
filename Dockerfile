@@ -1,6 +1,6 @@
 # Multi-stage build optimized for caching and speed
 # Stage 1: Dependencies (cached separately from source)
-FROM node:25-alpine@sha256:bdf2cca6fe3dabd014ea60163eca3f0f7015fbd5c7ee1b0e9ccb4ced6eb02ef4 AS dependencies
+FROM node:26-alpine@sha256:7c6af15abe4e3de859690e7db171d0d711bf37d27528eddfe625b2fe89e097f8 AS dependencies
 
 WORKDIR /app
 
@@ -13,7 +13,7 @@ COPY .npmrc package*.json ./
 RUN npm ci --omit=dev
 
 # Stage 2: Build dependencies (includes dev deps)
-FROM node:25-alpine@sha256:bdf2cca6fe3dabd014ea60163eca3f0f7015fbd5c7ee1b0e9ccb4ced6eb02ef4 AS build-dependencies
+FROM node:26-alpine@sha256:7c6af15abe4e3de859690e7db171d0d711bf37d27528eddfe625b2fe89e097f8 AS build-dependencies
 
 WORKDIR /app
 
@@ -27,7 +27,7 @@ RUN npm ci && \
     npm cache clean --force
 
 # Stage 3: Builder (source code and build)
-FROM node:25-alpine@sha256:bdf2cca6fe3dabd014ea60163eca3f0f7015fbd5c7ee1b0e9ccb4ced6eb02ef4 AS builder
+FROM node:26-alpine@sha256:7c6af15abe4e3de859690e7db171d0d711bf37d27528eddfe625b2fe89e097f8 AS builder
 
 # Build arguments
 ARG VERSION=dev
