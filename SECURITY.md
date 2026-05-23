@@ -49,6 +49,7 @@ This project implements several security measures:
 ### Code Security
 - Content Security Policy (CSP) headers
 - No external dependencies in production code (except QR code library)
+- No external network requests at runtime — all assets, including fonts, are vendored and served locally (works fully air-gapped)
 - Input validation and sanitization
 - Secure defaults for all configurations
 

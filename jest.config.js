@@ -14,6 +14,7 @@ export default {
   coverageReporters: ['text', 'lcov', 'html'],
   setupFilesAfterEnv: ['<rootDir>/src/js/__tests__/setup.js'],
   moduleNameMapper: {
-    '^qrcode$': '<rootDir>/src/js/__tests__/__mocks__/qrcode.js'
+    '^qrcode$': '<rootDir>/src/js/__tests__/__mocks__/qrcode.js',
+    '\\.(css|woff2?|ttf|eot)$': '<rootDir>/src/js/__tests__/__mocks__/styleMock.js'
   }
 };

@@ -1,4 +1,11 @@
 /* global __APP_VERSION__ */
+// Self-hosted Inter (latin subset, weights used by the design system).
+// Vendored via @fontsource so Vite bundles + content-hashes the woff2 and the
+// PWA precaches them — zero external font requests at runtime (works air-gapped).
+import '@fontsource/inter/latin-400.css';
+import '@fontsource/inter/latin-500.css';
+import '@fontsource/inter/latin-600.css';
+import '@fontsource/inter/latin-700.css';
 import QRCode from 'qrcode';
 import {
   debounce,
