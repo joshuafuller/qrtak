@@ -4,27 +4,26 @@ FROM node:25-alpine AS dependencies
 
 WORKDIR /app
 
-# Copy only package files first (most stable layer)
-COPY package*.json ./
+# Copy .npmrc first so installs honor ignore-scripts (supply-chain hardening),
+# then package files. Deterministic install from the lockfile (npm ci) keeps
+# resolved versions matching the @lavamoat/allow-scripts allowlist.
+COPY .npmrc package*.json ./
 
-# Install production dependencies only
-# Fix for Rollup issues - use npm install instead of ci
-RUN rm -rf node_modules package-lock.json && \
-    npm install --omit=dev
+# Install production dependencies only (no lifecycle scripts; prod deps need none)
+RUN npm ci --omit=dev
 
 # Stage 2: Build dependencies (includes dev deps)
 FROM node:25-alpine AS build-dependencies
 
 WORKDIR /app
 
-# Copy package files
-COPY package*.json ./
+# .npmrc first (ignore-scripts), then package files
+COPY .npmrc package*.json ./
 
-# Install all dependencies including dev (for building)
-# This layer is cached when package.json doesn't change
-# Fix for Rollup native module issues on different architectures
-RUN rm -rf node_modules package-lock.json && \
-    npm install && \
+# Install all deps from the lockfile, scripts ignored. The builder stage runs
+# `npm run build` (= `allow-scripts && vite build`), which fetches only the
+# allowlisted native binaries (esbuild) before building.
+RUN npm ci && \
     npm cache clean --force
 
 # Stage 3: Builder (source code and build)
