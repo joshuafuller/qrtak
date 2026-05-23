@@ -1,8 +1,16 @@
 version: 2
-# Continuous deployment pipeline: Dependabot → Auto-merge → Release-Please → Auto-merge → Release
-# Trigger: Check for @babel/core 7.28.3 → 7.28.4 update
+# Single dependency updater for qrtak (Renovate retired here — it can't open PRs
+# with GITHUB_TOKEN, and a scoped PAT can only be made in the UI).
+#
+# Supply-chain hardening:
+#   - cooldown: don't propose a version until it's been public >=5 days, so the
+#     active npm-worm waves (Shai-Hulud/node-ipc) — which are detected & yanked
+#     within hours-to-days — are never adopted in their live window.
+#   - Dependabot preserves SHA-pinned actions (@<sha> # vX) and Docker digests
+#     on bump, so updates never regress the pinning hardening.
+#   - The CI malware/critical gate (security.yml) hard-fails any compromised dep.
 updates:
-  # Enable version updates for npm
+  # npm
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
@@ -10,6 +18,8 @@ updates:
       day: "monday"
       time: "09:00"
       timezone: "UTC"
+    cooldown:
+      default-days: 5
     open-pull-requests-limit: 10
     commit-message:
       prefix: "fix"
@@ -38,7 +48,7 @@ updates:
       - dependency-name: "jest"
         update-types: ["version-update:semver-major"]
 
-  # Enable version updates for GitHub Actions
+  # GitHub Actions
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
@@ -46,6 +56,8 @@ updates:
       day: "monday"
       time: "09:00"
       timezone: "UTC"
+    cooldown:
+      default-days: 5
     open-pull-requests-limit: 5
     commit-message:
       prefix: "fix"
@@ -55,7 +67,7 @@ updates:
       - "dependencies"
       - "github-actions"
 
-  # Enable version updates for Docker images
+  # Docker base images
   - package-ecosystem: "docker"
     directory: "/"
     schedule:
@@ -63,6 +75,8 @@ updates:
       day: "monday"
       time: "09:00"
       timezone: "UTC"
+    cooldown:
+      default-days: 5
     open-pull-requests-limit: 5
     commit-message:
       prefix: "fix"
