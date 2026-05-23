@@ -7,10 +7,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "allow-scripts && vite build",
     "preview": "vite preview",
     "serve": "vite preview --port 3000",
-    "test": "jest",
+    "test": "allow-scripts && jest",
     "test:watch": "jest --watch",
     "e2e": "playwright test",
     "e2e:headed": "playwright test --headed",
@@ -44,6 +44,7 @@
     "@axe-core/playwright": "^4.11.3",
     "@babel/core": "^7.29.0",
     "@eslint/js": "^10.0.1",
+    "@lavamoat/allow-scripts": "^5.0.2",
     "@playwright/test": "^1.60.0",
     "babel-jest": "^30.4.1",
     "eslint": "^10.4.0",
@@ -63,5 +64,11 @@
   "overrides": {
     "inflight": "npm:lru-cache@^10.4.3",
     "sourcemap-codec": "npm:@jridgewell/sourcemap-codec@^1.5.0"
+  },
+  "lavamoat": {
+    "allowScripts": {
+      "jest>@jest/core>jest-resolve>unrs-resolver#1.11.1": true,
+      "vite>esbuild#0.27.1": true
+    }
   }
 }
