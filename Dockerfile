@@ -50,7 +50,7 @@ COPY . .
 RUN npm run build
 
 # Stage 4: Production base (rarely changes)
-FROM nginx:1.31.1-alpine@sha256:d1aedbc848110c391df415b27a241ea36159e63b51b151c29ab059867f9f5174 AS production-base
+FROM nginx:1.31.1-alpine@sha256:8b1e78743a03dbb2c95171cc58639fef29abc8816598e27fb910ed2e621e589a AS production-base
 
 # Install security updates and tools
 # This layer is cached unless base image updates
