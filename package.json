@@ -42,7 +42,7 @@
   "license": "MIT",
   "devDependencies": {
     "@axe-core/playwright": "^4.11.3",
-    "@babel/core": "^7.29.0",
+    "@babel/core": "^7.29.7",
     "@eslint/js": "^10.0.1",
     "@lavamoat/allow-scripts": "^5.0.2",
     "@playwright/test": "^1.60.0",
