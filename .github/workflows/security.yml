@@ -162,7 +162,7 @@ jobs:
 
       # Grype Scan
       - name: Run Grype
-        uses: anchore/scan-action@3aaf50d765cfcceafa51d322ccb790e40f6cd8c5 # v7.2.0
+        uses: anchore/scan-action@e1165082ffb1fe366ebaf02d8526e7c4989ea9d2 # v7.4.0
         id: grype
         with:
           image: qrtak:scan
