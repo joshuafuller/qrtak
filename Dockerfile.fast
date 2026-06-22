@@ -12,7 +12,7 @@ COPY . .
 RUN npm run build
 
 # Production stage
-FROM nginx:1.31.1-alpine
+FROM nginx:1.31.2-alpine
 
 # Install curl for health checks
 RUN apk add --no-cache curl
