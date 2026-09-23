@@ -16,6 +16,23 @@
 * **deps:** bump renovatebot/github-action from 43.0.9 to 43.0.14 ([#142](https://github.com/joshuafuller/qrtak/issues/142)) ([b29c40f](https://github.com/joshuafuller/qrtak/commit/b29c40fc4ec89b9c0c1ed387527a19b55b316258))
 * **deps:** bump trufflesecurity/trufflehog from 3.90.5 to 3.90.8 ([#141](https://github.com/joshuafuller/qrtak/issues/141)) ([1ffcf61](https://github.com/joshuafuller/qrtak/commit/1ffcf619b28aef552ebf54661cad0f9ed091dedf))
 
+## [4.0.12](https://github.com/joshuafuller/qrtak/compare/qrtak-v4.0.11...qrtak-v4.0.12) (2026-09-23)
+
+
+### Dependency Updates
+
+* **deps:** bump actions/attest-build-provenance from 4.1.1 to 4.2.2 ([#386](https://github.com/joshuafuller/qrtak/issues/386)) ([6e480d7](https://github.com/joshuafuller/qrtak/commit/6e480d7d8c88b23c34d26886b6bfc72489f4f85a))
+* **deps:** bump actions/checkout from 6.0.2 to 7.0.1 ([#375](https://github.com/joshuafuller/qrtak/issues/375)) ([b809cd2](https://github.com/joshuafuller/qrtak/commit/b809cd20dc97584101f125a2c62e141613b553fa))
+* **deps:** bump anchore/sbom-action from 0.17.2 to 0.24.2 ([#407](https://github.com/joshuafuller/qrtak/issues/407)) ([4abfc93](https://github.com/joshuafuller/qrtak/commit/4abfc930403c706b628a3f9aca3b6b316cab8740))
+* **deps:** bump docker/login-action from 3.7.0 to 4.6.0 ([#381](https://github.com/joshuafuller/qrtak/issues/381)) ([7c10514](https://github.com/joshuafuller/qrtak/commit/7c10514879a3f16ab8a985eacf0d9e643ee9fbef))
+* **deps:** bump googleapis/release-please-action from 4.4.1 to 5.0.0 ([#362](https://github.com/joshuafuller/qrtak/issues/362)) ([0280e57](https://github.com/joshuafuller/qrtak/commit/0280e57791cdfa7cd119b01db4af1d7a30d5b6dd))
+
+
+### Development Dependency Updates
+
+* **deps-dev:** bump fast-xml-parser from 5.11.0 to 5.11.1 ([#397](https://github.com/joshuafuller/qrtak/issues/397)) ([5a6356d](https://github.com/joshuafuller/qrtak/commit/5a6356db5fdf6a8f31b2ef81107f35e4f28d6442))
+* **deps-dev:** bump vite from 8.2.2 to 8.3.0 ([#404](https://github.com/joshuafuller/qrtak/issues/404)) ([d5d961e](https://github.com/joshuafuller/qrtak/commit/d5d961e65e550f479f4d6bb47cbfb9e5a3945393))
+
 ## [4.0.11](https://github.com/joshuafuller/qrtak/compare/qrtak-v4.0.10...qrtak-v4.0.11) (2026-09-23)
 
 
