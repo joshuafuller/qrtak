@@ -129,7 +129,6 @@ export default [
       'sw.js',
       'workbox-*.js',
       'registerSW.js',
-      'docs/matrix/build-matrix.js',
       // tooling scripts are not part of shipped app; relax linting
       'scripts/**/*.cjs'
     ]

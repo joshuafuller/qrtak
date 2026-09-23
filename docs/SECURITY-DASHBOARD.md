@@ -1,113 +1,24 @@
-# 🔒 QR TAK Security Dashboard
+# Security scanning
 
-> Comprehensive overview of security practices, tools, and results for the QR TAK project
+The current [security workflow](../.github/workflows/security.yml) runs on pushes to main, develop, and Release Please branches; pull requests to main and develop; weekly on Sunday at 02:00 UTC; and manual dispatch.
 
-[![Security Scan](https://github.com/joshuafuller/qrtak/actions/workflows/security-enhanced.yml/badge.svg)](https://github.com/joshuafuller/qrtak/actions/workflows/security-enhanced.yml)
-[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/joshuafuller/qrtak/badge)](https://scorecard.dev/viewer/?uri=github.com/joshuafuller/qrtak)
-[![Vulnerabilities](https://img.shields.io/snyk/vulnerabilities/github/joshuafuller/qrtak?label=vulnerabilities)](https://github.com/joshuafuller/qrtak/security)
+## Checks and reporting
 
-## 📊 Security Scanning Coverage
+The workflow includes TruffleHog, Semgrep, npm audit, a malicious or critical dependency gate, Snyk, OSV Scanner, Trivy, Grype, and SBOM generation. A separate [Scorecard workflow](../.github/workflows/scorecard.yml) is defined.
 
-### Static Application Security Testing (SAST)
+Container scanning runs on pushes, manual dispatch, commits whose message contains [docker], and pull requests labeled docker. Trivy and Grype findings are uploaded as SARIF; the container scanners are configured as reporting steps rather than build blockers.
 
-| Tool | Purpose | Frequency | Results |
-|------|---------|-----------|---------|
-| **Semgrep** | OWASP Top 10, JavaScript vulnerabilities | Every commit | [View Results](https://github.com/joshuafuller/qrtak/security/code-scanning) |
-| **CodeQL** | Deep semantic analysis | Every commit | [View Results](https://github.com/joshuafuller/qrtak/security/code-scanning) |
-| **ESLint Security** | JavaScript-specific patterns | Every commit | In workflow logs |
+Not every scan blocks a workflow: secret scanning and Semgrep continue on error, moderate npm audit findings are informational, Snyk and OSV are non-blocking, and container findings are reported without failing the build. The explicit dependency gate fails for known-malicious or critical advisories.
 
-### Dependency Security
+Review the workflow files and GitHub Actions results for current behavior. A successful run is not evidence that every scanner found zero issues.
 
-| Tool | Coverage | Frequency | Dashboard |
-|------|----------|-----------|-----------|
-| **npm audit** | Node.js dependencies | Every commit | [Dependencies](https://github.com/joshuafuller/qrtak/network/dependencies) |
-| **Snyk** | Vulnerability database | Every commit | [Security Tab](https://github.com/joshuafuller/qrtak/security/dependabot) |
-| **OWASP Dependency Check** | CVE scanning | Every commit | Artifacts in workflows |
-| **OSV Scanner** | Google's vulnerability DB | Every commit | Workflow summaries |
+## Local container commands
 
-### Supply Chain Security
+These package scripts require Docker and the named scanner tools to be installed:
 
-| Component | Tool | Output | Access |
-|-----------|------|--------|--------|
-| **SBOM Generation** | Syft | SPDX, CycloneDX | [Workflow Artifacts](https://github.com/joshuafuller/qrtak/actions) |
-| **Scorecard** | OSSF | Security practices score | [View Scorecard](https://scorecard.dev/viewer/?uri=github.com/joshuafuller/qrtak) |
-| **Dependency Graph** | GitHub | Visual dependency tree | [View Graph](https://github.com/joshuafuller/qrtak/network/dependencies) |
+    npm run build:docker
+    npm run scan:trivy
+    npm run scan:grype
+    npm run sbom:generate
 
-### Container Security
-
-| Scanner | Checks | Frequency | Results Location |
-|---------|--------|-----------|------------------|
-| **Trivy** | Vulnerabilities, secrets, misconfigs | Every commit | Security tab |
-| **Hadolint** | Dockerfile best practices | Every commit | Workflow logs |
-
-## 🛡️ Security Features
-
-### Application Security
-- ✅ **Client-side only** - No server communication
-- ✅ **CSP Headers** - Prevent XSS attacks
-- ✅ **Input Validation** - All user inputs sanitized
-- ✅ **HTTPS Only** - Enforced by service worker
-- ✅ **No External APIs** - Self-contained operation
-
-### Development Security
-- ✅ **Signed Commits** - Verify contributor identity
-- ✅ **Branch Protection** - Require reviews and checks
-- ✅ **Secret Scanning** - Prevent credential exposure
-- ✅ **Automated Updates** - Dependabot & Renovate for dependencies
-- ✅ **Security Policy** - Clear vulnerability reporting
-
-## 📈 Security Metrics
-
-### Current Status
-- **Last Security Scan**: Check [workflow badge](https://github.com/joshuafuller/qrtak/actions/workflows/security-enhanced.yml)
-- **Open Security Issues**: View in [Security Tab](https://github.com/joshuafuller/qrtak/security)
-- **Dependency Status**: Check [Dependabot](https://github.com/joshuafuller/qrtak/security/dependabot)
-
-### Compliance
-- **OWASP Top 10**: ✅ Scanned by Semgrep
-- **CIS Controls**: ✅ Container hardening
-- **NIST Guidelines**: ✅ Security controls implemented
-- **SLSA Framework**: ✅ Supply chain security
-
-## 🔍 How to View Security Results
-
-### For Maintainers
-1. **Code Scanning Results**: Navigate to Security → Code scanning
-2. **Dependabot Alerts**: Security → Dependabot alerts
-3. **Workflow Artifacts**: Actions → Select workflow → Artifacts
-4. **SBOM Files**: Download from workflow artifacts
-
-### For Contributors
-1. **Pull Request Checks**: Security scans run on every PR
-2. **Workflow Status**: Visible in PR checks
-3. **Security Policy**: Read [SECURITY.md](../SECURITY.md)
-
-### For Users
-1. **Security Badges**: Visible on README
-2. **Scorecard**: Public OSSF scorecard
-3. **Transparency**: All security scans are public
-
-## 🚨 Reporting Security Issues
-
-Found a vulnerability? Please follow our [Security Policy](../SECURITY.md):
-1. **DO NOT** create a public issue
-2. Use GitHub's security advisory feature
-3. We'll respond within 48 hours
-
-## 📅 Security Maintenance
-
-### Automated Scans
-- **Push/PR**: All security scans run
-- **Weekly**: Deep security scan (Sundays 2 AM UTC)
-- **Monthly**: Manual security review
-
-### Update Schedule
-- **Critical**: Immediate patches
-- **High**: Within 14 days
-- **Medium**: Within 30 days
-- **Low**: Next release cycle
-
----
-
-*Last updated: Generated dynamically from workflow runs*
-*Security tools and practices are continuously improved*
+Report vulnerabilities using the process in [SECURITY.md](../SECURITY.md).

@@ -147,8 +147,8 @@ jobs:
             type=raw,value=v${{ inputs.version }},enable=${{ github.event_name == 'workflow_dispatch' }}
           labels: |
             org.opencontainers.image.title=qrtak
-            org.opencontainers.image.description=Generate TAK client configuration QR codes instantly
-            org.opencontainers.image.vendor=TAK Onboarding Platform Team
+            org.opencontainers.image.description=Generate TAK client QR codes and configuration packages in the browser
+            org.opencontainers.image.vendor=qrtak contributors
             org.opencontainers.image.licenses=MIT
 
       - name: Create manifest list and push

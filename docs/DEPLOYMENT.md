@@ -1,260 +1,36 @@
-# qrtak Deployment Guide
+# Deployment
 
-> Dead-simple deployment options for qrtak
+## Local development
 
-This guide provides multiple ways to deploy qrtak, from zero-config options to full production hosting.
+Requires Node.js 20 and npm.
 
-## 🚀 Quick Deploy Options (No Server Required)
+    npm ci
+    npm run dev
 
-### Option 1: GitHub Pages (Recommended)
-**Deploy in 2 minutes - completely free**
+Vite serves the app at http://localhost:3000. Create a production build and preview it with:
 
-1. **Build the project locally:**
-   ```bash
-   git clone https://github.com/joshuafuller/qrtak.git
-   cd qrtak
-   npm install
-   npm run build
-   ```
+    npm run build
+    npm run preview
 
-2. **Enable GitHub Pages:**
-   - Go to your repository Settings → Pages
-   - Source: "Deploy from a branch"
-   - Branch: `main` (or create `gh-pages`)
-   - Folder: `/ (root)`
-   - Click "Save"
+The build output is dist/.
 
-3. **Deploy:**
-   ```bash
-   # If using main branch, copy dist contents to root
-   cp -r dist/* .
-   git add .
-   git commit -m "Deploy to GitHub Pages"
-   git push
-   ```
+## GitHub Pages
 
-**Result**: Your app will be live at `https://yourusername.github.io/qrtak/`
+The [deploy workflow](../.github/workflows/deploy.yml) builds the app after CI succeeds on main or develop. Main deploys to the production Pages environment; develop deploys to the staging environment. A published GitHub release also triggers production deployment.
 
-### Option 2: Netlify (Drag & Drop)
-**Deploy in 30 seconds**
+The [Vite configuration](../vite.config.js) sets the /qrtak/ base path in GitHub Actions builds. For other subpath hosting, set the Vite base path to match the deployment path.
 
-1. **Build the project:**
-   ```bash
-   npm run build
-   ```
+## Docker
 
-2. **Deploy:**
-   - Go to [netlify.com](https://netlify.com)
-   - Drag the `dist` folder to the deploy area
-   - Your app is live instantly!
+Run the published image:
 
-**Result**: Get a random URL like `https://amazing-name-123.netlify.app`
+    docker run -d -p 8080:80 --name qrtak ghcr.io/joshuafuller/qrtak:latest
 
-### Option 3: Vercel (One Command)
-**Deploy with a single command**
+The container serves the built app with nginx on port 80. Release images support linux/amd64 and linux/arm64.
 
-1. **Install Vercel CLI:**
-   ```bash
-   npm i -g vercel
-   ```
+To build locally:
 
-2. **Deploy:**
-   ```bash
-   vercel
-   ```
+    docker build -t qrtak:local .
+    docker run --rm -p 8080:80 qrtak:local
 
-**Result**: Automatic deployment with custom domain support
-
-## 🌐 Local Network Sharing
-
-### Option 1: ngrok (Recommended for Testing)
-**Share your local server with anyone**
-
-1. **Install ngrok:**
-   ```bash
-   # Download from https://ngrok.com/download
-   # Or use npm
-   npm install -g ngrok
-   ```
-
-2. **Start your local server:**
-   ```bash
-   npm run dev
-   ```
-
-3. **Create public tunnel:**
-   ```bash
-   ngrok http 3000
-   ```
-
-4. **Share the URL:**
-   - ngrok will give you a public URL like `https://abc123.ngrok.io`
-   - Anyone can access your app using this URL
-   - Perfect for testing with remote teams
-
-### Option 2: serve (Simple HTTP Server)
-**Quick local network sharing**
-
-1. **Install serve:**
-   ```bash
-   npm install -g serve
-   ```
-
-2. **Build and serve:**
-   ```bash
-   npm run build
-   serve -s dist -l 3000
-   ```
-
-3. **Share your IP:**
-   - Find your IP: `ip addr show` (Linux) or `ipconfig` (Windows)
-   - Share: `http://YOUR_IP:3000`
-
-## 🏢 Production Hosting
-
-### Option 1: AWS S3 + CloudFront
-**Scalable, fast, and cheap**
-
-1. **Build the project:**
-   ```bash
-   npm run build
-   ```
-
-2. **Upload to S3:**
-   ```bash
-   aws s3 sync dist/ s3://your-bucket-name --delete
-   ```
-
-3. **Configure CloudFront:**
-   - Create CloudFront distribution
-   - Point to S3 bucket
-   - Enable HTTPS
-
-**Cost**: ~$1-5/month for moderate traffic
-
-### Option 2: DigitalOcean App Platform
-**Managed hosting with zero config**
-
-1. **Connect your GitHub repo**
-2. **Select build settings:**
-   - Build Command: `npm run build`
-   - Output Directory: `dist`
-3. **Deploy**
-
-**Cost**: $5/month
-
-### Option 3: Railway
-**Modern hosting platform**
-
-1. **Connect GitHub repo**
-2. **Auto-deploys on push**
-3. **Custom domains included**
-
-**Cost**: Free tier available, then $5/month
-
-## 🔧 Advanced Deployment
-
-### Docker Deployment
-**Containerized deployment**
-
-1. **Create Dockerfile:**
-   ```dockerfile
-   FROM nginx:alpine
-   COPY dist/ /usr/share/nginx/html/
-   EXPOSE 80
-   ```
-
-2. **Build and run:**
-   ```bash
-   docker build -t qrtak .
-   docker run -p 80:80 qrtak
-   ```
-
-### Manual Server Deployment
-**Traditional web server**
-
-1. **Build the project:**
-   ```bash
-   npm run build
-   ```
-
-2. **Upload to server:**
-   ```bash
-   scp -r dist/* user@server:/var/www/html/
-   ```
-
-3. **Configure web server (nginx example):**
-   ```nginx
-   server {
-       listen 80;
-       server_name yourdomain.com;
-       root /var/www/html;
-       index index.html;
-       
-       location / {
-           try_files $uri $uri/ /index.html;
-       }
-   }
-   ```
-
-## 🔒 Security Considerations
-
-### HTTPS Requirements
-- **Always use HTTPS** in production
-- PWA features require HTTPS
-- Most hosting platforms provide free SSL
-
-### CORS Configuration
-- qrtak is a client-side app, no CORS issues
-- Works with any TAK server
-
-### Access Control
-- Consider adding basic auth for sensitive deployments
-- Use environment-specific configurations
-
-## 📱 PWA Deployment Notes
-
-### Service Worker
-- Automatically generated by Vite PWA plugin
-- Caches app for offline use
-- Updates automatically
-
-### Manifest
-- Configured in `vite.config.js`
-- Customize icons and colors as needed
-
-## 🚨 Troubleshooting
-
-### Common Issues
-
-**App not loading:**
-- Check if `dist/index.html` exists
-- Verify web server configuration
-- Check browser console for errors
-
-**PWA not working:**
-- Ensure HTTPS is enabled
-- Check service worker registration
-- Verify manifest.json is accessible
-
-**QR codes not generating:**
-- Check browser console for JavaScript errors
-- Verify qrcode library is loaded
-- Test with simple URLs first
-
-### Getting Help
-- Check [GitHub Issues](https://github.com/joshuafuller/qrtak/issues)
-- Review browser console for errors
-- Test with different browsers
-
-## 💡 Pro Tips
-
-1. **Use GitHub Pages** for quick demos and testing
-2. **Use ngrok** for temporary sharing during development
-3. **Use Netlify/Vercel** for production deployments
-4. **Always test PWA features** after deployment
-5. **Monitor performance** with browser dev tools
-
----
-
-**Need help?** Create an issue on GitHub or check the [main README](../README.md) for more information. 
+Use HTTPS when exposing qrtak beyond a trusted local network. The PWA service worker requires a secure context, except on localhost.

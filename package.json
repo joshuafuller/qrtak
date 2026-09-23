@@ -2,7 +2,7 @@
   "name": "qrtak",
   "version": "4.0.10",
   "private": true,
-  "description": "Generate TAK client configuration QR codes instantly",
+  "description": "Generate TAK client QR codes and configuration packages in the browser",
   "main": "index.html",
   "type": "module",
   "scripts": {
@@ -20,15 +20,13 @@
     "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
     "security:audit": "npm audit --audit-level=moderate",
     "security:check": "npm audit --audit-level=moderate",
+    "changelog:audit": "node scripts/generate-changelog-audit.cjs > /dev/null && echo 'Wrote docs/CHANGELOG-AUDIT.md'",
     "build:docker": "docker build --build-arg VERSION=$npm_package_version -t qrtak:latest -t qrtak:$npm_package_version .",
     "scan:trivy": "trivy image qrtak:latest",
     "scan:grype": "grype qrtak:latest",
     "scan:container": "npm run scan:trivy",
     "scan:all": "npm run scan:trivy && npm run scan:grype",
     "sbom:generate": "syft qrtak:latest -o spdx-json > sbom.spdx.json"
-  },
-  "scriptsExtra": {
-    "changelog:audit": "node scripts/generate-changelog-audit.cjs > /dev/null && echo 'Wrote docs/CHANGELOG-AUDIT.md'"
   },
   "keywords": [
     "tak",
@@ -38,7 +36,7 @@
     "pwa",
     "offline"
   ],
-  "author": "TAK Onboarding Platform Team",
+  "author": "qrtak contributors",
   "license": "MIT",
   "devDependencies": {
     "@axe-core/playwright": "^4.13.0",

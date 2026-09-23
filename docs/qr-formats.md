@@ -1,153 +1,43 @@
-# TAK Onboarding Platform: QR Code Format Specification
+# QR payload formats
 
-This document defines the exact QR code payload formats supported by the TAK Onboarding Platform for interoperability with ATAK and iTAK clients. It is based on official documentation and community best practices (see references).
+This page describes the payloads qrtak generates. ATAK behavior was checked against the local ATAK CIV source; the iTAK section describes qrtak's emitted Quick Connect format and still needs validation against each target iTAK release.
 
----
+## ATAK enrollment
 
-## 1. ATAK (Android TAK) QR Code Formats
+qrtak generates:
 
-ATAK 5.1+ supports QR code onboarding using the `tak://` URI scheme. There are three main QR code types:
+    tak://com.atakmap.app/enroll?host={host}&username={username}&token={token}
 
-### 1.1 Enrollment QR
-- **Format:**
-  ```
-  tak://com.atakmap.app/enroll?host={host}&username={username}&token={token}
-  ```
-- **Example:**
-  ```
-  tak://com.atakmap.app/enroll?host=takserver.com&username=john.doe&token=SuperSecret123
-  ```
-- **Official ATAK 5.2 Example:**
-  ```
-  tak://com.atakmap.app/enroll?host=takserver.com&username=foo&token=user_token
-  ```
-- **Fields:**
-  | Name     | Description                | Acceptable Values         |
-  |----------|----------------------------|--------------------------|
-  | host     | TAK Server — hostname/IP, or connect string `host:port` or `host:port:quic` | FQDN, IP, or connect string |
-  | username | TAK credential to be used  | string                   |
-  | token    | TAK token/password         | string                   |
+Each value is percent-encoded. ATAK reads the host, username, and token query parameters. The qrtak enrollment form accepts a hostname or IP address and uses the server's default stream endpoint.
 
-- **Connect string examples for `host`:**
-  ```
-  host=server.com                 → server.com:8089:ssl  (defaults)
-  host=server.com:8090            → server.com:8090:ssl
-  host=server.com:8090:quic       → server.com:8090:quic
-  ```
-  Only `quic` is accepted as an explicit protocol; all other values fall back to `ssl`.
-  Source: `CertificateEnrollmentClient.java:771-787` (ATAK CIV 5.5.0.0)
+ATAK's enrollment client defaults the stream connection to port 8089 and protocol ssl. Its host parser also accepts a connect string such as server.example:8090:quic; only quic selects a non-default protocol. qrtak's enrollment form does not expose that custom connect-string input. The Package Builder does expose custom port and protocol settings.
 
-- **Security Warning:** Credentials are passed in plaintext. Use only in controlled environments with proper SOPs and auditing.
+The stream connection and certificate-enrollment API use different ports. The checked TAK Server example configuration sets the stream input to 8089 and the certificate-enrollment HTTPS connector to 8446; deployments may configure different ports.
 
-### 1.2 Import QR
-- **Format:**
-  ```
-  tak://com.atakmap.app/import?url={url}
-  ```
-- **Example:**
-  ```
-  tak://com.atakmap.app/import?url=https%3A%2F%2Fdomain%2Fpath%2Fto%2Ffile%2Fdatapackage.zip
-  ```
-- **Official ATAK 5.2 Example:**
-  ```
-  tak://com.atakmap.app/import?url=http%3A%2F%2Fwebaddress.com%2Ffile%2Ffile.zip
-  ```
-- **Fields:**
-  | Name | Description | Acceptable Values |
-  |------|-------------|------------------|
-  | url  | URL-encoded link to data package or config file | string (URL-encoded) |
+## ATAK package import
 
-- **Encoding Note:** The URL must be percent-encoded (e.g., `https://` → `https%3A%2F%2F`).
+qrtak generates:
 
-### 1.3 Preference QR
-- **Format:**
-  ```
-  tak://com.atakmap.app/preference?key1={key}&type1={type}&value1={value}[&key2=...]
-  ```
-- **Example (multi-key):**
-  ```
-  tak://com.atakmap.app/preference?key1=locationTeam&type1=string&value1=Dark%20Blue&key2=atakRoleType&type2=string&value2=Team%20Member&key3=coord_display_pref&type3=string&value3=UTM&key4=alt_display_agl&type4=boolean&value4=true
-  ```
-- **Official ATAK 5.2 Example:**
-  ```
-  tak://com.atakmap.app/preference?key1=displayRed&type1=boolean&value1=true&key2=displayGreen&type2=boolean&value2=true
-  ```
-- **Fields:**
-  | Name      | Description                | Acceptable Values           |
-  |-----------|----------------------------|----------------------------|
-  | key[n]    | Preference key             | string                     |
-  | type[n]   | Preference key type        | string, boolean, long, int |
-  | value[n]  | Value for the preference   | string                     |
+    tak://com.atakmap.app/import?url={percent-encoded-url}
 
-- **Usage:** Use for setting preferences post-enrollment (e.g., team color, role, coordinate display).
+ATAK reads the url parameter, asks the user to confirm, then starts importing that URI. qrtak accepts absolute HTTP or HTTPS URLs and does not fetch them itself.
 
----
+## ATAK preference
 
-## 2. iTAK (iOS TAK) QR Code Format
+The Preferences tab generates repeating key, type, and value parameters:
 
-iTAK does not use the `tak://` URI scheme for server onboarding. It scans a plain CSV string known as “Quick Connect”.
+    tak://com.atakmap.app/preference?key1={key}&type1={type}&value1={value}
 
-### 2.1 Quick Connect (CSV)
-- **Format (strictly 4 fields, in order):**
-  ```
-  {description},{host},{port},{protocol}
-  ```
-- **Examples (canonical):**
-  ```
-  My TAK,tak.example.com,8089,ssl
-  My TAK,192.168.1.10,8089,tcp
-  ```
-- **Fields:**
-  | Name        | Description                    | Rules                                  |
-  |-------------|--------------------------------|----------------------------------------|
-  | description | Human-friendly server name     | UTF‑8; no commas; avoid control chars  |
-  | host        | TAK server FQDN or IPv4        | IPv6 typically not supported via CSV   |
-  | port        | Server port                    | Required; 1–65535                      |
-  | protocol    | Transport                      | `ssl` (SSL/TLS) or `tcp` (plain TCP)   |
+The app offers string, boolean, long, and int values. qrtak encodes each parameter value before placing it in the URI.
 
-- **Important constraints:**
-  - Exactly 4 comma-separated fields; no extra/missing fields.
-  - No quoting/escaping: descriptions must not contain commas.
-  - Trim whitespace in generator; emit plain UTF‑8 (no BOM), no trailing newline required.
-  - Protocol tokens are case-insensitive, but generators should emit lower-case `ssl`/`tcp`.
-  - iTAK prompts for username/password after scanning; CSV carries connection info only.
-  - QUIC is not supported in iTAK Quick Connect CSV.
+## iTAK Quick Connect
 
-- **Non-examples (invalid):**
-  ```
-  # Missing port
-  My TAK,tak.example.com,ssl
+qrtak emits a four-field CSV payload:
 
-  # Unsupported protocol
-  My TAK,tak.example.com,8090,quic
+    {description},{host},{port},{protocol}
 
-  # Comma in description breaks parsing
-  Team, One,tak.example.com,8089,ssl
-  ```
+The app maps HTTPS to ssl and HTTP to tcp, and replaces commas in the description with spaces. This section records qrtak's output format; the local source audit covered ATAK CIV, not iTAK. Confirm behavior on the target iTAK version before distribution.
 
-> Note: If you need advanced options (e.g., certificates, QUIC, custom provisioning), use data packages rather than CSV QR.
+## Handling credentials
 
----
-
-## 3. Best Practices & Warnings
-- **Always test QR codes with the target TAK client version.**
-- **Never share QR codes with credentials in insecure environments.**
-- **Percent-encode all URLs for import QR codes.**
-- **Preference QR codes can set multiple keys at once.**
-- **Keep this document updated with TAK client changes.**
-
----
-
-## 4. References
-- [ATAK Scheme Handling aka "tak://"](https://wiki.tak.gov/spaces/DEV/pages/125370826/ATAK+Scheme+Handling+aka+tak)
-- [ATAK Community Wiki](https://github.com/deptofdefense/AndroidTacticalAssaultKit-CIV/wiki)
-- [myTeckNet QR Code Registrations with TAK](https://mytecknet.com/tak-qr-codes/)
-- [ASCII Encoding Reference](https://www.w3schools.com/tags/ref_urlencode.ASP)
-
----
-
-## 5. Versioning
-- **Based on**: ATAK 5.2 Official Change Log (July 2024) and iTAK Quick Connect guidance
-- **Compatibility**: ATAK 5.2+; iTAK Quick Connect CSV in current iTAK releases
-- **Last Updated**: September 2025
-- This document should be updated if TAK client QR code formats change in future releases. 
+Enrollment QR codes contain the username and token in encoded query parameters. Percent-encoding does not encrypt them. Avoid displaying or sharing credential-bearing QR codes where others can capture them.

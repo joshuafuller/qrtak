@@ -118,13 +118,14 @@ def gather_preferences():
 
 def main():
     data = gather_preferences()
-    out_path = ROOT / "atak-preferences.json"
-    with out_path.open("w", encoding="utf-8") as f:
-        json.dump(data, f, indent=2, ensure_ascii=False)
-    print(f"Wrote {out_path}")
+    public_copy = ROOT.parent.parent / "public" / "docs" / "prefs" / "atak-preferences.json"
+    for out_path in (ROOT / "atak-preferences.json", public_copy):
+        out_path.parent.mkdir(parents=True, exist_ok=True)
+        with out_path.open("w", encoding="utf-8") as f:
+            json.dump(data, f, indent=2, ensure_ascii=False)
+        print(f"Wrote {out_path}")
 
 
 if __name__ == "__main__":
     main()
-
 

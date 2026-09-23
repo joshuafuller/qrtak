@@ -233,6 +233,10 @@
         "label": "Callsign Preferences"
       },
       {
+        "key": "Callsign",
+        "label": "callsign_category"
+      },
+      {
         "key": "quickpic.camera_chooser",
         "label": "Camera Application"
       },
@@ -283,10 +287,6 @@
       {
         "key": "Color",
         "label": "color_category"
-      },
-      {
-        "key": "Callsign",
-        "label": "com.atakmap.app.preferences.CallSignPreferenceFragment"
       },
       {
         "key": "Help",
@@ -1939,6 +1939,10 @@
         "label": "Callsign Preferences"
       },
       {
+        "key": "Callsign",
+        "label": "callsign_category"
+      },
+      {
         "key": "quickpic.camera_chooser",
         "label": "Camera Application"
       },
@@ -1989,10 +1993,6 @@
       {
         "key": "Color",
         "label": "color_category"
-      },
-      {
-        "key": "Callsign",
-        "label": "com.atakmap.app.preferences.CallSignPreferenceFragment"
       },
       {
         "key": "Help",
@@ -3625,6 +3625,10 @@
         "label": "Callsign Preferences"
       },
       {
+        "key": "Callsign",
+        "label": "callsign_category"
+      },
+      {
         "key": "quickpic.camera_chooser",
         "label": "Camera Application"
       },
@@ -3675,10 +3679,6 @@
       {
         "key": "Color",
         "label": "color_category"
-      },
-      {
-        "key": "Callsign",
-        "label": "com.atakmap.app.preferences.CallSignPreferenceFragment"
       },
       {
         "key": "Help",
@@ -8978,6 +8978,15 @@
       ]
     },
     {
+      "key": "Callsign",
+      "label": "callsign_category",
+      "versions": [
+        "5.5",
+        "5.4",
+        "5.2"
+      ]
+    },
+    {
       "key": "quickpic.camera_chooser",
       "label": "Camera Application",
       "versions": [
@@ -9125,15 +9134,6 @@
     {
       "key": "Color",
       "label": "color_category",
-      "versions": [
-        "5.5",
-        "5.4",
-        "5.2"
-      ]
-    },
-    {
-      "key": "Callsign",
-      "label": "com.atakmap.app.preferences.CallSignPreferenceFragment",
       "versions": [
         "5.5",
         "5.4",
