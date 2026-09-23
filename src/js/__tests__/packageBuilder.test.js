@@ -166,8 +166,16 @@ describe('PackageBuilder', () => {
     });
 
     it('should validate port before building package', async () => {
+      document.getElementById('package-deployment').value = 'auto-enroll';
       document.getElementById('package-host').value = 'tak.example.com';
       document.getElementById('package-port').value = '99999'; // Invalid port
+      document.getElementById('package-username').value = 'testuser';
+      document.getElementById('package-password').value = 'testpass';
+      document.getElementById('package-ca-pass').value = 'capass';
+      Object.defineProperty(document.getElementById('pkg-ca'), 'files', {
+        value: [new File(['ca'], 'ca.p12')],
+        configurable: true
+      });
 
       await window.PackageBuilder.buildPackage();
 
@@ -176,6 +184,7 @@ describe('PackageBuilder', () => {
         'Please fix the highlighted field errors before building the package',
         'error'
       );
+      expect(JSZip).not.toHaveBeenCalled();
     });
 
     it('should require certificate files', async () => {
@@ -251,6 +260,17 @@ describe('PackageBuilder', () => {
       expect(pref).not.toContain('key="caPassword"');
     });
 
+    it('trims the username written to config.pref', async () => {
+      setupAutoEnrollForm();
+      document.getElementById('package-username').value = '  testuser \t';
+
+      await window.PackageBuilder.buildPackage();
+
+      expect(getConfigPref()).toContain(
+        '<entry key="username0" class="class java.lang.String">testuser</entry>'
+      );
+    });
+
     it('soft-cert: caLocation uses indexed key caLocation0 (not caLocation)', async () => {
       setupSoftCertForm();
       await window.PackageBuilder.buildPackage();
@@ -302,6 +322,33 @@ describe('PackageBuilder', () => {
   describe('Package building', () => {
     beforeEach(() => {
       window.PackageBuilder.init();
+    });
+
+    it('generates a random manifest UUID when crypto.randomUUID is unavailable', async () => {
+      document.getElementById('package-client').value = 'atak';
+      document.getElementById('package-deployment').value = 'auto-enroll';
+      document.getElementById('package-host').value = 'tak.example.com';
+      document.getElementById('package-port').value = '8089';
+      document.getElementById('package-protocol').value = 'ssl';
+      document.getElementById('package-ca-pass').value = 'capass';
+      document.getElementById('package-username').value = 'testuser';
+      document.getElementById('package-password').value = 'testpass';
+      Object.defineProperty(document.getElementById('pkg-ca'), 'files', {
+        value: [new File(['ca'], 'ca.p12')],
+        configurable: true
+      });
+
+      window.crypto.randomUUID = undefined;
+      window.crypto.getRandomValues = jest.fn(bytes => {
+        bytes.set(Array.from({ length: 16 }, (_, index) => index + 1));
+        return bytes;
+      });
+
+      await window.PackageBuilder.buildPackage();
+
+      const [, manifest] = mockZipFile.mock.calls.find(call => call[0] === 'manifest.xml');
+      expect(window.crypto.getRandomValues).toHaveBeenCalled();
+      expect(manifest).toContain('name="uid" value="01020304-0506-4708-890a-0b0c0d0e0f10"');
     });
 
     it('should build ATAK soft-cert package with correct structure', async () => {

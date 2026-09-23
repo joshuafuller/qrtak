@@ -142,8 +142,8 @@ describe('ATAK Enrollment URL Limitations', () => {
 
       // Set all fields
       hostInput.value = 'tak.example.com';
-      usernameInput.value = 'testuser';
-      tokenInput.value = 'testpass';
+      usernameInput.value = '  testuser \t';
+      tokenInput.value = '\t testpass \n';
       portInput.value = '9999';
       protocolSelect.value = 'quic';
 

@@ -19,8 +19,8 @@ test.describe('PWA offline capability', () => {
 
     // Reload while offline; the app shell should still render
     await page.reload({ waitUntil: 'domcontentloaded' });
-    // Use a more specific selector - the main h1 title, not the help section h2
-    await expect(page.getByRole('heading', { name: /📱 TAK Onboarding Platform/i, level: 1 })).toBeVisible();
+    // Keep branding text out of the service-worker smoke check.
+    await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
     await expect(page.getByRole('tab', { name: /TAK Config/i })).toBeVisible();
     // Offline indicator is best-effort; some drivers don't reflect navigator.onLine
     // Keep this test focused on offline shell rendering

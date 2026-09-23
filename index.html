@@ -4,17 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>TAK Onboarding Platform</title>
-    <meta name="description" content="Generate TAK client configuration QR codes for rapid deployment">
+    <title>qrtak | TAK Client QR and Package Builder</title>
+    <meta name="description" content="Generate TAK client QR codes and configuration packages in your browser">
     <meta name="keywords" content="TAK, ATAK, iTAK, QR code, configuration, deployment">
-    <meta name="author" content="TAK Onboarding Platform">
+    <meta name="author" content="qrtak contributors">
     
     <!-- PWA & Mobile - Updated Tactical Theme -->
     <meta name="theme-color" content="#2d4a3e">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="TAK Onboard">
+    <meta name="apple-mobile-web-app-title" content="qrtak">
     
     <!-- Icons -->
     <link rel="icon" type="image/x-icon" href="favicon.ico">
@@ -42,7 +42,7 @@
                         <div class="header-main">
                             <h1 class="title">
                                 <span class="title-icon">📱</span>
-                                TAK Onboarding Platform
+                                qrtak
                             </h1>
                             <p class="subtitle">Generate configuration QR codes for rapid TAK client deployment</p>
                         </div>
@@ -82,13 +82,13 @@
             <div class="container">
                 <!-- Tab Navigation -->
                 <div class="tabs" role="tablist" aria-label="Configuration options">
-                    <button class="tab-btn active" data-tab="tak-config" role="tab" aria-selected="true" aria-controls="tak-config-tab">TAK Config</button>
-                    <button class="tab-btn" data-tab="import" role="tab" aria-selected="false" aria-controls="import-tab">URL Import</button>
-                    <button class="tab-btn" data-tab="packages" role="tab" aria-selected="false" aria-controls="packages-tab">Data Package Builder</button>
-                    <button class="tab-btn" data-tab="bulk" role="tab" aria-selected="false" aria-controls="bulk-tab">Bulk Onboard</button>
-                    <button class="tab-btn" data-tab="preferences" role="tab" aria-selected="false" aria-controls="preferences-tab">Preferences</button>
-                    <button class="tab-btn" data-tab="profiles" role="tab" aria-selected="false" aria-controls="profiles-tab">Profiles</button>
-                    <button class="tab-btn" data-tab="help" role="tab" aria-selected="false" aria-controls="help-tab">Help</button>
+                    <button id="tak-config-btn" class="tab-btn active" data-tab="tak-config" role="tab" aria-selected="true" aria-controls="tak-config-tab">TAK Config</button>
+                    <button id="import-btn" class="tab-btn" data-tab="import" role="tab" aria-selected="false" aria-controls="import-tab">URL Import</button>
+                    <button id="packages-btn" class="tab-btn" data-tab="packages" role="tab" aria-selected="false" aria-controls="packages-tab">Data Package Builder</button>
+                    <button id="bulk-btn" class="tab-btn" data-tab="bulk" role="tab" aria-selected="false" aria-controls="bulk-tab">Bulk Onboard</button>
+                    <button id="preferences-btn" class="tab-btn" data-tab="preferences" role="tab" aria-selected="false" aria-controls="preferences-tab">Preferences</button>
+                    <button id="profiles-btn" class="tab-btn" data-tab="profiles" role="tab" aria-selected="false" aria-controls="profiles-tab">Profiles</button>
+                    <button id="help-btn" class="tab-btn" data-tab="help" role="tab" aria-selected="false" aria-controls="help-tab">Help</button>
                 </div>
 
                 <!-- Tab Content -->
@@ -162,8 +162,8 @@
                                             <div class="security-notice">
                                                 <span class="notice-icon">⚠️</span>
                                                 <div class="notice-content">
-                                                    <strong>Security Notice:</strong> Passwords are stored in plaintext in QR codes. 
-                                                    Use only in controlled environments.
+                                                    <strong>Security Notice:</strong> QR codes do not encrypt credentials. Anyone who can scan one can read the username and token.
+                                                    Share credential-bearing codes only in controlled environments.
                                                 </div>
                                             </div>
                                         </div>
@@ -191,8 +191,7 @@
                                             <div class="info-notice">
                                                 <span class="notice-icon">ℹ️</span>
                                                 <div class="notice-content">
-                                                    <strong>Authentication:</strong> iTAK will prompt for username and password after scanning the QR code. 
-                                                    The QR only contains server connection information. Protocols supported: <code>ssl</code> (HTTPS) and <code>tcp</code> (HTTP).
+                                                    <strong>Authentication:</strong> This QR contains server connection information only; it does not include credentials. Protocols generated: <code>ssl</code> (HTTPS) and <code>tcp</code> (HTTP).
                                                 </div>
                                             </div>
                                         </div>
@@ -237,7 +236,7 @@
                                         <p>If enrollment fails, ATAK shows: <strong class="error-message">"The TAK Server's identity could not be verified"</strong></p>
                                         <p><strong>When it works:</strong> Certificates from trusted CAs (like Let's Encrypt) that are in Android's system trust store.</p>
                                         <p><strong>When it fails:</strong> Self-signed certificates or untrusted CAs not in Android's trust store.</p>
-                                        <p><strong>Technical limitations:</strong> Only works on port 8089 with SSL (no QUIC support).</p>
+                                        <p><strong>Technical limitations:</strong> The ATAK enrollment QR uses ATAK's default stream connection, port 8089 with SSL. The certificate-enrollment HTTPS connector uses a separate server port.</p>
                                     </div>
                                     <div class="warning-solution">
                                         <strong>For self-signed certificates:</strong> Use the <a href="#packages-tab" onclick="window.switchTab('packages'); return false;" class="warning-link">Data Package Builder</a> tab instead - it lets you include your server's certificate so ATAK will trust it.
@@ -278,14 +277,14 @@
                     <div class="tab-pane" id="packages-tab" role="tabpanel" aria-labelledby="packages-btn">
                         <div class="form-section">
                             <h2>Data Package Builder</h2>
-                            <p class="form-description">Create ATAK/WinTAK/iTAK data packages with config.pref, manifest.xml, and optional files</p>
+                            <p class="form-description">Create TAK client package layouts with config.pref, certificates, a manifest, and optional files</p>
 
                             <form id="package-form" class="config-form">
                                 <div class="form-group">
                                     <label for="package-client">Target Client:</label>
                                     <select id="package-client" name="client" required>
-                                        <option value="atak">ATAK / WinTAK</option>
-                                        <option value="itak">iTAK</option>
+                                        <option value="atak">ATAK layout</option>
+                                        <option value="itak">iTAK layout</option>
                                     </select>
                                 </div>
 
@@ -296,7 +295,7 @@
                                         <option value="soft-cert">Soft-Certificate (Include client certificate)</option>
                                     </select>
                                     <div class="help-text" id="deployment-help">
-                                        <strong id="deployment-type-desc">Auto-Enrollment:</strong> <span id="deployment-desc">Package contains server info and CA certificate. Device will request its own certificate from server on first connection.</span>
+                                        <strong id="deployment-type-desc">Auto-Enrollment:</strong> <span id="deployment-desc">Package contains server info and CA certificate. ATAK prompts for enrollment credentials after import; the package does not include the password.</span>
                                     </div>
                                 </div>
 
@@ -585,8 +584,8 @@
                     <!-- Help Tab -->
                     <div class="tab-pane" id="help-tab" role="tabpanel" aria-labelledby="help-btn">
                         <div class="help-section">
-                            <h2>TAK Onboarding Platform Help</h2>
-                            <p class="help-intro">Welcome to the TAK Onboarding Platform. Generate enrollment/import QRs, build data packages, and bulk‑onboard users for fast, reliable TAK client deployment.</p>
+                            <h2>qrtak Help</h2>
+                            <p class="help-intro">Generate enrollment and import QR codes, build configuration packages, and create bulk user QR codes in your browser.</p>
                             
                             <!-- Quick Start -->
                             <div class="help-section-content">
@@ -629,11 +628,11 @@
                                 <div class="help-tabs">
                                     <div class="help-tab-item">
                                         <h4>TAK Config</h4>
-                                        <p>Unified configuration with two modes:
+                                        <p>Unified configuration with two modes:</p>
                                         <ul>
                                             <li><strong>ATAK:</strong> Enrollment QR with <em>host</em>, <em>username</em>, and <em>password/token</em>.</li>
                                             <li><strong>iTAK:</strong> Quick‑connect CSV in QR (<code>description,host,port,protocol</code>).</li>
-                                        </ul></p>
+                                        </ul>
                                         <div class="help-features">
                                             <span class="feature-tag">ATAK/iTAK</span>
                                             <span class="feature-tag">Validation</span>
@@ -641,8 +640,8 @@
                                         </div>
                                     </div>
                                     <div class="help-tab-item">
-                                        <h4>Data Package Builder</h4>
-                                        <p>Create an import URI for data packages/config files at a URL. Red/green validation ensures a well‑formed URL before actions enable.</p>
+                                        <h4>URL Import</h4>
+                                        <p>Create an ATAK import QR for a data package or configuration file at a URL. ATAK asks the user to confirm before importing.</p>
                                         <div class="help-features">
                                             <span class="feature-tag">Import</span>
                                             <span class="feature-tag">Validation</span>
@@ -650,11 +649,11 @@
                                         </div>
                                     </div>
                                     <div class="help-tab-item">
-                                        <h4>URL Import</h4>
-                                        <p>Build ATAK/WinTAK/iTAK packages with <code>config.pref</code> and <code>manifest.xml</code>. When <strong>client = iTAK</strong>, protocol tokens are <code>ssl</code> (HTTPS) and <code>tcp</code> (HTTP); QUIC is hidden.</p>
+                                        <h4>Data Package Builder</h4>
+                                        <p>Build configuration packages with <code>config.pref</code>, certificates, and a manifest. When <strong>client = iTAK</strong>, protocol tokens are <code>ssl</code> (HTTPS) and <code>tcp</code> (HTTP); QUIC is hidden.</p>
                                         <div class="help-features">
                                             <span class="feature-tag">Packages</span>
-                                            <span class="feature-tag">ATAK/WinTAK/iTAK</span>
+                                            <span class="feature-tag">Client package layouts</span>
                                             <span class="feature-tag">ZIP</span>
                                         </div>
                                     </div>
@@ -785,7 +784,7 @@
         <!-- Footer -->
         <footer class="footer">
             <div class="container">
-                <p>&copy; 2025 TAK Onboarding Platform. Offline-first PWA for rapid TAK deployment.
+                <p>qrtak is an independent, unofficial community project. It is not affiliated with the TAK Product Center, TAK.gov, the U.S. Government, or TPP.
                     <span id="app-version"></span>
                     <span id="update-notice" class="update-notice" style="display:none;">(update available)</span>
                 </p>

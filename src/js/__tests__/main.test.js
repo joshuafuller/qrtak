@@ -9,8 +9,8 @@ describe('updateATAKQR', () => {
     // Set up DOM elements
     document.body.innerHTML = `
       <input id="atak-host" value="takserver.com" />
-      <input id="atak-username" value="john.doe" />
-      <input id="atak-token" value="SuperSecret123" />
+      <input id="atak-username" value="  john.doe \n" />
+      <input id="atak-token" value="\tSuperSecret123  " />
       <canvas id="atak-qr"></canvas>
       <button id="atak-download" disabled>Download</button>
       <button id="atak-copy" disabled>Copy</button>
@@ -28,9 +28,27 @@ describe('updateATAKQR', () => {
     expect(atakDownload.disabled).toBe(false);
     expect(atakCopy.disabled).toBe(false);
     // Check that the correct URI is set on the download button (data attribute or similar)
-    // (You may need to adjust this if your implementation differs)
-    // For now, just check the expected URI
-    // Example: expect(atakDownload.getAttribute('data-uri')).toBe(expectedURI);
+    expect(document.getElementById('atak-qr').dataset.uri).toBe(
+      'tak://com.atakmap.app/enroll?host=takserver.com&username=john.doe&token=SuperSecret123'
+    );
+  });
+
+  it('copies trimmed ATAK credentials', async () => {
+    const writeText = jest.fn().mockResolvedValue();
+    if (navigator.clipboard?.writeText) {
+      jest.spyOn(navigator.clipboard, 'writeText').mockImplementation(writeText);
+    } else {
+      Object.defineProperty(navigator, 'clipboard', {
+        value: { writeText },
+        configurable: true
+      });
+    }
+
+    await window.UIController.copyURI('atak');
+
+    expect(writeText).toHaveBeenCalledWith(
+      'tak://com.atakmap.app/enroll?host=takserver.com&username=john.doe&token=SuperSecret123'
+    );
   });
 
   it('disables buttons if any field is missing', async () => {
@@ -100,8 +118,8 @@ describe('populateiTAKFromATAK', () => {
   beforeEach(() => {
     document.body.innerHTML = `
       <input id="atak-host" value="https://takserver.com" />
-      <input id="atak-username" value="alice" />
-      <input id="atak-token" value="token123" />
+      <input id="atak-username" value=" alice " />
+      <input id="atak-token" value=" token123\t" />
       <input id="itak-url" value="" />
       <input id="itak-protocol" value="" />
       <input id="itak-username" value="" />
@@ -127,8 +145,8 @@ describe('populateATAKFromiTAK', () => {
   beforeEach(() => {
     document.body.innerHTML = `
       <input id="itak-url" value="https://takserver.com" />
-      <input id="itak-username" value="bob" />
-      <input id="itak-token" value="tok456" />
+      <input id="itak-username" value=" bob\n" />
+      <input id="itak-token" value="\ttok456 " />
       <input id="atak-host" value="" />
       <input id="atak-username" value="" />
       <input id="atak-token" value="" />

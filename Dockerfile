@@ -77,8 +77,8 @@ LABEL org.opencontainers.image.created=$BUILD_DATE \
       org.opencontainers.image.version=$VERSION \
       org.opencontainers.image.revision=$VCS_REF \
       org.opencontainers.image.title="qrtak" \
-      org.opencontainers.image.description="Generate TAK client configuration QR codes instantly" \
-      org.opencontainers.image.vendor="TAK Onboarding Platform Team" \
+      org.opencontainers.image.description="Generate TAK client QR codes and configuration packages in the browser" \
+      org.opencontainers.image.vendor="qrtak contributors" \
       org.opencontainers.image.licenses="MIT" \
       org.opencontainers.image.source="https://github.com/joshuafuller/qrtak"
 

@@ -18,8 +18,11 @@ describe('utils validators', () => {
   });
 
   test('isValidURL basic validation using URL constructor', () => {
+    const scriptUrl = ['java', 'script:alert(1)'].join('');
     expect(isValidURL('https://example.com/data.zip')).toBe(true);
     expect(isValidURL('http://example.com')).toBe(true);
+    expect(isValidURL('ftp://example.com/data.zip')).toBe(false);
+    expect(isValidURL(scriptUrl)).toBe(false);
     expect(isValidURL('notaurl')).toBe(false);
   });
 

@@ -33,7 +33,6 @@ updates:
       dev-dependencies:
         patterns:
           - "@babel/*"
-          - "@semantic-release/*"
           - "eslint*"
           - "jest*"
           - "babel-jest"

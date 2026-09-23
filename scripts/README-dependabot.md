@@ -86,7 +86,3 @@ If your repository requires PR reviews:
 - **Review required:** The merge script will try to approve, but you may need to manually review.
 - **Persistent failures:** Check the specific failing check (often `sast-comprehensive`) for configuration issues.
 - **Can't rerun workflows:** If workflows are too old or have restrictions, use the recreate script instead.
-
-## Current Known Issues
-
-The `sast-comprehensive` check is failing on some Dependabot PRs. This appears to be a configuration issue that may need to be addressed in the workflow file itself.

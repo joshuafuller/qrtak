@@ -88,7 +88,3 @@ jobs:
           gh release upload ${{ steps.release.outputs.tag_name }} \
             qrtak-dist.tgz \
             --clobber
-
-  # Note: Docker build must be triggered manually after release
-  # Run: gh workflow run release-docker.yml -f version=X.X.X
-  # This is due to GitHub security restrictions preventing GITHUB_TOKEN from triggering other workflows

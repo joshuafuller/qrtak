@@ -217,6 +217,14 @@
         "label": "Bullseye Rings Visibility"
       },
       {
+        "key": "callsign_category",
+        "label": "Callsign"
+      },
+      {
+        "key": "com.atakmap.app.preferences.CallSignPreferenceFragment",
+        "label": "Callsign"
+      },
+      {
         "key": "callSignAndDevicePrefs",
         "label": "Callsign and Device Preferences"
       },
@@ -283,10 +291,6 @@
       {
         "key": "Color",
         "label": "color_category"
-      },
-      {
-        "key": "Callsign",
-        "label": "com.atakmap.app.preferences.CallSignPreferenceFragment"
       },
       {
         "key": "Help",
@@ -1923,6 +1927,14 @@
         "label": "Bullseye Rings Visibility"
       },
       {
+        "key": "callsign_category",
+        "label": "Callsign"
+      },
+      {
+        "key": "com.atakmap.app.preferences.CallSignPreferenceFragment",
+        "label": "Callsign"
+      },
+      {
         "key": "callSignAndDevicePrefs",
         "label": "Callsign and Device Preferences"
       },
@@ -1989,10 +2001,6 @@
       {
         "key": "Color",
         "label": "color_category"
-      },
-      {
-        "key": "Callsign",
-        "label": "com.atakmap.app.preferences.CallSignPreferenceFragment"
       },
       {
         "key": "Help",
@@ -3609,6 +3617,14 @@
         "label": "Bullseye Rings Visibility"
       },
       {
+        "key": "callsign_category",
+        "label": "Callsign"
+      },
+      {
+        "key": "com.atakmap.app.preferences.CallSignPreferenceFragment",
+        "label": "Callsign"
+      },
+      {
         "key": "callSignAndDevicePrefs",
         "label": "Callsign and Device Preferences"
       },
@@ -3675,10 +3691,6 @@
       {
         "key": "Color",
         "label": "color_category"
-      },
-      {
-        "key": "Callsign",
-        "label": "com.atakmap.app.preferences.CallSignPreferenceFragment"
       },
       {
         "key": "Help",
@@ -8931,8 +8943,20 @@
       "key": "callsign_category",
       "label": "Callsign",
       "versions": [
+        "5.5",
+        "5.4",
+        "5.2",
         "5.0",
         "4.8"
+      ]
+    },
+    {
+      "key": "com.atakmap.app.preferences.CallSignPreferenceFragment",
+      "label": "Callsign",
+      "versions": [
+        "5.5",
+        "5.4",
+        "5.2"
       ]
     },
     {
@@ -9125,15 +9149,6 @@
     {
       "key": "Color",
       "label": "color_category",
-      "versions": [
-        "5.5",
-        "5.4",
-        "5.2"
-      ]
-    },
-    {
-      "key": "Callsign",
-      "label": "com.atakmap.app.preferences.CallSignPreferenceFragment",
       "versions": [
         "5.5",
         "5.4",
