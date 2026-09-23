@@ -45,8 +45,10 @@ updates:
         update-types: ["version-update:semver-major"]
       - dependency-name: "jest"
         update-types: ["version-update:semver-major"]
-      - dependency-name: "@babel/core"
-        update-types: ["version-update:semver-major"]
+      # Babel 8 needs a coordinated toolchain migration. Dependabot can't
+      # classify the current Babel 7-to-8 versions as a SemVer major update.
+      - dependency-name: "@babel/*"
+        versions: [">=8.0.0"]
 
   # GitHub Actions
   - package-ecosystem: "github-actions"
