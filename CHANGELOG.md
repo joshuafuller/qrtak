@@ -16,6 +16,19 @@
 * **deps:** bump renovatebot/github-action from 43.0.9 to 43.0.14 ([#142](https://github.com/joshuafuller/qrtak/issues/142)) ([b29c40f](https://github.com/joshuafuller/qrtak/commit/b29c40fc4ec89b9c0c1ed387527a19b55b316258))
 * **deps:** bump trufflesecurity/trufflehog from 3.90.5 to 3.90.8 ([#141](https://github.com/joshuafuller/qrtak/issues/141)) ([1ffcf61](https://github.com/joshuafuller/qrtak/commit/1ffcf619b28aef552ebf54661cad0f9ed091dedf))
 
+## [4.0.13](https://github.com/joshuafuller/qrtak/compare/qrtak-v4.0.12...qrtak-v4.0.13) (2026-09-23)
+
+
+### Dependency Updates
+
+* **deps:** bump actions/deploy-pages from 5.0.0 to 5.0.1 ([#416](https://github.com/joshuafuller/qrtak/issues/416)) ([e5bc371](https://github.com/joshuafuller/qrtak/commit/e5bc371fb1f8c026978830f566ad358835e9d572))
+* **deps:** bump github/codeql-action/upload-sarif from 4.36.0 to 4.38.1 ([#415](https://github.com/joshuafuller/qrtak/issues/415)) ([d727e8f](https://github.com/joshuafuller/qrtak/commit/d727e8f2d16a3cf88183d28a609ee772921045d4))
+
+
+### Bug Fixes
+
+* **ci:** repair dependency update checks ([#409](https://github.com/joshuafuller/qrtak/issues/409)) ([3fa8078](https://github.com/joshuafuller/qrtak/commit/3fa8078725b9e99291d216ef725144c29b4495a4))
+
 ## [4.0.12](https://github.com/joshuafuller/qrtak/compare/qrtak-v4.0.11...qrtak-v4.0.12) (2026-09-23)
 
 
