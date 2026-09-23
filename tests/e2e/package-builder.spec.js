@@ -19,9 +19,12 @@ test('Data Package Builder: builds and downloads ZIP (auto-enroll)', async ({ pa
   await page.setInputFiles('#pkg-ca', caPath);
 
   // Trigger build and assert download
-  const downloadPromise = page.waitForEvent('download');
-  await page.locator('#package-build').click();
-  const download = await downloadPromise;
+  const buildButton = page.locator('#package-build');
+  await buildButton.scrollIntoViewIfNeeded();
+  const [download] = await Promise.all([
+    page.waitForEvent('download', { timeout: 30_000 }),
+    buildButton.click()
+  ]);
   const suggested = download.suggestedFilename();
   expect(suggested).toMatch(/E2E-Package.*\.zip$/);
 });
