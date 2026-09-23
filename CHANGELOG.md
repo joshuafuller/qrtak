@@ -16,6 +16,22 @@
 * **deps:** bump renovatebot/github-action from 43.0.9 to 43.0.14 ([#142](https://github.com/joshuafuller/qrtak/issues/142)) ([b29c40f](https://github.com/joshuafuller/qrtak/commit/b29c40fc4ec89b9c0c1ed387527a19b55b316258))
 * **deps:** bump trufflesecurity/trufflehog from 3.90.5 to 3.90.8 ([#141](https://github.com/joshuafuller/qrtak/issues/141)) ([1ffcf61](https://github.com/joshuafuller/qrtak/commit/1ffcf619b28aef552ebf54661cad0f9ed091dedf))
 
+## [4.0.14](https://github.com/joshuafuller/qrtak/compare/qrtak-v4.0.13...qrtak-v4.0.14) (2026-09-23)
+
+
+### Dependency Updates
+
+* **deps:** bump actions/upload-pages-artifact from 3.0.1 to 5.0.0 ([#412](https://github.com/joshuafuller/qrtak/issues/412)) ([8932219](https://github.com/joshuafuller/qrtak/commit/89322191a203101a724afe902cb6d870134ff3b1))
+* **deps:** bump docker/build-push-action from 7.1.0 to 7.4.0 ([#414](https://github.com/joshuafuller/qrtak/issues/414)) ([ae7ce30](https://github.com/joshuafuller/qrtak/commit/ae7ce304cec0bfbd2dd70572c16c9dc55dcdb096))
+* **deps:** bump docker/setup-qemu-action from 4.2.0 to 4.4.0 ([#418](https://github.com/joshuafuller/qrtak/issues/418)) ([b3a1f91](https://github.com/joshuafuller/qrtak/commit/b3a1f91e01c3469466df700e873fe38215ff9df5))
+* **deps:** bump step-security/harden-runner from 2.20.0 to 2.21.1 ([#411](https://github.com/joshuafuller/qrtak/issues/411)) ([0211c7a](https://github.com/joshuafuller/qrtak/commit/0211c7a5e18cc957d7b047ced3d1858956d982af))
+* **deps:** bump trufflesecurity/trufflehog from 3.96.0 to 3.97.5 ([#419](https://github.com/joshuafuller/qrtak/issues/419)) ([59b60c2](https://github.com/joshuafuller/qrtak/commit/59b60c280ba1718e0b1eb4cfe45092bbd75220e6))
+
+
+### Development Dependency Updates
+
+* **deps-dev:** bump @babel/preset-env in the dev-dependencies group ([#420](https://github.com/joshuafuller/qrtak/issues/420)) ([44a1c8b](https://github.com/joshuafuller/qrtak/commit/44a1c8b36a3cce132a3892ac61751d0914abfb16))
+
 ## [4.0.13](https://github.com/joshuafuller/qrtak/compare/qrtak-v4.0.12...qrtak-v4.0.13) (2026-09-23)
 
 
