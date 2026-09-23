@@ -116,7 +116,9 @@ test('Load Example succeeds even if /tak_users.txt returns HTML (fallback to bun
 test('Load Example shows error if all paths fail', async ({ page }) => {
   // Fail fetch before the service worker can satisfy the request from its cache.
   await page.evaluate(() => {
-    window.fetch = async () => { throw new TypeError('fetch failed'); };
+    window.fetch = async () => {
+      throw new TypeError('fetch failed');
+    };
   });
 
   const loadExample = page.locator('#bulk-load-example');
