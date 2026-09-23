@@ -260,6 +260,17 @@ describe('PackageBuilder', () => {
       expect(pref).not.toContain('key="caPassword"');
     });
 
+    it('trims the username written to config.pref', async () => {
+      setupAutoEnrollForm();
+      document.getElementById('package-username').value = '  testuser \t';
+
+      await window.PackageBuilder.buildPackage();
+
+      expect(getConfigPref()).toContain(
+        '<entry key="username0" class="class java.lang.String">testuser</entry>'
+      );
+    });
+
     it('soft-cert: caLocation uses indexed key caLocation0 (not caLocation)', async () => {
       setupSoftCertForm();
       await window.PackageBuilder.buildPackage();

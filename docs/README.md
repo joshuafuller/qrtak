@@ -11,4 +11,4 @@ These pages describe qrtak's current behavior and generated output.
 - [Release notes for 2.0.0](RELEASE-NOTES-2.0.0.md): historical release notes
 - [Changelog audit](CHANGELOG-AUDIT.md): generated history report
 
-The Preferences tab loads its JSON assets from public/docs/prefs/. The normalized catalog is sourced from docs/prefs/*.txt; run `python3 docs/prefs/build_prefs_json.py` to refresh the source and served copies. Detailed preference metadata is maintained separately.
+The Preferences tab loads its JSON assets from public/docs/prefs/. The normalized catalog is sourced from docs/prefs/*.txt; run `python3 docs/prefs/test_build_prefs_json.py` to verify the checked-in catalogs, then `python3 docs/prefs/build_prefs_json.py` to refresh both copies. Detailed preference metadata is maintained separately.

@@ -7,6 +7,10 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent
 
 PAIR_RE = re.compile(r"^\s*'([^']+)'\s*,\s*'([^']+)'\s*$")
+KEY_FIRST_PAIRS = {
+    ("callsign_category", "Callsign"),
+    ("com.atakmap.app.preferences.CallSignPreferenceFragment", "Callsign"),
+}
 
 
 def normalize_version(raw: str) -> str:
@@ -32,6 +36,9 @@ def parse_line(line: str):
     if not m:
         return None
     a, b = m.group(1).strip(), m.group(2).strip()
+    # These source rows are key-first, but both values look like identifiers.
+    if (a, b) in KEY_FIRST_PAIRS:
+        return {"key": a, "label": b}
     # Heuristic: prefer the token that looks like a key
     a_key = is_likely_key(a)
     b_key = is_likely_key(b)
@@ -128,4 +135,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

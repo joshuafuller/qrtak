@@ -265,10 +265,10 @@ const QRGenerator = (function () {
    */
   async function updateATAKQRCore () {
     const host = document.getElementById('atak-host')?.value || '';
-    const username = document.getElementById('atak-username')?.value || '';
-    const token = document.getElementById('atak-token')?.value || '';
+    const username = (document.getElementById('atak-username')?.value || '').trim();
+    const token = (document.getElementById('atak-token')?.value || '').trim();
 
-    if (host.trim() && username.trim() && token.trim()) {
+    if (host.trim() && username && token) {
       if (!isValidHostname(host.trim())) {
         UIController.showNotification(ERROR_MESSAGES.INVALID_HOSTNAME, 'error');
         generateQRCode(null, 'atak-qr');
@@ -505,13 +505,7 @@ const BulkUsers = (function () {
           try {
             const data = JSON.parse(text);
             if (Array.isArray(data)) {
-              const parsed = data
-                .map((item) => {
-                  const username = String(item.username ?? item.user ?? '');
-                  const token = String(item.password ?? item.token ?? '');
-                  return { username, token };
-                })
-                .filter(u => u.username.trim() && u.token.trim());
+              const parsed = normalizeTakUsers(data);
               if (parsed.length) {
                 loaded = parsed;
                 break;
@@ -820,25 +814,27 @@ const BulkUsers = (function () {
     // Expected format: JSON array of { username, password }
     try {
       const data = JSON.parse(text);
-      if (Array.isArray(data)) {
-        const parsed = data
-          .map((item) => {
-            const username = String(item.username ?? item.user ?? '');
-            const token = String(item.password ?? item.token ?? '');
-            return { username, token };
-          })
-          .filter(u => u.username.trim() && u.token.trim());
-
-        // Check if we got any valid users after parsing
-        if (parsed.length > 0) {
-          return parsed;
-        }
+      const parsed = normalizeTakUsers(data);
+      if (parsed.length > 0) {
+        return parsed;
       }
     } catch {
       // Fall back to empty to force user to provide proper file
     }
     UIController.showNotification('Invalid tak_users.txt format: expected JSON array of {username,password}', 'error');
     return [];
+  }
+
+  function normalizeTakUsers (data) {
+    if (!Array.isArray(data)) {
+      return [];
+    }
+    return data
+      .map((item) => ({
+        username: String(item.username ?? item.user ?? '').trim(),
+        token: String(item.password ?? item.token ?? '').trim()
+      }))
+      .filter(user => user.username && user.token);
   }
 
   // Reset state for testing
@@ -1050,8 +1046,8 @@ const TAKConfigManager = (function () {
    */
   async function updateATAKQR () {
     const host = document.getElementById('tak-host')?.value || '';
-    const username = document.getElementById('tak-username')?.value || '';
-    const token = document.getElementById('tak-token')?.value || '';
+    const username = (document.getElementById('tak-username')?.value || '').trim();
+    const token = (document.getElementById('tak-token')?.value || '').trim();
 
     // Build URI with whatever data we have
     let uri = 'tak://com.atakmap.app/enroll?';
@@ -1067,10 +1063,10 @@ const TAKConfigManager = (function () {
     }
 
     // Add credentials
-    if (username.trim()) {
+    if (username) {
       params.push(`username=${encodeURIComponent(username)}`);
     }
-    if (token.trim()) {
+    if (token) {
       params.push(`token=${encodeURIComponent(token)}`);
     }
 
@@ -1080,7 +1076,7 @@ const TAKConfigManager = (function () {
       await generateQRCode(uri, 'tak-qr');
 
       // Enable buttons only if we have minimum required fields
-      if (host.trim() && username.trim() && token.trim()) {
+      if (host.trim() && username && token) {
         UIController.enableButtons('tak');
       } else {
         UIController.disableButtons('tak');
@@ -2343,8 +2339,8 @@ const UIController = (function () {
       switch (type) {
       case CONFIG.TABS.ATAK: {
         const host = document.getElementById('atak-host')?.value || '';
-        const username = document.getElementById('atak-username')?.value || '';
-        const token = document.getElementById('atak-token')?.value || '';
+        const username = (document.getElementById('atak-username')?.value || '').trim();
+        const token = (document.getElementById('atak-token')?.value || '').trim();
         uri = `tak://com.atakmap.app/enroll?host=${encodeURIComponent(host.trim())}&username=${encodeURIComponent(username)}&token=${encodeURIComponent(token)}`;
         break;
       }
@@ -2483,8 +2479,8 @@ const FormManager = (function () {
    */
   function populateiTAKFromATAK () {
     const atakHost = document.getElementById('atak-host')?.value || '';
-    const atakUsername = document.getElementById('atak-username')?.value || '';
-    const atakToken = document.getElementById('atak-token')?.value || '';
+    const atakUsername = (document.getElementById('atak-username')?.value || '').trim();
+    const atakToken = (document.getElementById('atak-token')?.value || '').trim();
 
     if (atakHost.trim()) {
       let hostname = atakHost.trim();
@@ -2512,14 +2508,14 @@ const FormManager = (function () {
       }
     }
 
-    if (atakUsername.trim()) {
+    if (atakUsername) {
       const itakUsername = document.getElementById('itak-username');
       if (itakUsername) {
         itakUsername.value = atakUsername;
       }
     }
 
-    if (atakToken.trim()) {
+    if (atakToken) {
       const itakToken = document.getElementById('itak-token');
       if (itakToken) {
         itakToken.value = atakToken;
@@ -2534,8 +2530,8 @@ const FormManager = (function () {
    */
   function populateATAKFromiTAK () {
     const itakUrl = document.getElementById('itak-url')?.value || '';
-    const itakUsername = document.getElementById('itak-username')?.value || '';
-    const itakToken = document.getElementById('itak-token')?.value || '';
+    const itakUsername = (document.getElementById('itak-username')?.value || '').trim();
+    const itakToken = (document.getElementById('itak-token')?.value || '').trim();
 
     if (itakUrl.trim()) {
       const hostname = extractHostnameFromURL(itakUrl);
@@ -2547,14 +2543,14 @@ const FormManager = (function () {
       }
     }
 
-    if (itakUsername.trim()) {
+    if (itakUsername) {
       const atakUsername = document.getElementById('atak-username');
       if (atakUsername) {
         atakUsername.value = itakUsername;
       }
     }
 
-    if (itakToken.trim()) {
+    if (itakToken) {
       const atakToken = document.getElementById('atak-token');
       if (atakToken) {
         atakToken.value = itakToken;

@@ -137,6 +137,26 @@ describe('BulkUsers Module - Happy Path', () => {
       );
     });
 
+    test('Load Example trims usernames and passwords from JSON', async () => {
+      const previousFetch = global.fetch;
+      global.fetch = jest.fn().mockResolvedValue({
+        ok: true,
+        text: async () => JSON.stringify([{ username: '  testuser \n', password: '\t testpass ' }])
+      });
+
+      try {
+        document.getElementById('bulk-load-example').click();
+        await waitForAsync();
+        expect(window.BulkUsers.getUsers()).toEqual([{ username: 'testuser', token: 'testpass' }]);
+      } finally {
+        if (previousFetch === undefined) {
+          delete global.fetch;
+        } else {
+          global.fetch = previousFetch;
+        }
+      }
+    });
+
     test('should render user list in sidebar', async () => {
       const file = new File([validUsersJSON], 'tak_users.txt', { type: 'text/plain' });
       const fileInput = document.getElementById('tak-users-file');

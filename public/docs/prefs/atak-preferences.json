@@ -217,6 +217,14 @@
         "label": "Bullseye Rings Visibility"
       },
       {
+        "key": "callsign_category",
+        "label": "Callsign"
+      },
+      {
+        "key": "com.atakmap.app.preferences.CallSignPreferenceFragment",
+        "label": "Callsign"
+      },
+      {
         "key": "callSignAndDevicePrefs",
         "label": "Callsign and Device Preferences"
       },
@@ -231,10 +239,6 @@
       {
         "key": "callSignPrefs",
         "label": "Callsign Preferences"
-      },
-      {
-        "key": "Callsign",
-        "label": "callsign_category"
       },
       {
         "key": "quickpic.camera_chooser",
@@ -1923,6 +1927,14 @@
         "label": "Bullseye Rings Visibility"
       },
       {
+        "key": "callsign_category",
+        "label": "Callsign"
+      },
+      {
+        "key": "com.atakmap.app.preferences.CallSignPreferenceFragment",
+        "label": "Callsign"
+      },
+      {
         "key": "callSignAndDevicePrefs",
         "label": "Callsign and Device Preferences"
       },
@@ -1937,10 +1949,6 @@
       {
         "key": "callSignPrefs",
         "label": "Callsign Preferences"
-      },
-      {
-        "key": "Callsign",
-        "label": "callsign_category"
       },
       {
         "key": "quickpic.camera_chooser",
@@ -3609,6 +3617,14 @@
         "label": "Bullseye Rings Visibility"
       },
       {
+        "key": "callsign_category",
+        "label": "Callsign"
+      },
+      {
+        "key": "com.atakmap.app.preferences.CallSignPreferenceFragment",
+        "label": "Callsign"
+      },
+      {
         "key": "callSignAndDevicePrefs",
         "label": "Callsign and Device Preferences"
       },
@@ -3623,10 +3639,6 @@
       {
         "key": "callSignPrefs",
         "label": "Callsign Preferences"
-      },
-      {
-        "key": "Callsign",
-        "label": "callsign_category"
       },
       {
         "key": "quickpic.camera_chooser",
@@ -8931,8 +8943,20 @@
       "key": "callsign_category",
       "label": "Callsign",
       "versions": [
+        "5.5",
+        "5.4",
+        "5.2",
         "5.0",
         "4.8"
+      ]
+    },
+    {
+      "key": "com.atakmap.app.preferences.CallSignPreferenceFragment",
+      "label": "Callsign",
+      "versions": [
+        "5.5",
+        "5.4",
+        "5.2"
       ]
     },
     {
@@ -8975,15 +8999,6 @@
         "5.2",
         "5.0",
         "4.8"
-      ]
-    },
-    {
-      "key": "Callsign",
-      "label": "callsign_category",
-      "versions": [
-        "5.5",
-        "5.4",
-        "5.2"
       ]
     },
     {
