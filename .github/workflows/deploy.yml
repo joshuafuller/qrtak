@@ -65,7 +65,7 @@ jobs:
           publish_dir: ./dist
           publish_branch: staging
           force_orphan: true
-          commit_message: 'Deploy to staging from ${{ github.sha }}'
+          commit_message: 'Deploy to staging from ${{ github.event.workflow_run.head_sha || github.sha }}'
 
   # Deploy to production (main branch releases or manual)
   deploy-production:
