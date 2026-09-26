@@ -16,6 +16,13 @@
 * **deps:** bump renovatebot/github-action from 43.0.9 to 43.0.14 ([#142](https://github.com/joshuafuller/qrtak/issues/142)) ([b29c40f](https://github.com/joshuafuller/qrtak/commit/b29c40fc4ec89b9c0c1ed387527a19b55b316258))
 * **deps:** bump trufflesecurity/trufflehog from 3.90.5 to 3.90.8 ([#141](https://github.com/joshuafuller/qrtak/issues/141)) ([1ffcf61](https://github.com/joshuafuller/qrtak/commit/1ffcf619b28aef552ebf54661cad0f9ed091dedf))
 
+## [4.0.15](https://github.com/joshuafuller/qrtak/compare/qrtak-v4.0.14...qrtak-v4.0.15) (2026-09-26)
+
+
+### Bug Fixes
+
+* **security:** harden deployment and container inputs ([#422](https://github.com/joshuafuller/qrtak/issues/422)) ([5b87a0a](https://github.com/joshuafuller/qrtak/commit/5b87a0aafce5ac6e4ccf4a0f9846f0e6ea32c2ab))
+
 ## [4.0.14](https://github.com/joshuafuller/qrtak/compare/qrtak-v4.0.13...qrtak-v4.0.14) (2026-09-23)
 
 
