@@ -48,7 +48,7 @@
     "babel-jest": "^30.5.2",
     "eslint": "^10.11.0",
     "eslint-plugin-security": "^4.1.0",
-    "fast-xml-parser": "^5.11.1",
+    "fast-xml-parser": "^5.11.2",
     "jest": "^30.5.2",
     "jest-environment-jsdom": "^30.5.2",
     "playwright": "^1.63.0",
