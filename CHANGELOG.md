@@ -16,6 +16,25 @@
 * **deps:** bump renovatebot/github-action from 43.0.9 to 43.0.14 ([#142](https://github.com/joshuafuller/qrtak/issues/142)) ([b29c40f](https://github.com/joshuafuller/qrtak/commit/b29c40fc4ec89b9c0c1ed387527a19b55b316258))
 * **deps:** bump trufflesecurity/trufflehog from 3.90.5 to 3.90.8 ([#141](https://github.com/joshuafuller/qrtak/issues/141)) ([1ffcf61](https://github.com/joshuafuller/qrtak/commit/1ffcf619b28aef552ebf54661cad0f9ed091dedf))
 
+## [4.0.17](https://github.com/joshuafuller/qrtak/compare/qrtak-v4.0.16...qrtak-v4.0.17) (2026-10-07)
+
+
+### Dependency Updates
+
+* **deps:** bump actions/configure-pages from 5.0.0 to 6.0.0 ([#429](https://github.com/joshuafuller/qrtak/issues/429)) ([b8f1e47](https://github.com/joshuafuller/qrtak/commit/b8f1e472f304a060f629f235b47717adb1fd378d))
+* **deps:** bump actions/download-artifact from 6.0.0 to 8.0.1 ([#426](https://github.com/joshuafuller/qrtak/issues/426)) ([550bac4](https://github.com/joshuafuller/qrtak/commit/550bac40a3c75226aff875c2eb48ddbe5d1fcca5))
+* **deps:** bump anchore/scan-action from 7.4.0 to 7.4.2 ([#428](https://github.com/joshuafuller/qrtak/issues/428)) ([0a2d856](https://github.com/joshuafuller/qrtak/commit/0a2d8564597f9e2c7e95537581ac041ac91c15e1))
+* **deps:** bump docker/metadata-action from 6.0.0 to 6.2.0 ([#430](https://github.com/joshuafuller/qrtak/issues/430)) ([0bc6002](https://github.com/joshuafuller/qrtak/commit/0bc600200d38c46d3313cb2c1aa3fa48bb39bf44))
+* **deps:** bump docker/setup-buildx-action from 4.2.0 to 4.4.1 ([#427](https://github.com/joshuafuller/qrtak/issues/427)) ([ebbdaf2](https://github.com/joshuafuller/qrtak/commit/ebbdaf2085dafa5a5c5e1cc3317096cb36cdadeb))
+* **deps:** bump github/codeql-action/upload-sarif from 4.38.1 to 4.38.2 ([#435](https://github.com/joshuafuller/qrtak/issues/435)) ([89bec7a](https://github.com/joshuafuller/qrtak/commit/89bec7ad4b8d7269d3f469103f6e5f2b23d7446d))
+* **deps:** bump nginx from 1.31.5-alpine to 1.31.6-alpine ([#431](https://github.com/joshuafuller/qrtak/issues/431)) ([4190964](https://github.com/joshuafuller/qrtak/commit/41909647d3d6fdd1ee796761d76ef5c97f22b0bf))
+
+
+### Development Dependency Updates
+
+* **deps-dev:** bump eslint-plugin-security ([#432](https://github.com/joshuafuller/qrtak/issues/432)) ([b473ee5](https://github.com/joshuafuller/qrtak/commit/b473ee5dbb8e52514aef574e2f00c0affe12fc8d))
+* **deps-dev:** bump vite from 8.3.0 to 8.3.1 ([#433](https://github.com/joshuafuller/qrtak/issues/433)) ([7f50adc](https://github.com/joshuafuller/qrtak/commit/7f50adc00afd0966b9d4dc9fa9ed3c18b7b1e9d5))
+
 ## [4.0.16](https://github.com/joshuafuller/qrtak/compare/qrtak-v4.0.15...qrtak-v4.0.16) (2026-09-26)
 
 
