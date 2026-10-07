@@ -16,6 +16,13 @@
 * **deps:** bump renovatebot/github-action from 43.0.9 to 43.0.14 ([#142](https://github.com/joshuafuller/qrtak/issues/142)) ([b29c40f](https://github.com/joshuafuller/qrtak/commit/b29c40fc4ec89b9c0c1ed387527a19b55b316258))
 * **deps:** bump trufflesecurity/trufflehog from 3.90.5 to 3.90.8 ([#141](https://github.com/joshuafuller/qrtak/issues/141)) ([1ffcf61](https://github.com/joshuafuller/qrtak/commit/1ffcf619b28aef552ebf54661cad0f9ed091dedf))
 
+## [4.0.18](https://github.com/joshuafuller/qrtak/compare/qrtak-v4.0.17...qrtak-v4.0.18) (2026-10-07)
+
+
+### Development Dependency Updates
+
+* **deps-dev:** bump fast-xml-parser from 5.11.1 to 5.11.2 ([#434](https://github.com/joshuafuller/qrtak/issues/434)) ([8ddad81](https://github.com/joshuafuller/qrtak/commit/8ddad81466290ac7b68ae72f1d3c3d89b925d724))
+
 ## [4.0.17](https://github.com/joshuafuller/qrtak/compare/qrtak-v4.0.16...qrtak-v4.0.17) (2026-10-07)
 
 
