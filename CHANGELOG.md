@@ -16,6 +16,13 @@
 * **deps:** bump renovatebot/github-action from 43.0.9 to 43.0.14 ([#142](https://github.com/joshuafuller/qrtak/issues/142)) ([b29c40f](https://github.com/joshuafuller/qrtak/commit/b29c40fc4ec89b9c0c1ed387527a19b55b316258))
 * **deps:** bump trufflesecurity/trufflehog from 3.90.5 to 3.90.8 ([#141](https://github.com/joshuafuller/qrtak/issues/141)) ([1ffcf61](https://github.com/joshuafuller/qrtak/commit/1ffcf619b28aef552ebf54661cad0f9ed091dedf))
 
+## [4.0.19](https://github.com/joshuafuller/qrtak/compare/qrtak-v4.0.18...qrtak-v4.0.19) (2026-10-09)
+
+
+### Dependency Updates
+
+* **deps:** remove vulnerable YAML argument parser and patch URI handling ([#441](https://github.com/joshuafuller/qrtak/issues/441)) ([bfb158b](https://github.com/joshuafuller/qrtak/commit/bfb158b750b88b5f710130f61d8e1194148d14a5))
+
 ## [4.0.18](https://github.com/joshuafuller/qrtak/compare/qrtak-v4.0.17...qrtak-v4.0.18) (2026-10-07)
 
 
