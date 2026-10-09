@@ -62,7 +62,10 @@
   },
   "overrides": {
     "inflight": "npm:lru-cache@^10.4.3",
-    "sourcemap-codec": "npm:@jridgewell/sourcemap-codec@^1.5.0"
+    "sourcemap-codec": "npm:@jridgewell/sourcemap-codec@^1.5.0",
+    "@istanbuljs/load-nyc-config": {
+      "js-yaml": "^4.1.1"
+    }
   },
   "lavamoat": {
     "allowScripts": {
