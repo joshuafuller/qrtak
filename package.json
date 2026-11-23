@@ -51,7 +51,7 @@
     "fast-xml-parser": "^5.12.1",
     "jest": "^30.5.2",
     "jest-environment-jsdom": "^30.5.2",
-    "playwright": "^1.65.0",
+    "playwright": "^1.65.1",
     "vite": "^8.3.8",
     "vite-plugin-pwa": "^2.0.0"
   },
