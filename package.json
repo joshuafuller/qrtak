@@ -44,7 +44,7 @@
     "@babel/preset-env": "^7.29.14",
     "@eslint/js": "^10.0.1",
     "@lavamoat/allow-scripts": "^5.1.0",
-    "@playwright/test": "^1.65.0",
+    "@playwright/test": "^1.65.1",
     "babel-jest": "^30.5.2",
     "eslint": "^10.15.0",
     "eslint-plugin-security": "^4.2.1",
